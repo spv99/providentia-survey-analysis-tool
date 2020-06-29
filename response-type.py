@@ -68,30 +68,34 @@ plt.scatter(pca_df.PC1, pca_df.PC2)
 plt.title('My PCA Graph')
 plt.xlabel('PC1 - {0}%'.format(per_var[0]))
 plt.ylabel('PC2 - {0}%'.format(per_var[1])) # TODO: only use if pc1 scree plot > 70%
-plt.show()
 
 # Find closest point to each point on scatter
-# index_point = 0
-# smallest = 1000
-# coordinates = [[] for _ in range(len(pca_df.index))]
-# for point in pca_df.index:
-#     plt.annotate(point, (pca_df.PC1.loc[point], pca_df.PC2.loc[point]))
-#     coordinates[index_point] = [point, str(pca_df.PC1.loc[point]), str(pca_df.PC2.loc[point]), smallest]
-#     index_point+=1
+index_point = 0
+smallest = 1000
+coordinates = [[] for _ in range(len(pca_df.index))]
+for point in pca_df.index:
+    plt.annotate(point, (pca_df.PC1.loc[point], pca_df.PC2.loc[point]))
+    coordinates[index_point] = [pca_df.PC1.loc[point],pca_df.PC2.loc[point]]
+    index_point+=1
 
-# index_co = 0
-# for co in coordinates:
-#     for _ in coordinates:
-#         dist = math.sqrt((float(co[1]) - float(co[2]))**2 + (float(coordinates[index_co][1]) - float(coordinates[index_co][2]))**2)
-#         print(dist)
-#         if((dist != 0) & (dist < smallest)):
-#             smallest = dist
-#             co[3] = coordinates[index_co][0]
-#         index_co +=1
+index_co = 0
+for co in coordinates:
+    nodes = np.asarray(coordinates)
+    deltas = nodes - co
+    dist_2 = np.einsum('ij,ij->i', deltas, deltas)
+    shortest = 9999
+    index_point = 0
+    for dist in dist_2:
+        print(pca_df.index[index_point]) 
+        if((dist>0) & (dist < shortest)):
+            shortest = dist
+            index_point += 1
+    if (shortest < 1): # not working: the 2 closest in graph != 2 closest mathematically (maths is probs wrong)
+        print(pca_df.index[index_co])
+        print(pca_df.index[index_point])
+    index_co +=1
 
-# print(coordinates)
-
-
+plt.show()
 
 # mapping two cols
 # row = 0
@@ -115,4 +119,3 @@ plt.show()
 # data = [trace0]
 # fig = go.Figure(data = data)
 # py.plot(fig, 'init-scatter.html')
-
