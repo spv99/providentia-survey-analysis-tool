@@ -2,7 +2,7 @@ import plotly.offline as py
 import plotly.graph_objects as go
 import pandas as pd
 
-df = pd.read_csv("new-york-simplified.csv")
+df = pd.read_csv("road-condition-survey-2019.csv")
 cols = list(df.columns.values)
 index = 0
 trace_list = [[] for _ in range(len(cols))]

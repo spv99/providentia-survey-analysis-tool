@@ -12,11 +12,17 @@ class Question:
       self.questionType = questionType
       self.options = options
 
+class Point:
+    def __init__(self, coordinate, name):
+      self.coordinate = coordinate
+      self.name = name
+
 
 MULTIPLE_CHOICE = "MULTIPLE_CHOICE"
 FREE_TEXT = "FREE_TEXT"
-df = pd.read_csv("new-york-simplified.csv")
+df = pd.read_csv("road-condition-survey-2019.csv")
 cols = list(df.columns.values)
+q = pd.concat([df[:1], df[1:].sample(frac=1)]).reset_index(drop=True)
 total_respondents = df.shape[0]-1
 index = 0
 questions = [[] for _ in range(len(cols))]
@@ -69,53 +75,25 @@ plt.title('My PCA Graph')
 plt.xlabel('PC1 - {0}%'.format(per_var[0]))
 plt.ylabel('PC2 - {0}%'.format(per_var[1])) # TODO: only use if pc1 scree plot > 70%
 
-# Find closest point to each point on scatter
 index_point = 0
 smallest = 1000
 coordinates = [[] for _ in range(len(pca_df.index))]
+scat_points = [[] for _ in range(len(pca_df.index))]
 for point in pca_df.index:
     plt.annotate(point, (pca_df.PC1.loc[point], pca_df.PC2.loc[point]))
-    coordinates[index_point] = [pca_df.PC1.loc[point],pca_df.PC2.loc[point]]
+    coordinates[index_point] = (pca_df.PC1.loc[point],pca_df.PC2.loc[point])
+    scat_points[index_point] = Point(coordinates[index_point], point)
     index_point+=1
-
-index_co = 0
-for co in coordinates:
-    nodes = np.asarray(coordinates)
-    deltas = nodes - co
-    dist_2 = np.einsum('ij,ij->i', deltas, deltas)
-    shortest = 9999
-    index_point = 0
-    for dist in dist_2:
-        print(pca_df.index[index_point]) 
-        if((dist>0) & (dist < shortest)):
-            shortest = dist
-            index_point += 1
-    if (shortest < 1): # not working: the 2 closest in graph != 2 closest mathematically (maths is probs wrong)
-        print(pca_df.index[index_co])
-        print(pca_df.index[index_point])
-    index_co +=1
-
 plt.show()
 
-# mapping two cols
-# row = 0
-# label_1 = 0
-# label_2 = 0
-# label_3 = 0
-# label_4 = 0
-# for _ in (df.iloc[:,13]):
-#     if ((df.iloc[row,13] == 0) & (df.iloc[row,14] == 0)):
-#         label_1 +=1
-#     if((df.iloc[row,13] == 0) & (df.iloc[row,14] == 1)):
-#         label_2 +=1
-#     if((df.iloc[row,13] == 1) & (df.iloc[row,14] == 0)):
-#         label_3 +=1
-#     if((df.iloc[row,13] == 1) & (df.iloc[row,14] == 1)):
-#         label_4 +=1
-#     row+=1
-
-
-# trace0 = go.Pie(labels=["0 & 0", "0 & 1", "1 & 0", "1 & 1"], values = [(label_1), (label_2), (label_3), (label_4)] , title="test")
-# data = [trace0]
-# fig = go.Figure(data = data)
-# py.plot(fig, 'init-scatter.html')
+# Find closest point to each point on scatter
+size = len(scat_points)
+for i in range(size):
+    minimum_distance = 9999
+    for j in range(size):
+        distance = math.sqrt((scat_points[i].coordinate[0] - scat_points[j].coordinate[0])**2 
+                   + (scat_points[i].coordinate[1] - scat_points[j].coordinate[1])**2)
+        if distance < minimum_distance and distance != 0:
+            minimum_distance = distance
+            target_pair = (scat_points[i].name,scat_points[j].name)
+    print(target_pair)
