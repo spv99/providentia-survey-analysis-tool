@@ -11,7 +11,7 @@ stop_words = stopwords.words('english')
 
 # tokenising, lemming, cleaning and checking term freq of data
 
-df = pd.read_csv("youtube_comments_oscar_trailer.csv").dropna()
+df = pd.read_csv("csv/youtube_comments_oscar_trailer.csv").dropna()
 
 def tokenize_only(text):
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]

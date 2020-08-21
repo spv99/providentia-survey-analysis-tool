@@ -13,10 +13,10 @@ from sklearn.cluster import KMeans
 
 global data
 
-f = open("new-york-survey.csv", "r")
+f = open("csv/new-york-survey.csv", "r")
 col = (f.readline()).split(',')
 data = ''
-with open('new-york-survey.csv') as f:
+with open('csv/new-york-survey.csv') as f:
     next(f)
     count = 0
     for line in f:
