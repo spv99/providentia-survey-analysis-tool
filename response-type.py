@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import plotly.offline as py
 import plotly.graph_objects as go
 import nltk
+import math
+from collections import Counter
 from nltk.tag import pos_tag
 from nltk.stem.wordnet import WordNetLemmatizer
 from sklearn import feature_extraction
@@ -17,6 +19,7 @@ stop_words = stopwords.words('english')
 MULTIPLE_CHOICE = "MULTIPLE_CHOICE"
 FREE_TEXT = "FREE_TEXT"
 df = pd.read_csv("csv/grad-pays.csv")
+df_clean = pd.read_csv("csv/grad-pays.csv")
 cols = list(df.columns.values)
 total_respondents = df.shape[0]
 index = 0
@@ -155,58 +158,23 @@ for col in cols:
         print(questions[index].question)
         print(questions[index].flattened_options)
     index +=1
-    
-# col_num = 0
-# for d in df:
-#     print(df.iloc[:,col_num])
-#     col_num+=1
-check_dupes_arr = []
-dupe_count = []
+
+# Finding duplicated rows by selected cols
+counter = Counter(list(zip(df_clean.iloc[:,0].dropna(), df_clean.iloc[:,2].dropna()))) # hard coded 0 and 2
+values = list(counter.values())
 x = []
 y = []
-hm_count = []
-df['merge'] = df[df.columns[0:]].apply(lambda x: ','.join(x.dropna().astype(str)), axis=1)
-for merge in (df['merge']):
-    split_rows = merge.split(',')
-    combo = split_rows[0] + ',' + split_rows[2] # 0 and 2 hardcoded
-    check_dupes_arr.append(combo)
-dupes_set = set([x for x in check_dupes_arr if check_dupes_arr.count(x)>1])
-for elem in check_dupes_arr:
-    split_combo = elem.split(',')
-    x.append(split_combo[0])
-    y.append(split_combo[1])
-    for dupe in dupes_set:
-        if dupe == elem:
-            hm_count.append(check_dupes_arr.count(elem))
-            check_dupes_arr.remove(elem)
-    else:
-        hm_count.append(1)
+for a, b in counter:
+    x.append(a)
+    y.append(b)
 
-#print(x)
-#print(y)
-#print(hm_count)
-n = 3 # max number of options for x (what is your gender?) 0 inclusive
-reshaped_arr = [hm_count[i:i+n] for i in range(0, len(hm_count), n)]
-print(reshaped_arr)
+temp_df = pd.DataFrame({'Var1':x, 'Var2':y, 'Count': values})
+print(temp_df)
 
-# for dupe in dupes_set:
-#     # add column groupby count of two cols
-#     check_dupes_arr.count(dupe)
-#     print('dupe')
-#     print(dupe)
-#     print(check_dupes_arr.count(dupe))
-#     dupe_count.append(check_dupes_arr.count(dupe))
-
-#SCATTER
-#fig = go.Figure(data=go.Scatter(x=(df.iloc[:,0]), y=(df.iloc[:,1]), mode='markers')) # bubble chart - count recurring
-
-#HEATMAP
-fig = go.Figure(data=go.Heatmap(z=reshaped_arr))
-#fig.show()
-
-py.plot(fig, filename='heatmap.html')
-
-# pairing_df = pd.DataFrame(data, columns=['x', 'y'])11`1`1111111
-# pairing_df.plot()
-# pairing_df.plot(kind='scatter', x='x', y='y')
-# plt.scatter(df.iloc[:,0], df.iloc[:,1])
+# Bubble Chart - plot categorical scatter plot
+temp_df["markersize"] = temp_df.Count + 10
+ax = temp_df.plot.scatter(x='Var1', y='Var2', alpha=0.5, s=temp_df.markersize)
+for i, txt in enumerate(values):
+    ax.annotate(txt, (temp_df.Var1.iat[i],temp_df.Var2.iat[i]), fontsize=8)
+plt.tight_layout()
+plt.savefig('bubblechart.png',dpi=300, bbox_inches = "tight")
