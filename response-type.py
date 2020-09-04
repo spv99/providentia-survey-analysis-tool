@@ -14,6 +14,7 @@ import re, string, random
 from nltk.corpus import stopwords
 from nltk import FreqDist, classify, NaiveBayesClassifier
 from nltk.corpus import twitter_samples
+from scipy.stats import pearsonr
 stop_words = stopwords.words('english')
 
 MULTIPLE_CHOICE = "MULTIPLE_CHOICE"
@@ -35,6 +36,7 @@ class Question:
       self.flattened_options = flattened_options
 
 # methods for text analysis
+
 def tokenize_only(text):
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
     filtered_tokens = []
@@ -121,7 +123,7 @@ def training_set():
     print("Training data accuracy is: ", classify.accuracy(classifier, test_data))
 
 # getting question types
-# TODO: Remove id if in first col
+# TODO: Remove id - determined by ui/business data layout (tes by adding id col back in)
 for col in cols:
     unique_vals = df.iloc[:,index].dropna().unique()
     options = unique_vals
@@ -158,6 +160,21 @@ for col in cols:
         print(questions[index].question)
         print(questions[index].flattened_options)
     index +=1
+
+# bivariate analysis
+
+# pearson's correlation - every col with every col
+for q1 in range(len(questions)):
+    print('main qs:' , questions[q1].question)
+    for q2 in range(len(questions)):
+        if(q1 != q2):   
+            print(questions[q2].question)
+            corr = (df.iloc[:,q1].astype('float64')).corr(df.iloc[:,q2].astype('float64'))
+            print(corr)
+
+# this does same this as above but one line + in df.shape    
+pearsons_corr = df.astype('float64').corr()        
+print(pearsons_corr)
 
 # Finding duplicated rows by selected cols
 counter = Counter(list(zip(df_clean.iloc[:,0].dropna(), df_clean.iloc[:,2].dropna()))) # hard coded 0 and 2
