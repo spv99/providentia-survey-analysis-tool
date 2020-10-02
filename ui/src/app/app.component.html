@@ -1,0 +1,13 @@
+<div style="position: sticky; z-index: 2500; top: 0;">
+  <providentia-header></providentia-header>
+  <!-- <alerts-container></alerts-container> -->
+</div>
+<div class="container">
+  <div class="center" *ngIf="!savedAnalytics">
+    <i class="material-icons">blur_on</i>
+    <p class="no-saved-project-text">It doesn't look like you have any Saved Analytics right now!</p>
+    <p class="no-saved-project-text">Get started by uploading your survey reponse file below</p><br>
+    <button type="button" class="btn btn-primary" (click)="open()">
+      Upload Survey File</button>
+  </div>
+</div>
