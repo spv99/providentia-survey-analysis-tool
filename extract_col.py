@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
+import pickle
 
 MULTIPLE_CHOICE = "MULTIPLE_CHOICE"
 FREE_TEXT = "FREE_TEXT"
@@ -12,18 +13,20 @@ class Question:
       self.question = question
       self.questionType = questionType
       self.dataType = dataType
-      self.options = options
-      self.flattened_options = flattened_options
+      self.options = options.tolist()
+      self.flattened_options = flattened_options.tolist()
       
     def to_dict(self):
         return {"question": self.question, 
                 "questionType": self.questionType, 
                 "dataType": self.dataType, 
-                "options": self.options.tolist(), 
-                "flattened_options": self.flattened_options.tolist()}
+                "options": self.options, 
+                "flattened_options": self.flattened_options}
 
-def extract_cols(csv):   
+def extract_cols(csv):  
     df = pd.read_csv(csv)
+    with open('raw_data_store.dat', 'wb') as f:
+        pickle.dump(df, f) 
     cols = list(df.columns.values)
     total_respondents = df.shape[0]
     index = 0
@@ -47,7 +50,9 @@ def extract_cols(csv):
         else:
             questions[index] = Question(col, MULTIPLE_CHOICE, dataType, options, unique_vals)
         index +=1
-    return jsonParseCols(questions)
+    with open('data_store.dat', 'wb') as f:
+        pickle.dump(questions, f)
+    return questions
 
 def jsonParseCols(questions):
     extracted_cols = []
