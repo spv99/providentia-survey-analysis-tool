@@ -14,6 +14,7 @@
 ### Running in local:
 Local set up: https://timmyreilly.azurewebsites.net/python-pip-virtualenv-installation-on-windows/
 
-workon surveys in directory to start venv
+`workon surveys` in directory to start venv
 deactivate to exit venv
-py to run python shell
+`py` to run python shell
+`flask run` to run swagger

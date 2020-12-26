@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.offline as py
 import plotly.graph_objects as go
