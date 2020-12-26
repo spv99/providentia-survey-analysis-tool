@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_restplus import Api, Resource
 from werkzeug.datastructures import FileStorage
-import json
 import extract_col
 
 flask_app = Flask(__name__)
@@ -23,11 +22,4 @@ class Main(Resource):
         csv = upload_parser.parse_args()
         uploaded_file = csv['file']
         extracted_cols = extract_col.extract_cols(uploaded_file)
-        
-        # jsonParseCols = json.dumps([ec.__dict__ for ec in extracted_cols.tolist()])
-        # print(jsonParseCols)
-        
-        # data = pd.read_csv(uploaded_file)
-        # print(data.head)
-        
-        return json.dumps([ec.__dict__ for ec in extracted_cols])
+        return extracted_cols

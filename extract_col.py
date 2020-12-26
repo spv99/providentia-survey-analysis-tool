@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import json
 
 MULTIPLE_CHOICE = "MULTIPLE_CHOICE"
 FREE_TEXT = "FREE_TEXT"
@@ -13,6 +14,13 @@ class Question:
       self.dataType = dataType
       self.options = options
       self.flattened_options = flattened_options
+      
+    def to_dict(self):
+        return {"question": self.question, 
+                "questionType": self.questionType, 
+                "dataType": self.dataType, 
+                "options": self.options.tolist(), 
+                "flattened_options": self.flattened_options.tolist()}
 
 def extract_cols(csv):   
     df = pd.read_csv(csv)
@@ -38,9 +46,19 @@ def extract_cols(csv):
             questions[index] = Question(col, FREE_TEXT, dataType, options, unique_vals)
         else:
             questions[index] = Question(col, MULTIPLE_CHOICE, dataType, options, unique_vals)
-        print(questions[index].questionType)
-        print(questions[index].dataType)
-        print(questions[index].question)
-        print(questions[index].flattened_options)
         index +=1
-    return questions
+    return jsonParseCols(questions)
+
+def jsonParseCols(questions):
+    extracted_cols = []
+    for q in questions:
+        data = q.to_dict()
+        extracted_cols.append(data)
+    return({"extracted_cols": extracted_cols})
+ 
+# to run this file directly with args       
+if __name__ == '__main__':
+    import sys
+    function = getattr(sys.modules[__name__], sys.argv[1])
+    filename = sys.argv[2]
+    function(filename)
