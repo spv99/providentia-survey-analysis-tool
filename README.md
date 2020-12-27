@@ -23,4 +23,3 @@ deactivate to exit venv
 `py` to run python shell
 `flask run` to run swagger
 `python extract_col.py extract_cols "csv/grad-pays.csv"` to run specific file with args
-`python univariate_analysis.py piechart "data_store.dat"` to run univariate file

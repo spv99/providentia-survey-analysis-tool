@@ -39,3 +39,9 @@ class UnivariateAnalysis(Resource):
     def get(self):
         piechartHTML = univariate_analysis.piechart()
         return {"fileLocation": piechartHTML}  
+
+@univar_analysis.route('/boxplots')
+class UnivariateAnalysis(Resource):
+    def get(self):
+        boxplotHTML = univariate_analysis.boxplot()
+        return {"fileLocation": boxplotHTML}
