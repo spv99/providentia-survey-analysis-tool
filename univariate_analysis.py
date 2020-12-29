@@ -58,10 +58,3 @@ def boxplot():
             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/boxplots.html"):
         return 'tmp/boxplots.html'
-
-# to run this file directly with args
-if __name__ == '__main__':
-    import sys
-    function = getattr(sys.modules[__name__], sys.argv[1])
-    filename = sys.argv[2]
-    function(filename)
