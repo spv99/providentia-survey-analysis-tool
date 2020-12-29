@@ -5,6 +5,7 @@ import pickle
 
 import extract_col
 import univariate_analysis
+import bivariate_analysis
 
 flask_app = Flask(__name__)
 app = Api(app = flask_app, 
@@ -14,6 +15,7 @@ app = Api(app = flask_app,
 
 survey_data = app.namespace('survey-data', description='Extract data from csv input')
 univar_analysis = app.namespace('univar-analysis', description='Univariate analysis on survey data')
+bivar_analysis = app.namespace('bivar-analysis', description='Bivariate analysis on survey data')
 
 upload_parser = app.parser()
 upload_parser.add_argument('file', location='files', type=FileStorage, required=True)
@@ -45,3 +47,15 @@ class UnivariateAnalysis(Resource):
     def get(self):
         boxplotHTML = univariate_analysis.boxplot()
         return {"fileLocation": boxplotHTML}
+    
+@bivar_analysis.route('/clusteredbargraph')
+class UnivariateAnalysis(Resource):
+    def get(self):
+        clusteredbargraphHTML = bivariate_analysis.bivar_bargraph('group')
+        return {"fileLocation": clusteredbargraphHTML}
+    
+@bivar_analysis.route('/stackedbargraph')
+class UnivariateAnalysis(Resource):
+    def get(self):
+        stackedbargraphHTML = bivariate_analysis.bivar_bargraph('stack')
+        return {"fileLocation": stackedbargraphHTML}
