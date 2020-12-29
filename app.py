@@ -48,13 +48,20 @@ class UnivariateAnalysis(Resource):
         boxplotHTML = univariate_analysis.boxplot()
         return {"fileLocation": boxplotHTML}
     
-@bivar_analysis.route('/clusteredbargraph')
+@bivar_analysis.route('/bivariate-relationships')
+class UnivariateAnalysis(Resource):
+    def get(self):
+        bi_relats = bivariate_analysis.relationshipStrength()
+        json_bi_relats = bivariate_analysis.jsonParseBivarRelationships(bi_relats)
+        return json_bi_relats
+    
+@bivar_analysis.route('/clustered-bargraph')
 class UnivariateAnalysis(Resource):
     def get(self):
         clusteredbargraphHTML = bivariate_analysis.bivar_bargraph('group')
         return {"fileLocation": clusteredbargraphHTML}
     
-@bivar_analysis.route('/stackedbargraph')
+@bivar_analysis.route('/stacked-bargraph')
 class UnivariateAnalysis(Resource):
     def get(self):
         stackedbargraphHTML = bivariate_analysis.bivar_bargraph('stack')
