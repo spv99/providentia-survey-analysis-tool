@@ -74,3 +74,9 @@ class MultivariateAnalysis(Resource):
     def get(self):
         treemapHTML = multivariate_analysis.treemap()
         return {"fileLocation": treemapHTML}
+
+@multivar_analysis.route('/sunburst')
+class MultivariateAnalysis(Resource):
+    def get(self):
+        sunburstHTML = multivariate_analysis.sunburst()
+        return {"fileLocation": sunburstHTML}

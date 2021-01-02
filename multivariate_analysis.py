@@ -77,7 +77,7 @@ def pca():
 
 def treemap():
     if os.path.exists("tmp/treemap.html"):
-            os.remove("tmp/treemap.html")
+        os.remove("tmp/treemap.html")
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
     for q in questions:
@@ -90,10 +90,28 @@ def treemap():
     df = df.groupby(col_names)["count"].count().reset_index()
     df = df.sort_values(by=["count"], ascending=False)
     df["treemap"] = "treemap"
-    print(len(df))
-    print(df.head())
     fig = px.treemap(df, path=col_names, values='count', color ='count', color_continuous_scale='PuBu')
     with open('tmp/treemap.html', 'a') as f:
         f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
-    if os.path.exists("tmp/piecharts.html"):
+    if os.path.exists("tmp/treemap.html"):
         return 'tmp/treemap.html'
+
+def sunburst():
+    if os.path.exists("tmp/sunburst.html"):
+        os.remove("tmp/sunburst.html")
+    df = pickle.load(open("raw_data_store.dat", "rb"))
+    questions = pickle.load(open("data_store.dat", "rb"))
+    for q in questions:
+        # TODO: make free text col mutliple choice
+        if(q.questionType != 'MULTIPLE_CHOICE'):
+            del df[q.question]
+    col_names = df.columns.values.tolist()
+    #TODO: Make sure there is no col named 'count' else rename inserted col to count_x
+    df["count"] = 1
+    df = df.groupby(col_names)["count"].count().reset_index()
+    df = df.sort_values(by=["count"], ascending=False)
+    fig = px.sunburst(df, path=col_names, values='count', color ='count', color_continuous_scale='PuBu')
+    with open('tmp/sunburst.html', 'a') as f:
+        f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    if os.path.exists("tmp/sunburst.html"):
+        return 'tmp/sunburst.html'
