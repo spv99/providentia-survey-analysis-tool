@@ -6,6 +6,7 @@ import pickle
 import extract_col
 import univariate_analysis
 import bivariate_analysis
+import multivariate_analysis
 
 flask_app = Flask(__name__)
 app = Api(app = flask_app, 
@@ -14,8 +15,9 @@ app = Api(app = flask_app,
           description="Interface to manage results of survey data analysis")
 
 survey_data = app.namespace('survey-data', description='Extract data from csv input')
-univar_analysis = app.namespace('univar-analysis', description='Univariate analysis on survey data')
-bivar_analysis = app.namespace('bivar-analysis', description='Bivariate analysis on survey data')
+univar_analysis = app.namespace('univariate-analysis', description='Univariate analysis on survey data')
+bivar_analysis = app.namespace('bivariate-analysis', description='Bivariate analysis on survey data')
+multivar_analysis = app.namespace('multivariate-analysis', description='Multivariate analysis on survey data')
 
 upload_parser = app.parser()
 upload_parser.add_argument('file', location='files', type=FileStorage, required=True)
@@ -66,3 +68,9 @@ class UnivariateAnalysis(Resource):
     def get(self):
         stackedbargraphHTML = bivariate_analysis.bivar_bargraph('stack')
         return {"fileLocation": stackedbargraphHTML}
+    
+@multivar_analysis.route('/treemap')
+class MultivariateAnalysis(Resource):
+    def get(self):
+        treemapHTML = multivariate_analysis.treemap()
+        return {"fileLocation": treemapHTML}
