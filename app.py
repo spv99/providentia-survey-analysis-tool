@@ -92,3 +92,8 @@ class QualitiativeEncoding(Resource):
 class QualitiativeEncoding(Resource):
     def get(self):
         return qualitative_encoding.wordmaps();
+    
+@qual_encoding.route('/themes')
+class QualitiativeEncoding(Resource):
+    def get(self):
+        return qualitative_encoding.thematic_analysis();

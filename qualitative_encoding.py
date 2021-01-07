@@ -11,6 +11,7 @@ import re, string, random, os, pickle, mpld3, sys
 from PIL import Image
 from nltk.corpus import stopwords
 from wordcloud import WordCloud
+from collections import Counter 
 import matplotlib.pyplot as plt
 from nltk import FreqDist, classify, NaiveBayesClassifier
 from nltk.corpus import twitter_samples
@@ -40,6 +41,7 @@ def lemmatize_sentence(tokens):
     return lemmatized_sentence
 
 def remove_noise(tokens, stop_words = ()):
+    stop_words.append('n/a')
     cleaned_tokens = []
     for token, tag in pos_tag(tokens):
         token = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|'\
@@ -160,72 +162,85 @@ def wordmaps():
     files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'wordmap' in i]
     return files
 
-# THEMATIC ANALYSIS
+def thematic_analysis():
+    df = pickle.load(open("raw_data_store.dat", "rb"))
+    questions = pickle.load(open("data_store.dat", "rb"))
+    df.dropna()
 
-df = pickle.load(open("raw_data_store.dat", "rb"))
-questions = pickle.load(open("data_store.dat", "rb"))
-df.dropna()
-
-for q in questions:
-    if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
-        del df[q.question]
-
-data = df
-columns = df.columns.values.tolist()
-stopwords = nltk.corpus.stopwords.words('english')
-stemmer = SnowballStemmer("english")
-
-def tokenize_and_stem(text):
-    tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-    filtered_tokens = []
-    for token in tokens:
-        if re.search('[a-zA-Z]', token):
-            filtered_tokens.append(token)
-    stems = [stemmer.stem(t) for t in filtered_tokens]
-    return stems
-
-
-def tokenize_only(text):
-    tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-    filtered_tokens = []
-    for token in tokens:
-        if re.search('[a-zA-Z]', token) and len(token) > 1:
-            filtered_tokens.append(token)
-    return filtered_tokens
-
-totalvocab_stemmed = [] 
-totalvocab_tokenized = []
-
-for x in range(len(df)):
-    if(isinstance(df.iloc[x,0], str) == False):
-        df.iloc[x,0] = "N/A" 
-    allwords_stemmed = tokenize_and_stem(df.iloc[x,0])
-    totalvocab_stemmed.extend(allwords_stemmed)
+    for q in questions:
+        if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
+            del df[q.question]
     
-    allwords_tokenized = tokenize_only(df.iloc[x,0])
-    totalvocab_tokenized.extend(allwords_tokenized)
+    themes = {}
+    data = df
+    columns = df.columns.values.tolist()
+    stopwords = nltk.corpus.stopwords.words('english')
+    stemmer = SnowballStemmer("english")
+    
+    def tokenize_and_stem(text):
+        tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
+        filtered_tokens = []
+        for token in tokens:
+            if re.search('[a-zA-Z]', token):
+                filtered_tokens.append(token)
+        stems = [stemmer.stem(t) for t in filtered_tokens]
+        return stems
 
-#define vectorizer parameters
-tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=200000,
-                                 min_df=0.2, stop_words='english',
-                                 use_idf=True, tokenizer=tokenize_and_stem)
 
-tfidf_matrix = tfidf_vectorizer.fit_transform(df[df.columns.values.tolist()[0]].values)
+    def tokenize_only(text):
+        tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
+        filtered_tokens = []
+        for token in tokens:
+            if re.search('[a-zA-Z]', token) and len(token) > 1:
+                filtered_tokens.append(token)
+        return filtered_tokens
+    
+    for col in range(len(df.columns)):
+        totalvocab_stemmed = [] 
+        totalvocab_tokenized = []
 
-print(tfidf_matrix.shape)
-terms = tfidf_vectorizer.get_feature_names()
-print(terms)
-dist = 1 - cosine_similarity(tfidf_matrix)
-print
+        for x in range(len(df)):
+            if(isinstance(df.iloc[x,col], str) == False):
+                df.iloc[x,col] = "N/A" 
+            allwords_stemmed = tokenize_and_stem(df.iloc[x,col])
+            totalvocab_stemmed.extend(allwords_stemmed)
+            
+            allwords_tokenized = tokenize_only(df.iloc[x,col])
+            totalvocab_tokenized.extend(allwords_tokenized)
 
-num_clusters = 6 #TODO: generate this via kmeans elbow ml algo
-km = KMeans(n_clusters=num_clusters, max_iter=5)
-km.fit(tfidf_matrix)
-clusters = km.labels_.tolist()
-print(clusters)
+        #define vectorizer parameters
+        tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=200000,
+                                        min_df=0.2, stop_words='english',
+                                        use_idf=True, tokenizer=tokenize_and_stem)
 
-for index, totalvocab_stemmed in enumerate(df[df.columns.values.tolist()[0]].values.tolist()):
-    print(str(clusters[index]) + ":" + str(totalvocab_stemmed))
+        tfidf_matrix = tfidf_vectorizer.fit_transform(df[df.columns.values.tolist()[col]].values)
 
+        terms = tfidf_vectorizer.get_feature_names()
+        dist = 1 - cosine_similarity(tfidf_matrix)
+
+        num_clusters = 4 #TODO: generate this via kmeans elbow ml algo
+        km = KMeans(n_clusters=num_clusters, max_iter=10)
+        km.fit(tfidf_matrix)
+        clusters = km.labels_.tolist()
+
+        cluster_values = [[] for _ in range(num_clusters)]
+        for index, totalvocab_stemmed in enumerate(df[df.columns.values.tolist()[col]].values.tolist()):
+            cluster_values[clusters[index]].append(str(totalvocab_stemmed))
+
+        categories = []
+        for i in range(len(cluster_values)):
+            totalvocab_tokenized = []
+            totalvocab_lemmetized = []
+            totalvocab_cleaned = []
+            allwords_tokenized = tokenize_only(str(cluster_values[i]))
+            totalvocab_tokenized.extend([allwords_tokenized])
+            totalvocab_lemmetized.extend([lemmatize_sentence(totalvocab_tokenized[x in cluster_values[i]])])
+            totalvocab_cleaned.extend([remove_noise(totalvocab_lemmetized[x in cluster_values[i]], stop_words)])
+            CounterVariable  = Counter(str(totalvocab_cleaned).split())
+            most_occur = CounterVariable.most_common(1)
+            categories.append(most_occur[0])
+
+        themes[questions[col].question] = categories
+    return ({"themes": themes})
 #TODO - Scatter plot of clusters
 #TODO - Append sentiment and thematic variables onto questions class to use in uni and bi analysis
