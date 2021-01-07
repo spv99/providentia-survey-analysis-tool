@@ -9,12 +9,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 import re, string, random, os, pickle, mpld3, sys
 from PIL import Image
-from nltk.corpus import stopwords
 from wordcloud import WordCloud
 from collections import Counter 
 import matplotlib.pyplot as plt
 from nltk import FreqDist, classify, NaiveBayesClassifier
-from nltk.corpus import twitter_samples
+from nltk.corpus import twitter_samples, stopwords
 stop_words = stopwords.words('english')
 
 # tokenising, lemming, cleaning and checking term freq of data
