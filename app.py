@@ -83,17 +83,25 @@ class MultivariateAnalysis(Resource):
         sunburstHTML = multivariate_analysis.sunburst()
         return {"fileLocation": sunburstHTML}
     
+@multivar_analysis.route('/pca')
+class MultivariateAnalysis(Resource):
+    def get(self):
+        pcaHTML = multivariate_analysis.pca()
+        return {"fileLocation": pcaHTML}
+    
 @qual_encoding.route('/sentiment')
 class QualitiativeEncoding(Resource):
     def get(self):
-        return qualitative_encoding.sentiment_analysis();
+        sentimentHTML, categories = qualitative_encoding.sentiment_piechart()
+        return {"fileLocation": sentimentHTML, "categories": categories}
     
 @qual_encoding.route('/wordmaps')
 class QualitiativeEncoding(Resource):
     def get(self):
-        return qualitative_encoding.wordmaps();
+        files, questions = qualitative_encoding.wordmaps()
+        return {"files": files, "questions": questions}
     
 @qual_encoding.route('/themes')
 class QualitiativeEncoding(Resource):
     def get(self):
-        return qualitative_encoding.thematic_analysis();
+        return qualitative_encoding.thematic_analysis()

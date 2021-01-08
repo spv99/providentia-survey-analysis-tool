@@ -45,7 +45,7 @@ def extract_cols(csv):
             dataType = QUANT
         else:
             dataType = QUAL
-        if(len(unique_vals) > 10):
+        if(len(unique_vals) > 10): #TODO: Make percentage unique values - what if there were 10 rows of data?
             questions[index] = Question(col, FREE_TEXT, dataType, options, unique_vals)
         else:
             questions[index] = Question(col, MULTIPLE_CHOICE, dataType, options, unique_vals)

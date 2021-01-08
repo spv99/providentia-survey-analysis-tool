@@ -14,12 +14,9 @@ nltk.tag
 nltk.corpus
 nltk.stem.wordnet
 nltk.stem.snowball
-sklearn
+sklearn.preprocessing
 sklearn.decomposition
 sklearn.feature_extraction.text
 sklearn.metrics.pairwise
 sklearn.cluster
 wordcloud
-
-
-

@@ -12,6 +12,7 @@ from PIL import Image
 from wordcloud import WordCloud
 from collections import Counter 
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from nltk import FreqDist, classify, NaiveBayesClassifier
 from nltk.corpus import twitter_samples, stopwords
 stop_words = stopwords.words('english')
@@ -74,13 +75,14 @@ def sentiment_analysis():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
     df.dropna()
-    sentiments = {}
+    sentiments = []
     
     for q in questions:
         if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
             del df[q.question]
     
-    for col in range(len(df.columns)):      
+    for col in range(len(df.columns)):    
+        sentiment = []  
         totalvocab_tokenized = []
         totalvocab_lemmetized = []
         totalvocab_cleaned = []
@@ -131,27 +133,60 @@ def sentiment_analysis():
 
         print("Training data accuracy is: ", classify.accuracy(classifier, test_data))
 
-        # using survey data for sentiment analysis
-        # prints out pos/neg output and accuracy % for each response
         for x in range(len(df)):
             token_sentiment = classifier.classify(dict([token, True] for token in totalvocab_cleaned[x]))
-            sentiment_identifier = str(x) + ': ' + str(df.columns.values.tolist()[col])
-            sentiments[sentiment_identifier] = [token_sentiment, totalvocab_cleaned[x]]
-    return ({"sentiments": sentiments})
+            sentiment.append([[(str(df.columns.values.tolist()[col]))], [token_sentiment], [totalvocab_cleaned[x]]])
+        sentiments.append(sentiment)
+    return sentiments, df.columns.values.tolist()
 
+def sentiment_piechart():
+    if os.path.exists("tmp/senti_piechart.html"):
+        os.remove("tmp/senti_piechart.html")
+    sentiments, questions = sentiment_analysis()
+    categories = {}
+    colors = ['mediumspringgreen', 'tomato']
+    for q in range(len(questions)):
+        positive = 0
+        positive_tokens = []
+        negative = 0
+        negative_tokens = []
+        for sentiment in sentiments[q]:
+            if('Positive' in sentiment[1]):
+                positive += 1
+                positive_tokens.append(sentiment[2])
+            if('Negative' in sentiment[1]):
+                negative += 1
+                negative_tokens.append(sentiment[2])
+            fig = go.Figure([go.Pie(labels=["Positive", "Negative"], values=[positive, negative])])
+            fig.update_traces(marker=dict(colors=colors))
+            fig.update_layout(title=questions[q])
+            CounterVariable  = Counter(str(positive_tokens).split())
+            most_pos_occur = [word for word, word_count in CounterVariable.most_common(6)]
+            CounterVariable  = Counter(str(negative_tokens).split())
+            most_neg_occur = [word for word, word_count in CounterVariable.most_common(6)]
+            categories[questions[q]] = {"positive": most_pos_occur, "negative": most_neg_occur}
+        with open('tmp/senti_piechart.html', 'a') as f:
+            f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    if os.path.exists("tmp/senti_piechart.html"):
+        return 'tmp/senti_piechart.html', categories
+    
 def wordmaps():
     path = 'tmp/'
-    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'wordmap' in i]
+    #TODO: removing wordmap files not working 
+    #TODO: make separate wordmap.png files as 1
+    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path, i) and 'wordmap' in i)]
     for f in files:
         os.remove(f)
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
-    df.dropna()
+    df = df.dropna()
+    title = []
 
     count = 0
     for q in questions:
         if(q.questionType == 'FREE_TEXT' and q.dataType == 'QUALITATIVE'):
             count += 1
+            title.append(q.question)
             text = df[q.question].values.tolist()
             wordcloud = WordCloud(min_font_size=9, max_words=100, background_color="white").generate(str(text))
             plt.figure()
@@ -159,7 +194,7 @@ def wordmaps():
             plt.axis("off")
             plt.savefig('tmp/wordmap-' + str(count) + '.png')
     files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'wordmap' in i]
-    return files
+    return files, title
 
 def thematic_analysis():
     df = pickle.load(open("raw_data_store.dat", "rb"))
@@ -236,10 +271,10 @@ def thematic_analysis():
             totalvocab_lemmetized.extend([lemmatize_sentence(totalvocab_tokenized[x in cluster_values[i]])])
             totalvocab_cleaned.extend([remove_noise(totalvocab_lemmetized[x in cluster_values[i]], stop_words)])
             CounterVariable  = Counter(str(totalvocab_cleaned).split())
-            most_occur = CounterVariable.most_common(1)
-            categories.append(most_occur[0])
+            most_occur = [word for word, word_count in CounterVariable.most_common(6)]
+            categories.append(most_occur)
 
-        themes[questions[col].question] = categories
+        themes[df.columns.values.tolist()[col]] = categories
     return ({"themes": themes})
 #TODO - Scatter plot of clusters
 #TODO - Append sentiment and thematic variables onto questions class to use in uni and bi analysis
