@@ -74,7 +74,7 @@ def token_to_dict_converter(cleaned_tokens_list):
 def sentiment_analysis():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
-    df.dropna()
+    df = df.dropna()
     sentiments = []
     
     for q in questions:
@@ -199,7 +199,7 @@ def wordmaps():
 def thematic_analysis():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
-    df.dropna()
+    df = df.dropna()
 
     for q in questions:
         if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):

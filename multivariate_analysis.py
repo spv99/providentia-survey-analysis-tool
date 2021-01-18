@@ -79,7 +79,6 @@ def pca():
 
     pca_df = pd.DataFrame(pca_data, index=selected_cols_encoded, columns=labels)
     variance = pca.explained_variance_ratio_.cumsum()[1]
-    print(variance)
 
     distortions = []
     K_to_try = range(1, len(col_name))
@@ -88,31 +87,50 @@ def pca():
         model = KMeans(
                 n_clusters=i,
                 init='k-means++',
-                n_jobs=-1,
                 random_state=1)
         model.fit(pca_data)
         distortions.append(model.inertia_)
-    plt.plot(K_to_try, distortions, marker='o')
+    x_values = [K_to_try[0], K_to_try[len(K_to_try)-1]]
+    y_values = [distortions[0], distortions[len(distortions)-1]]
+    line = plt.plot(x_values, y_values)
+    elbow = plt.plot(K_to_try, distortions, marker='o')
     plt.xlabel('Number of Clusters (k)')
     plt.ylabel('Distortion')
+   
+    # getting coefficients of optimal line
+    start = [x_values[0], y_values[0]]
+    end = [x_values[1], y_values[1]]
+    a=(start[1] - end[1])
+    b=(end[0] - start[0])
+    c=(start[0]*end[1]) - (end[0]*start[1])
+    
+    # diff between optimal line and elbow line (perpendicular/euclidian diff)
+    k_num = 0
+    max_k_val = 0
+    for k in range(len(K_to_try)):
+        max_k = abs((a * K_to_try[k] + b * distortions[k] + c)) / (math.sqrt(a * a + b * b)) 
+        if(k_num == 0 or max_k > max_k_val):
+            max_k_val = max_k
+            k_num = K_to_try[k]
+        else:
+            break
+    print(k_num)
     plt.show()
 
-    # TODO: use silhoutte score instead of elbow 
-    # https://gitlab.com/blazetamareborn/StudentSurveyClustering/-/blob/master/training/TrainKMeans.py
     model = KMeans(
-        n_clusters=2,
+        n_clusters=k_num,
         init='k-means++',
-        n_jobs=-1,
         random_state=1)
 
     model = model.fit(pca_data)
     y = model.predict(pca_data)
-    fig.add_trace(go.Scatter(x=pca_data[y == 0, 0], y=pca_data[y == 0, 1], mode='markers', 
-                            marker=dict(color='cornflowerblue', size=12, line=dict(width=2,color='cornflowerblue')), 
-                            name="Profile 1"))
-    fig.add_trace(go.Scatter(x=pca_data[y == 1, 0], y=pca_data[y == 1, 1], mode='markers',
-                            marker=dict(color='darkblue', size=12, line=dict(width=2,color='darkblue')), 
-                            name="Profile 2"))
+    
+    for i in range(k_num):
+        fig.add_trace(go.Scatter(x=pca_data[y == i, 0], y=pca_data[y == i, 1], mode='markers', 
+                                marker=dict(color=px.colors.qualitative.Plotly[i], size=12, line=dict(
+                                width=2,
+                                color=px.colors.qualitative.Plotly[i])), 
+                                name="Profile" + str(i+1)))
     with open('tmp/pca.html', 'a') as f:
         f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/pca.html"):

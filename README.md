@@ -17,6 +17,7 @@ Local set up: https://timmyreilly.azurewebsites.net/python-pip-virtualenv-instal
 ### local variables to run flask
 set FLASK_APP=app.py
 set FLASK_ENV=development
+`flask run`
 
 `workon surveys` in directory to start venv
 deactivate to exit venv
