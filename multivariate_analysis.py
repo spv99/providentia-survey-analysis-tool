@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from sklearn.cluster import KMeans
 import plotly.express as px
+from collections import Counter 
 import random
 import pickle
 import math
@@ -51,20 +52,25 @@ def pca():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
 
+    respondent_choices = {}
     selected_cols_encoded = []
     col_name = []
     for q in questions:   
         encoded = []
+        col_options = []
         for d in df[q.question]:
             if(d != d):
                 encoded.append(999)
+                col_options.append(999)
             else:
                 index = q.options.index(d)
                 flattened_option = q.flattened_options[index] + 1
                 encoded.append(flattened_option)
+                col_options.append(d)
         col_name.append(q.question)
         selected_cols_encoded.append(encoded)
-        
+        respondent_choices[q.question] = col_options
+
     dataframe = {}
     for i in range(0, len(selected_cols_encoded)):
         dataframe[col_name[i]] = selected_cols_encoded[i]
@@ -115,7 +121,7 @@ def pca():
         else:
             break
     print(k_num)
-    plt.show()
+    #plt.show() - show elbow graph and optimal line
 
     model = KMeans(
         n_clusters=k_num,
@@ -124,6 +130,24 @@ def pca():
 
     model = model.fit(pca_data)
     y = model.predict(pca_data)
+    
+    clusters = model.labels_.tolist()
+    respondent_choices['cluster'] = clusters
+    frame = pd.DataFrame(respondent_choices, index = clusters , columns = list(respondent_choices.keys()))
+    
+    
+    all_profiles = []
+    for i in range(k_num):
+        cluster_profile = []
+        for q in questions:
+            grouped_frame = frame.loc[frame['cluster'] == i]
+            profile_data = {
+                "question": q.question,
+                "common_response": most_frequent(grouped_frame[q.question].values.tolist()),
+            }
+            cluster_profile.append(profile_data)
+        cluster_profile.append({"respondents": clusters.count(i)})
+        all_profiles.append({"Profile "+str(i): cluster_profile})   
     
     for i in range(k_num):
         fig.add_trace(go.Scatter(x=pca_data[y == i, 0], y=pca_data[y == i, 1], mode='markers', 
@@ -134,7 +158,7 @@ def pca():
     with open('tmp/pca.html', 'a') as f:
         f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/pca.html"):
-        return 'tmp/pca.html'
+        return 'tmp/pca.html', all_profiles
 
 def treemap():
     if os.path.exists("tmp/treemap.html"):
@@ -155,7 +179,7 @@ def treemap():
     with open('tmp/treemap.html', 'a') as f:
         f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/treemap.html"):
-        return 'tmp/treemap.html'
+        return 'tmp/treemap.html', col_names
 
 def sunburst():
     if os.path.exists("tmp/sunburst.html"):
@@ -175,4 +199,11 @@ def sunburst():
     with open('tmp/sunburst.html', 'a') as f:
         f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/sunburst.html"):
-        return 'tmp/sunburst.html'
+        return 'tmp/sunburst.html',col_names
+    
+def most_frequent(List): 
+    occurence_count = Counter(List) 
+    most_common = occurence_count.most_common(1)[0][0]
+    if (most_common == 999):
+        most_common = "N/A"
+    return most_common

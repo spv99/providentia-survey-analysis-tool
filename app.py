@@ -74,20 +74,20 @@ class UnivariateAnalysis(Resource):
 @multivar_analysis.route('/treemap')
 class MultivariateAnalysis(Resource):
     def get(self):
-        treemapHTML = multivariate_analysis.treemap()
-        return {"fileLocation": treemapHTML}
+        treemapHTML, questions = multivariate_analysis.treemap()
+        return {"fileLocation": treemapHTML, "questions": questions}
 
 @multivar_analysis.route('/sunburst')
 class MultivariateAnalysis(Resource):
     def get(self):
-        sunburstHTML = multivariate_analysis.sunburst()
-        return {"fileLocation": sunburstHTML}
+        sunburstHTML, questions = multivariate_analysis.sunburst()
+        return {"fileLocation": sunburstHTML, "questions": questions}
     
 @multivar_analysis.route('/pca')
 class MultivariateAnalysis(Resource):
     def get(self):
-        pcaHTML = multivariate_analysis.pca()
-        return {"fileLocation": pcaHTML}
+        pcaHTML, cluster_profiles = multivariate_analysis.pca()
+        return {"fileLocation": pcaHTML,  "cluster_profiles": cluster_profiles}
     
 @qual_encoding.route('/sentiment')
 class QualitiativeEncoding(Resource):
