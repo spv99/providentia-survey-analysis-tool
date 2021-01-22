@@ -147,14 +147,14 @@ def pca():
             }
             cluster_profile.append(profile_data)
         cluster_profile.append({"respondents": clusters.count(i)})
-        all_profiles.append({"Profile "+str(i): cluster_profile})   
+        all_profiles.append({"Profile "+str(i+1): cluster_profile})   
     
     for i in range(k_num):
         fig.add_trace(go.Scatter(x=pca_data[y == i, 0], y=pca_data[y == i, 1], mode='markers', 
                                 marker=dict(color=px.colors.qualitative.Plotly[i], size=12, line=dict(
                                 width=2,
                                 color=px.colors.qualitative.Plotly[i])), 
-                                name="Profile" + str(i+1)))
+                                name="Profile " + str(i+1)))
     with open('tmp/pca.html', 'a') as f:
         f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/pca.html"):
