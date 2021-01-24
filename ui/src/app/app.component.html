@@ -3,11 +3,9 @@
   <!-- <alerts-container></alerts-container> -->
 </div>
 <div class="container">
-  <div class="center" *ngIf="!savedAnalytics">
-    <i class="material-icons">blur_on</i>
-    <p class="no-saved-project-text">It doesn't look like you have any Saved Analytics right now!</p>
-    <p class="no-saved-project-text">Get started by uploading your survey reponse file below</p><br>
-    <button type="button" class="btn btn-primary" (click)="open()">
-      Upload Survey File</button>
+  <div class="center form-inline ">
+      <homepage-cards [title]="title1" [subtitle]="subtitle1" [text]="text1"></homepage-cards>
+      <homepage-cards [title]="title2" [subtitle]="subtitle2" [text]="text2"></homepage-cards>
+      <homepage-cards [title]="title3" [subtitle]="subtitle3" [text]="text3"></homepage-cards>
   </div>
 </div>

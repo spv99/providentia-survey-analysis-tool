@@ -1,0 +1,32 @@
+.card {
+    width: 281px;
+    height: 390px;
+    border-radius: 8px;
+    background: #daedf2;
+    box-shadow: 3px 5px 7px rgba(100,100,100,0.5);
+    margin-right: 2rem;
+}
+
+.pstyle-title {
+    font-family: Bahnschrift;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 21px;
+    text-align: center;
+}
+
+.pstyle-subtitle {
+    font-family: Bahnschrift;
+    font-size: 23px;
+    font-weight: 400;
+    line-height: 38px;
+    text-align: center;
+}
+
+.pstyle-text {
+    font-family: "Segoe UI";
+    font-size: 21px;
+    font-weight: 300;
+    line-height: 24px;
+    text-align: center;
+}

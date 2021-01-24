@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UploadModal } from './modals/uploadModal/uploadModal.component';
-import { Project } from './models/project.model';
 
 @Component({
   selector: 'app-root',
@@ -9,16 +7,23 @@ import { Project } from './models/project.model';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit{
-  public title = 'Providentia';
-  public savedAnalytics: Project;
+  public title1 = 'Decipher';
+  public subtitle1 ="your data";
+  public text1 = "Upload your survey responses and generate visual insights and analysis in minutes!"
 
-  constructor(private modalService: NgbModal) {}
+  public title2 = 'Discover';
+  public subtitle2 ="your reach";
+  public text2 = "As well as classic analysis techniques we also use machine learning to find trends that you wouldn't usually find in Excel!"
+
+  public title3 = 'Decide';
+  public subtitle3 ="your next move";
+  public text3 = "Our easy-to-read analytical insights can help determine your next steps by identifying correlations and patterns!"
+
+  constructor() {}
 
   public ngOnInit() {}
   
-  public open() {
-    const modalRef = this.modalService.open(UploadModal, { centered: true });
-  }
+ 
 
 }
 
