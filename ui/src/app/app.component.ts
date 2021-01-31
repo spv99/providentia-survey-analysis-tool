@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+
+export class AppComponent implements OnInit {
+  public fileToUpload: File = null;
+
   public title1 = 'Decipher';
   public subtitle1 ="your data";
   public text1 = "Upload your survey responses and generate visual insights and analysis in minutes!"
@@ -23,7 +27,16 @@ export class AppComponent implements OnInit{
 
   public ngOnInit() {}
   
- 
+  public uploadFile($event) {
+    this.fileToUpload = $event.target.files[0];
+  }
+
+  // public postFile(fileToUpload: File): boolean {
+  //   const endpoint = 'your-destination-url';
+  //   const formData: FormData = new FormData();
+  //   formData.append('fileKey', fileToUpload, fileToUpload.name);
+  //   return true;
+  // }
 
 }
 

@@ -1,11 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomepageCardsComponent } from './homepage-cards/homepage-cards.component';
 import { HeaderComponent } from './header/header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DetailsPageComponent } from './details-page/details-page.component';
 
 @NgModule({
   entryComponents: [
@@ -14,7 +15,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   declarations: [
     AppComponent,
     HeaderComponent,
-    HomepageCardsComponent
+    HomepageCardsComponent,
+    DetailsPageComponent,
+    routingComponents
   ],
   imports: [
     BrowserModule,

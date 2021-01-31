@@ -7,4 +7,51 @@
     transform: translate(-50%, -50%);
 }
 
+.pstyle.get-started {
+    font-family: Bahnschrift;
+    font-weight: 400;
+    line-height: 38px;
+    text-align: center;
+    margin-top: 4rem;
+    font-size: 48px;
+}
+
+.pstyle.upload {
+    font-family: Bahnschrift;
+    font-weight: 400;
+    line-height: 38px;
+    font-size: 21px;
+    margin-top: 1rem;
+    place-content: center;
+}
+
+.pstyle.example {
+    font-family: Bahnschrift;
+    font-weight: 250;
+    line-height: 38px;
+    font-size: 19px;
+    margin-top: 1rem;
+    place-content: center;
+}
+
+.blue {
+    color: #70A9E0;
+    cursor: pointer;
+}
+
+.btn.btn-primary {
+    background-color: #034963;
+    border-color: #034963;
+    width: 12rem;
+    margin-left: 23rem;
+}
+
+.uploading {
+    margin-left: 25rem;
+}
+
+.material-icons.cloud {
+    vertical-align: text-bottom;
+    margin-right: 0.2rem;
+}
 
