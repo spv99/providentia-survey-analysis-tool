@@ -1,6 +1,5 @@
-from flask import Flask, make_response, render_template
-from flask_restplus import Api, Resource
-from werkzeug.datastructures import FileStorage
+from flask import Flask, make_response, render_template, request
+from flask_restplus import Api, Resource, reqparse
 import pickle
 
 import extract_col
@@ -12,24 +11,28 @@ import qualitative_encoding
 flask_app = Flask(__name__)
 app = Api(app = flask_app, 
           version="1.0", 
-          title="Providentia", 
+          title="API Providentia", 
+          doc='/api/',
           description="Interface to manage results of survey data analysis")
 
-survey_data = app.namespace('survey-data', description='Extract data from csv input')
-univar_analysis = app.namespace('univariate-analysis', description='Univariate analysis on survey data')
-bivar_analysis = app.namespace('bivariate-analysis', description='Bivariate analysis on survey data')
-multivar_analysis = app.namespace('multivariate-analysis', description='Multivariate analysis on survey data')
-qual_encoding = app.namespace('qualitative-encoding', description='Sentiment and thematic analysis on qualititative data')
+survey_data = app.namespace('api/survey-data', description='Extract data from csv input')
+univar_analysis = app.namespace('api/univariate-analysis', description='Univariate analysis on survey data')
+bivar_analysis = app.namespace('api/bivariate-analysis', description='Bivariate analysis on survey data')
+multivar_analysis = app.namespace('api/multivariate-analysis', description='Multivariate analysis on survey data')
+qual_encoding = app.namespace('api/qualitative-encoding', description='Sentiment and thematic analysis on qualititative data')
 
-upload_parser = app.parser()
-upload_parser.add_argument('file', location='files', type=FileStorage, required=True)
+@flask_app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
 
 @survey_data.route('/')
-@survey_data.expect(upload_parser)
+@survey_data.expect()
 class Main(Resource):
     def post(self):
-        csv = upload_parser.parse_args()
-        uploaded_file = csv['file']
+        uploaded_file = request.files['file']
         extracted_cols = extract_col.extract_cols(uploaded_file)
         jsonParseCols = extract_col.jsonParseCols(extracted_cols)
         return jsonParseCols

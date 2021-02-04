@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="center">
+    <div class="form-inline">
+      <homepage-cards [title]="title1" [subtitle]="subtitle1" [text]="text1"></homepage-cards>
+      <homepage-cards [title]="title2" [subtitle]="subtitle2" [text]="text2"></homepage-cards>
+      <homepage-cards [title]="title3" [subtitle]="subtitle3" [text]="text3"></homepage-cards>
+    </div>
+    <h3 class="pstyle get-started">Get Started Now!</h3>
+    <h5 class="pstyle upload form-inline">
+      Upload a
+      <div class="pstyle blue">&nbsp;.csv&nbsp;</div> 
+      of your survey responses:
+    </h5>
+    <div class="form-inline">
+      <div *ngIf="fileToUpload == null">
+        <button type="button" class="btn btn-primary" (click)="uploader.click()">
+          <span class="material-icons cloud">
+            cloud_upload
+          </span>
+          Upload
+        </button>
+      </div>
+      <div class="uploading" *ngIf="fileToUpload">
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+        </div>
+        <p class="pstyle example" >{{fileToUpload.name}}</p>
+      </div>
+      <div *ngIf="status == 'success'">
+        <app-details-page></app-details-page>
+      </div>
+    </div>
+    <h5 class="pstyle example form-inline">
+      Or use our
+      <div class="pstyle blue">&nbsp;example file&nbsp;</div> 
+      to get a preview of what our analytic insights look like!
+    </h5>
+  </div>
+</div>
+
+<input 
+    hidden 
+    type="file" 
+    #uploader
+    (change)="uploadFile($event)"
+/>

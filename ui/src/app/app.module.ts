@@ -1,12 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AppRoutingModule, routingComponents } from './app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomepageCardsComponent } from './homepage-cards/homepage-cards.component';
 import { HeaderComponent } from './header/header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DetailsPageComponent } from './details-page/details-page.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ProvidentiaComponent } from './providentia/providentia.component';
+import { ProvidentiaService } from './providentia/providentia.service';
 
 @NgModule({
   entryComponents: [
@@ -17,7 +20,7 @@ import { DetailsPageComponent } from './details-page/details-page.component';
     HeaderComponent,
     HomepageCardsComponent,
     DetailsPageComponent,
-    routingComponents
+    ProvidentiaComponent
   ],
   imports: [
     BrowserModule,
@@ -25,9 +28,10 @@ import { DetailsPageComponent } from './details-page/details-page.component';
     NgbModule,
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [ProvidentiaService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
