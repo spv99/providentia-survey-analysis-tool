@@ -41,7 +41,7 @@ def extract_cols(csv):
             df.iloc[:,index] = np.where(df.iloc[:,index] == unique_val, unique_val_index, df.iloc[:,index])
             unique_val_index += 1
         unique_vals = df.iloc[:,index].dropna().unique()
-        if(df.iloc[:,index].dtype == np.int64):
+        if(df.iloc[:,index].dtype == np.int64 or df.iloc[:,index].dtype == np.float64):
             dataType = QUANT
         else:
             dataType = QUAL

@@ -52,24 +52,33 @@ def pca():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
 
+    # TODO: append free_text col as mc so not just mc cols being analysed
+    mc_questions = []
+    for q in questions:
+        if(q.questionType == 'MULTIPLE_CHOICE'):
+           mc_questions.append(q) 
+        else:
+            del df[q.question]
+            
     respondent_choices = {}
     selected_cols_encoded = []
     col_name = []
-    for q in questions:   
-        encoded = []
-        col_options = []
-        for d in df[q.question]:
-            if(d != d):
-                encoded.append(999)
-                col_options.append(999)
-            else:
-                index = q.options.index(d)
-                flattened_option = q.flattened_options[index] + 1
-                encoded.append(flattened_option)
-                col_options.append(d)
-        col_name.append(q.question)
-        selected_cols_encoded.append(encoded)
-        respondent_choices[q.question] = col_options
+    for q in mc_questions:
+        if(q.questionType == 'MULTIPLE_CHOICE'):  # TODO: remove to allow free_text cols
+            encoded = []
+            col_options = []
+            for d in df[q.question]:
+                if(d != d):
+                    encoded.append(999)
+                    col_options.append(999)
+                else:
+                    index = q.options.index(d)
+                    flattened_option = q.flattened_options[index] + 1
+                    encoded.append(flattened_option)
+                    col_options.append(d)
+            col_name.append(q.question)
+            selected_cols_encoded.append(encoded)
+            respondent_choices[q.question] = col_options
 
     dataframe = {}
     for i in range(0, len(selected_cols_encoded)):
@@ -139,7 +148,7 @@ def pca():
     all_profiles = []
     for i in range(k_num):
         cluster_profile = []
-        for q in questions:
+        for q in mc_questions:
             grouped_frame = frame.loc[frame['cluster'] == i]
             profile_data = {
                 "question": q.question,
