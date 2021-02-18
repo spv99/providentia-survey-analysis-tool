@@ -10,6 +10,7 @@ import { DetailsPageComponent } from './details-page/details-page.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ProvidentiaComponent } from './providentia/providentia.component';
 import { ProvidentiaService } from './providentia/providentia.service';
+import { AnalyticsService } from './details-page/details-page.service';
 
 @NgModule({
   entryComponents: [
@@ -31,7 +32,7 @@ import { ProvidentiaService } from './providentia/providentia.service';
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [ProvidentiaService],
+  providers: [ProvidentiaService, AnalyticsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

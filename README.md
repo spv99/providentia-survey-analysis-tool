@@ -17,3 +17,6 @@ deactivate to exit venv
 ### Running UI:
 `cd ui`
 `ng serve`
+
+### Running Backend Tests:
+`python -m unittest -v test.py`

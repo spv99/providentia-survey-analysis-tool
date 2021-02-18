@@ -52,20 +52,20 @@ class Main(Resource):
 @univar_analysis.route('/bargraph')
 class Bargraph(Resource):
     def get(self):
-        bargraphHTML = univariate_analysis.bargraph()
-        return {"fileLocation": bargraphHTML}
+        bargraphHTML, bargraphContent = univariate_analysis.bargraph()
+        return {"fileLocation": bargraphHTML, "renderContent": bargraphContent}
       
 @univar_analysis.route('/piechart')
 class Piechart(Resource):
     def get(self):
-        piechartHTML = univariate_analysis.piechart()
-        return {"fileLocation": piechartHTML}  
+        piechartHTML, piechartContent = univariate_analysis.piechart()
+        return {"fileLocation": piechartHTML, "renderContent": piechartContent}  
 
 @univar_analysis.route('/boxplot')
 class Boxplot(Resource):
     def get(self):
-        boxplotHTML = univariate_analysis.boxplot()
-        return {"fileLocation": boxplotHTML}
+        boxplotHTML, boxplotContent = univariate_analysis.boxplot()
+        return {"fileLocation": boxplotHTML, "renderContent": boxplotContent}
     
 @bivar_analysis.route('/bivariate-relationships')
 class BivariateRelationships(Resource):

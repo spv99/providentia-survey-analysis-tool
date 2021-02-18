@@ -5,6 +5,7 @@
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
+    padding-top: 6rem;
 }
 
 .pstyle.get-started {
@@ -34,6 +35,25 @@
     place-content: center;
 }
 
+.pstyle.file-uploaded {
+    font-family: Bahnschrift;
+    font-weight: 250;
+    line-height: 38px;
+    font-size: 19px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.pstyle.error {
+    font-family: Bahnschrift;
+    font-weight: 250;
+    line-height: 38px;
+    font-size: 19px;
+    margin-top: 0.3rem;
+    text-align: center;
+    color: red;
+}
+
 .blue {
     color: #70A9E0;
     cursor: pointer;
@@ -46,12 +66,20 @@
     margin-left: 23rem;
 }
 
-.uploading {
-    margin-left: 25rem;
-}
-
 .material-icons.cloud {
     vertical-align: text-bottom;
     margin-right: 0.2rem;
 }
 
+.material-icons.warning {
+    vertical-align: text-bottom;
+    margin-right: -8rem;
+}
+
+.uploading {
+    text-align: -webkit-center;
+}
+
+.progress {
+    width: 50% !important;
+}

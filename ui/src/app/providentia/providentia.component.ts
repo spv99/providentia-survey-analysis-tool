@@ -34,9 +34,11 @@ export class ProvidentiaComponent implements OnInit {
     this.appService.uploadSurvey(this.fileToUpload).subscribe(data => {
       this.status = 'success';
       this.router.navigate(['providentia/results']);
+      this.fileToUpload = null;
       }, error => {
         this.status = 'error';
         this.errorMessage = error;
+        this.fileToUpload = null;
       });
   }
 

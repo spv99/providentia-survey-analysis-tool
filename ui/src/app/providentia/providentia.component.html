@@ -11,7 +11,7 @@
       <div class="pstyle blue">&nbsp;.csv&nbsp;</div> 
       of your survey responses:
     </h5>
-    <div class="form-inline">
+    <div>
       <div *ngIf="fileToUpload == null">
         <button type="button" class="btn btn-primary" (click)="uploader.click()">
           <span class="material-icons cloud">
@@ -22,12 +22,18 @@
       </div>
       <div class="uploading" *ngIf="fileToUpload">
         <div class="progress">
-          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
         </div>
-        <p class="pstyle example" >{{fileToUpload.name}}</p>
+        <p class="pstyle file-uploaded" >{{fileToUpload.name}}</p>
       </div>
       <div *ngIf="status == 'success'">
         <app-details-page></app-details-page>
+      </div>
+      <div *ngIf="status == 'error'">
+        <p class="pstyle error">
+          <span class="material-icons warning">warning_amber</span>
+          {{errorMessage}}
+        </p>
       </div>
     </div>
     <h5 class="pstyle example form-inline">

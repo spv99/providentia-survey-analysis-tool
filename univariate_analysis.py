@@ -19,7 +19,9 @@ def bargraph():
         with open('tmp/bargraphs.html', 'a') as f:
              f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/bargraphs.html"):
-        return 'tmp/bargraphs.html'
+        file = open("tmp/bargraphs.html", 'r', encoding='utf-8')
+        source_code = file.read() 
+        return 'tmp/bargraphs.html', source_code
         
 def piechart():
     if os.path.exists("tmp/piecharts.html"):
@@ -38,7 +40,9 @@ def piechart():
         with open('tmp/piecharts.html', 'a') as f:
             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/piecharts.html"):
-        return 'tmp/piecharts.html'
+        file = open("tmp/piecharts.html", 'r', encoding='utf-8')
+        source_code = file.read()
+        return 'tmp/piecharts.html', source_code
 
 def boxplot():
     if os.path.exists("tmp/boxplots.html"):
@@ -57,4 +61,6 @@ def boxplot():
         with open('tmp/boxplots.html', 'a') as f:
             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/boxplots.html"):
-        return 'tmp/boxplots.html'
+        file = open("tmp/boxplots.html", 'r', encoding='utf-8')
+        source_code = file.read()
+        return 'tmp/boxplots.html', source_code
