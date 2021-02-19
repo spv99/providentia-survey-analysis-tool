@@ -24,27 +24,33 @@ export class AnalyticsService {
     public getUnivariateBargraph(): Observable<any> {
         const univariateBargraphUrl: string = this.baseUrl + `${UNIVARIATE_ANALYSIS}${BARGRAPH}`;
         return this.httpClient.get<Chart>(univariateBargraphUrl).pipe(map(res => {
-            let html = (res.renderContent.toString());
-            html = html.replace(regexFind, PLOTLYJS);
-            return html;
+            if(res.renderContent != null) {
+                let html = (res.renderContent.toString());
+                html = html.replace(regexFind, PLOTLYJS);
+                return html;
+            }
         }));
     }
 
     public getUnivariatePiechart(): Observable<any> {
         const univariatePieChartUrl: string = this.baseUrl + `${UNIVARIATE_ANALYSIS}${PIECHART}`;
         return this.httpClient.get<Chart>(univariatePieChartUrl).pipe(map(res => {
-            let html = (res.renderContent.toString());
-            html = html.replace(regexFind, PLOTLYJS);
-            return html;
+            if(res.renderContent != null) {
+                let html = (res.renderContent.toString());
+                html = html.replace(regexFind, PLOTLYJS);
+                return html;
+            }
         }));
     }
 
     public getUnivariateBoxPlot(): Observable<any> {
         const univariateBoxplotUrl: string = this.baseUrl + `${UNIVARIATE_ANALYSIS}${BOXPLOT}`;
         return this.httpClient.get<Chart>(univariateBoxplotUrl).pipe(map(res => {
-            let html = (res.renderContent.toString());
-            html = html.replace(regexFind, PLOTLYJS);
-            return html;
+            if(res.renderContent != null) {
+                let html = (res.renderContent.toString());
+                html = html.replace(regexFind, PLOTLYJS);
+                return html;
+            }
         }));
     }
 }

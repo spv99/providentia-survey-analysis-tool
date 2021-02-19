@@ -18,7 +18,6 @@ export class DetailsPageComponent implements OnInit {
     });
 
     this.analyticsService.getUnivariatePiechart().subscribe(data => {
-      console.log(data)
       this.injectHTML("Piecharts", data)
     });
 
@@ -28,12 +27,18 @@ export class DetailsPageComponent implements OnInit {
   }
 
   public injectHTML(id: string, data: string): void {
+    if (data == undefined) {
+      const iFrameContainerId = id + '-box';
+      let iFrameContainer = <HTMLDivElement>document.getElementById(iFrameContainerId) as HTMLDivElement;
+      iFrameContainer.setAttribute("style", "display: none");
+    } else {
       let iframe = <HTMLIFrameElement>document.getElementById(id) as HTMLIFrameElement
       let injectHTML = iframe.contentWindow.document;
       injectHTML.open();
       injectHTML.write(data);
       injectHTML.close();
       this.resizeIFrameToFitContent(iframe);
+    }
   }
 
   public resizeIFrameToFitContent(iFrame: any): void {
