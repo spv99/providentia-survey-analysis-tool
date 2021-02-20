@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
@@ -188,7 +190,11 @@ def treemap():
     with open('tmp/treemap.html', 'a') as f:
         f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/treemap.html"):
-        return 'tmp/treemap.html', col_names
+        file = open('tmp/treemap.html', 'r', encoding='utf-8')
+        source_code = file.read()
+        return 'tmp/treemap.html', col_names, source_code
+    else:
+        return None, None
 
 def sunburst():
     if os.path.exists("tmp/sunburst.html"):
@@ -208,7 +214,11 @@ def sunburst():
     with open('tmp/sunburst.html', 'a') as f:
         f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/sunburst.html"):
-        return 'tmp/sunburst.html',col_names
+        file = open('tmp/sunburst.html', 'r', encoding='utf-8')
+        source_code = file.read()
+        return 'tmp/sunburst.html', col_names, source_code
+    else:
+        return None, None
     
 def most_frequent(List): 
     occurence_count = Counter(List) 

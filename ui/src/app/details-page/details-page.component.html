@@ -4,36 +4,58 @@
 <h3 class="pstyle subtitle">Univariate Analysis</h3>
 <div class="container-fluid">
     <div class="row">
-        <div id="Bargraphs-box" class="col">
+        <div id="bargraphs-box" class="col">
             <h6 class="pstyle headers">Bargraphs:</h6>
-            <iframe id="Bargraphs" src="about:blank"></iframe>
+            <iframe id="bargraphs" src="about:blank"></iframe>
         </div>
-        <div id="Piecharts-box" class="col">
+        <div id="piecharts-box" class="col">
             <h6 class="pstyle headers">Piecharts:</h6>
-            <iframe id="Piecharts" src="about:blank"></iframe>
+            <iframe id="piecharts" src="about:blank"></iframe>
         </div>
-        <div id="Boxplots-box" class="col">
+        <div id="boxplots-box" class="col">
             <h6 class="pstyle headers">Boxplots:</h6>
-            <iframe id="Boxplots" src="about:blank"></iframe>
+            <iframe id="boxplots" src="about:blank"></iframe>
         </div>
     </div>
 </div>
 <br>
+<hr>
 <h3 class="pstyle subtitle">Bivariate Analysis</h3>
 <div class="container-fluid">
-    <!-- <div class="row">
+    <div class="row">
         <div class="col">
-            <h6 class="pstyle headers">Bargraphs:</h6>
-            <iframe id="Bargraphs" src="about:blank"></iframe>
+            <h6 class="pstyle headers">Bivariate Bargraphs:</h6>
+            <div class="checkboxes">
+                <input id="clustered" type="checkbox" value="clustered-bargraph" (change)="selectChangeHandler($event)" checked> Clustered Bargraph
+                <br>
+                <input id="stacked" type="checkbox" value="stacked-bargraph" (change)="selectChangeHandler($event)"> Stacked Bargraph
+            </div>
+            <div class="bi-col" id="clustered-bargraph-box">
+                <iframe id="clustered-bargraph" src="about:blank"></iframe>
+            </div>
+            <div class="bi-col" id="stacked-bargraph-box">
+                <iframe id="stacked-bargraph" src="about:blank"></iframe>
+            </div>
         </div>
-        <div class="col">
-            <h6 class="pstyle headers">Piecharts:</h6>
-            <iframe id="Piecharts" src="about:blank"></iframe>
-        </div>
-        <div class="col">
+        <!-- <div class="col">
             <h6 class="pstyle headers">Boxplots:</h6>
             <iframe id="Boxplots" src="about:blank"></iframe>
-        </div>
-    </div> -->
+        </div> -->
+    </div>
 </div>
+<br>
+<br>
+<hr>
 <h3 class="pstyle subtitle">Multivariate Analysis</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div id="sunburst-box" class="col">
+            <h6 class="pstyle headers">Sunburst Chart:</h6>
+            <iframe id="sunburst" src="about:blank"></iframe>
+        </div>
+        <div id="treemap-box" class="col">
+            <h6 class="pstyle headers">Treemap Chart:</h6>
+            <iframe id="treemap" src="about:blank"></iframe>
+        </div>
+    </div>
+</div>

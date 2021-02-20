@@ -64,7 +64,11 @@ def bivar_bargraph(bar_type):
                 with open(bar_path, 'a') as f:
                     f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists(bar_path):
-        return bar_path
+        file = open(bar_path, 'r', encoding='utf-8')
+        source_code = file.read()
+        return bar_path, source_code
+    else:
+        return None, None
 
             
 def relationshipStrength():
@@ -77,24 +81,12 @@ def relationshipStrength():
                 # chi squared test
                 np_array = np.array([selected_cols_encoded[i], selected_cols_encoded[j]])
                 chi_stat, p_val, dof, ex = stats.chi2_contingency(np_array)
-
+                
                 # cramers v test
-                rows = len(selected_cols_encoded[0])-1
-                cols = len(selected_cols_encoded)
+                n = np.sum(np_array)
+                minDim = min(np_array.shape)-1
+                cramers_v = np.sqrt((chi_stat/n) / minDim)
 
-                smallest_res = 0
-                if(rows<cols):
-                    smallest_res = rows
-                else:
-                    smallest_res = cols
-                    
-                a = sum(selected_cols_encoded[0]) 
-                b = sum(selected_cols_encoded[1]) 
-                c = a+b
-
-                denominator = c*smallest_res
-                cramers_sq = chi_stat/denominator
-                cramers_v = math.sqrt(cramers_sq)
                 bi = Bivariate_Relationship(selected_cols[i].question, selected_cols[j].question, p_val, cramers_v)
                 bi_relats.append(bi)
     return bi_relats

@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import pandas as pd
 import nltk
 from nltk.tag import pos_tag
@@ -7,6 +9,7 @@ from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
+import math
 import re, string, random, os, pickle, mpld3, sys
 from PIL import Image
 from wordcloud import WordCloud
@@ -251,8 +254,45 @@ def thematic_analysis():
 
         terms = tfidf_vectorizer.get_feature_names()
         dist = 1 - cosine_similarity(tfidf_matrix)
+        
+        distortions = []
+        K_to_try = range(1, 10)
 
-        num_clusters = 4 #TODO: generate this via kmeans elbow ml algo
+        for i in K_to_try:
+            model = KMeans(
+                n_clusters=i,
+                init='k-means++',
+                random_state=1)
+            model.fit(tfidf_matrix)
+            distortions.append(model.inertia_)
+            
+        x_values = [K_to_try[0], K_to_try[len(K_to_try)-1]]
+        y_values = [distortions[0], distortions[len(distortions)-1]]
+        line = plt.plot(x_values, y_values)
+        elbow = plt.plot(K_to_try, distortions, marker='o')
+        plt.xlabel('Number of Clusters (k)')
+        plt.ylabel('Distortion')
+    
+        # getting coefficients of optimal line
+        start = [x_values[0], y_values[0]]
+        end = [x_values[1], y_values[1]]
+        a=(start[1] - end[1])
+        b=(end[0] - start[0])
+        c=(start[0]*end[1]) - (end[0]*start[1])
+        
+        # diff between optimal line and elbow line (perpendicular/euclidian diff)
+        k_num = 0
+        max_k_val = 0
+        for k in range(len(K_to_try)):
+            max_k = abs((a * K_to_try[k] + b * distortions[k] + c)) / (math.sqrt(a * a + b * b)) 
+            if(k_num == 0 or max_k > max_k_val):
+                max_k_val = max_k
+                k_num = K_to_try[k]
+            else:
+                break
+        print(k_num)
+
+        num_clusters = k_num #TODO: generate this via kmeans elbow ml algo
         km = KMeans(n_clusters=num_clusters, max_iter=10)
         km.fit(tfidf_matrix)
         clusters = km.labels_.tolist()
@@ -262,6 +302,8 @@ def thematic_analysis():
             cluster_values[clusters[index]].append(str(totalvocab_stemmed))
 
         categories = []
+        count = 0
+        path = 'tmp/'
         for i in range(len(cluster_values)):
             totalvocab_tokenized = []
             totalvocab_lemmetized = []
@@ -270,11 +312,16 @@ def thematic_analysis():
             totalvocab_tokenized.extend([allwords_tokenized])
             totalvocab_lemmetized.extend([lemmatize_sentence(totalvocab_tokenized[x in cluster_values[i]])])
             totalvocab_cleaned.extend([remove_noise(totalvocab_lemmetized[x in cluster_values[i]], stop_words)])
-            CounterVariable  = Counter(str(totalvocab_cleaned).split())
-            most_occur = [word for word, word_count in CounterVariable.most_common(6)]
-            categories.append(most_occur)
-
-        themes[df.columns.values.tolist()[col]] = categories
-    return ({"themes": themes})
+            wordcloud = WordCloud(min_font_size=9, max_words=100, background_color="white").generate(str(totalvocab_cleaned))
+            plt.figure()
+            plt.imshow(wordcloud, interpolation='bilinear')
+            plt.axis("off")
+            plt.savefig('tmp/kmeans-wordmap-' + str(count) + '.png')
+            # CounterVariable  = Counter(str(totalvocab_cleaned).split())
+            # most_occur = [word for word, word_count in CounterVariable.most_common(6)]
+            # categories.append(most_occur)
+            count += 1
+    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'kmeans-wordmap' in i]
+    return ({"kmeans-wordmaps": [files]})
 #TODO - Scatter plot of clusters
 #TODO - Append sentiment and thematic variables onto questions class to use in uni and bi analysis

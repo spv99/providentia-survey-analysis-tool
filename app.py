@@ -77,32 +77,32 @@ class BivariateRelationships(Resource):
 @bivar_analysis.route('/clustered-bargraph')
 class ClusteredBargraph(Resource):
     def get(self):
-        clusteredbargraphHTML = bivariate_analysis.bivar_bargraph('group')
-        return {"fileLocation": clusteredbargraphHTML}
+        clusteredbargraphHTML, stackedContent = bivariate_analysis.bivar_bargraph('group')
+        return {"fileLocation": clusteredbargraphHTML, "renderContent": stackedContent}
     
 @bivar_analysis.route('/stacked-bargraph')
 class StackedBargraph(Resource):
     def get(self):
-        stackedbargraphHTML = bivariate_analysis.bivar_bargraph('stack')
-        return {"fileLocation": stackedbargraphHTML}
+        stackedbargraphHTML, clusteredContent = bivariate_analysis.bivar_bargraph('stack')
+        return {"fileLocation": stackedbargraphHTML, "renderContent": clusteredContent}
     
 @multivar_analysis.route('/treemap')
 class Treemap(Resource):
     def get(self):
-        treemapHTML, questions = multivariate_analysis.treemap()
-        return {"fileLocation": treemapHTML, "questions": questions}
+        treemapHTML, questions, treemapContent = multivariate_analysis.treemap()
+        return {"fileLocation": treemapHTML, "questions": questions, "renderContent": treemapContent}
 
 @multivar_analysis.route('/sunburst')
 class Sunburst(Resource):
     def get(self):
-        sunburstHTML, questions = multivariate_analysis.sunburst()
-        return {"fileLocation": sunburstHTML, "questions": questions}
+        sunburstHTML, questions, sunburstContent = multivariate_analysis.sunburst()
+        return {"fileLocation": sunburstHTML, "questions": questions, "renderContent": sunburstContent}
     
 @multivar_analysis.route('/pca')
 class Pca(Resource):
     def get(self):
         pcaHTML, cluster_profiles = multivariate_analysis.pca()
-        return {"fileLocation": pcaHTML,  "cluster_profiles": cluster_profiles}
+        return {"fileLocation": pcaHTML, "cluster_profiles": cluster_profiles}
     
 @qual_encoding.route('/sentiment')
 class Sentiment(Resource):
