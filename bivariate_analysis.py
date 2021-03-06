@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 import plotly.express as px
+import plotly.graph_objects as go
+from collections import Counter, OrderedDict
 import pickle
 import math
 import os
@@ -102,3 +104,56 @@ def jsonParseBivarRelationships(bi_relats):
 # sort by cramer's v ascending
 def byCramers(elem):
     return elem.cramersv
+
+def scatter_plot():
+    if os.path.exists("tmp/scatterplots.html"):
+        os.remove("tmp/scatterplots.html")
+    df = pickle.load(open("raw_data_store.dat", "rb"))
+    questions = pickle.load(open("data_store.dat", "rb"))
+    selected_cols = []
+    for q in questions:
+        if(q.dataType == 'QUANTITATIVE'):
+            selected_cols.append(q)
+            
+    for i in range(0, len(selected_cols)):
+        for j in range(0, len(selected_cols)):
+            if (i!=j and i<j):   
+                joined_cols = []
+                for k in range(0, len(df[selected_cols[i].question].dropna().tolist())):
+                    a = df[selected_cols[i].question].dropna().tolist()[k] 
+                    b = df[selected_cols[j].question].dropna().tolist()[k] 
+                    c = str(a) + '&' + str(b)
+                    joined_cols.append(c)
+                count = Counter(joined_cols)
+                sizes = [0] * len(joined_cols)
+                for value in count: 
+                    for m in range(0, len(joined_cols)):
+                        a, b = joined_cols[m].split('&')
+                        if a in value and b in value:
+                            sizes[m] = count[value]
+                normalised_sizes = []
+                for size in sizes:
+                    normalised_sizes.append((size-min(sizes))/(max(sizes)-min(sizes)) * (80 - 20) + 20)
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(
+                    x=df[selected_cols[i].question].dropna().tolist(),
+                    y=df[selected_cols[j].question].dropna().tolist(),
+                    mode='markers',
+                    text=["count:" + str(size) for size in sizes],
+                    marker=dict(size=normalised_sizes, sizemode = 'diameter',
+                                line=dict(width=1, color='DarkSlateGrey'),
+                                color=normalised_sizes, colorscale= "dense", showscale=False),
+                    name="Scatter Points"
+                ))
+                trendline_fig = px.scatter(x=df[selected_cols[i].question].dropna().tolist(), y=df[selected_cols[j].question].dropna().tolist(), trendline="ols")
+                trendline = trendline_fig.data[1]
+                fig.add_trace(trendline)
+                fig.update_layout(plot_bgcolor='#fafafa', title=selected_cols[i].question + ' ' + selected_cols[j].question)
+                with open('tmp/scatterplots.html', 'a') as f:
+                    f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    if os.path.exists("tmp/scatterplots.html"):
+        file = open("tmp/scatterplots.html", 'r', encoding='utf-8')
+        source_code = file.read()
+        return 'tmp/scatterplots.html', source_code
+    else:
+        return None, None

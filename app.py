@@ -86,6 +86,12 @@ class StackedBargraph(Resource):
         stackedbargraphHTML, clusteredContent = bivariate_analysis.bivar_bargraph('stack')
         return {"fileLocation": stackedbargraphHTML, "renderContent": clusteredContent}
     
+@bivar_analysis.route('/scatter-plot')
+class StackedBargraph(Resource):
+    def get(self):
+        stackedScatterHTML, scatterContent = bivariate_analysis.scatter_plot()
+        return {"fileLocation": stackedScatterHTML, "renderContent": scatterContent}
+    
 @multivar_analysis.route('/treemap')
 class Treemap(Resource):
     def get(self):
@@ -101,8 +107,8 @@ class Sunburst(Resource):
 @multivar_analysis.route('/pca')
 class Pca(Resource):
     def get(self):
-        pcaHTML, cluster_profiles = multivariate_analysis.pca()
-        return {"fileLocation": pcaHTML, "cluster_profiles": cluster_profiles}
+        pcaHTML, cluster_profiles,wordmap_files = multivariate_analysis.pca()
+        return {"fileLocation": pcaHTML, "cluster_profiles": cluster_profiles, "wordmap_files": wordmap_files}
     
 @qual_encoding.route('/sentiment')
 class Sentiment(Resource):

@@ -9,7 +9,7 @@ def bargraph():
     questions = pickle.load(open("data_store.dat", "rb"))
     selected_cols = []
     for q in questions:
-        if(q.questionType == 'MULTIPLE_CHOICE'):
+        if(q.questionType == 'MULTIPLE_CHOICE' or (q.questionType == 'FREE_TEXT' and q.dataType == 'QUANTITATIVE')):
             selected_cols.append(q)
     for sc in selected_cols:
         options = df[sc.question].dropna().unique()
@@ -32,7 +32,7 @@ def piechart():
     questions = pickle.load(open("data_store.dat", "rb"))
     selected_cols = []
     for q in questions:
-        if(q.questionType == 'MULTIPLE_CHOICE'):
+        if(q.questionType == 'MULTIPLE_CHOICE' or (q.questionType == 'FREE_TEXT' and q.dataType == 'QUANTITATIVE')):
             selected_cols.append(q)
     for sc in selected_cols:
         options = df[sc.question].dropna().unique()
@@ -58,9 +58,8 @@ def boxplot():
         if(q.dataType == "QUANTITATIVE"):
             selected_cols.append(q)
     for sc in selected_cols:
-        options = df[sc.question].dropna().unique()
-        value_counts = df[sc.question].value_counts()
-        fig = go.Figure([go.Box(quartilemethod="inclusive", y=value_counts, boxpoints='all', name=sc.question)])
+        options = df[sc.question].dropna()
+        fig = go.Figure([go.Box(quartilemethod="inclusive", y=options, boxpoints='all', name=sc.question)])
         fig.update_layout(title=sc.question)
         with open('tmp/boxplots.html', 'a') as f:
             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
