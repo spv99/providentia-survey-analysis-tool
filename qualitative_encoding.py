@@ -1,7 +1,6 @@
 import matplotlib
 matplotlib.use('Agg')
 from PIL import Image
-from wordcloud import WordCloud
 from collections import Counter 
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
@@ -14,10 +13,9 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
 stop_words = stopwords.words('english')
-import math, csv, operator, re, os, pickle, string, json
+import math, csv, operator, re, os, pickle, string
 
 def remove_noise(tokens, stop_words = ()):
-    # stop_words.append('n/a')
     cleaned_tokens = []
     for token, tag in pos_tag(tokens):
         token = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|'\

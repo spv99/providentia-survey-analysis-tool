@@ -104,11 +104,17 @@ class Sunburst(Resource):
         sunburstHTML, questions, sunburstContent = multivariate_analysis.sunburst()
         return {"fileLocation": sunburstHTML, "questions": questions, "renderContent": sunburstContent}
     
-@multivar_analysis.route('/pca')
+@multivar_analysis.route('/pca-options')
 class Pca(Resource):
     def get(self):
-        pcaHTML, cluster_profiles,wordmap_files = multivariate_analysis.pca()
-        return {"fileLocation": pcaHTML, "cluster_profiles": cluster_profiles, "wordmap_files": wordmap_files}
+        pcaHTML, pcaContent = multivariate_analysis.pca_options()
+        return {"fileLocation": pcaHTML, "renderContent": pcaContent}
+    
+@multivar_analysis.route('/pca-respondents')
+class Pca(Resource):
+    def get(self):
+        pcaHTML, pcaContent, cluster_profiles = multivariate_analysis.pca_respondents()
+        return {"fileLocation": pcaHTML, "renderContent": pcaContent, "cluster_profiles": cluster_profiles}
     
 @qual_encoding.route('/sentiment-piechart')
 class SentimentPiechart(Resource):

@@ -9,15 +9,12 @@ import plotly.graph_objects as go
 from sklearn.cluster import KMeans
 import plotly.express as px
 from collections import Counter 
-import random
-import pickle
-import math
-import os
+import random, pickle, math, os
 
-def pca():
+def pca_options():
     # every qs-option
-    if os.path.exists("tmp/pca.html"):
-        os.remove("tmp/pca.html")
+    if os.path.exists("tmp/pca_options.html"):
+        os.remove("tmp/pca_options.html")
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
 
@@ -35,7 +32,7 @@ def pca():
         for op in q.options:
             for val in cols:
                 if val == op:
-                    df = df.rename(columns={val: str(q.question + ': ' + val)})
+                    df = df.rename(columns={val: str(q.question) + ': ' + str(val)})
             
     data = df
 
@@ -48,9 +45,21 @@ def pca():
 
     pca_df = pd.DataFrame(pca_data, index=df.columns.values, columns=labels)
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=pca_df.PCA1, y=pca_df.PCA2, mode='markers', marker_symbol='diamond', marker=dict(size=10, color='gold'), text=df.columns.values, name="options"))
-
+    fig = go.Figure(go.Scatter(x=pca_df.PCA1, y=pca_df.PCA2, mode='markers', marker_symbol='diamond', marker=dict(size=10, color='gold'), text=df.columns.values, name="options"))
+    fig.update_layout(title="Correlating Questions and Responses")
+    with open('tmp/pca_options.html', 'a') as f:
+             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    if os.path.exists("tmp/pca_options.html"):
+        file = open("tmp/pca_options.html", 'r', encoding='utf-8')
+        source_code = file.read() 
+        return 'tmp/pca_options.html', source_code
+    else:
+        return None, None
+    
+def pca_respondents():
     # every respondent
+    if os.path.exists("tmp/pca_respondents.html"):
+        os.remove("tmp/pca_respondents.html")
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
 
@@ -148,6 +157,7 @@ def pca():
     
     
     all_profiles = []
+    count = 0
     for i in range(k_num):
         cluster_profile = []
         for q in mc_questions:
@@ -157,19 +167,25 @@ def pca():
                 "common_response": most_frequent(grouped_frame[q.question].values.tolist()),
             }
             cluster_profile.append(profile_data)
+        count += 1
         cluster_profile.append({"respondents": clusters.count(i)})
         all_profiles.append({"Profile "+str(i+1): cluster_profile})   
-    
+    fig = go.Figure()
     for i in range(k_num):
         fig.add_trace(go.Scatter(x=pca_data[y == i, 0], y=pca_data[y == i, 1], mode='markers', 
                                 marker=dict(color=px.colors.qualitative.Plotly[i], size=12, line=dict(
                                 width=2,
                                 color=px.colors.qualitative.Plotly[i])), 
                                 name="Profile " + str(i+1)))
-    with open('tmp/pca.html', 'a') as f:
-        f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
-    if os.path.exists("tmp/pca.html"):
-        return 'tmp/pca.html', all_profiles
+    fig.update_layout(title="User Profiles")
+    with open('tmp/pca_respondents.html', 'a') as f:
+             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    if os.path.exists("tmp/pca_respondents.html"):
+        file = open("tmp/pca_respondents.html", 'r', encoding='utf-8')
+        source_code = file.read() 
+        return 'tmp/pca_respondents.html', source_code, all_profiles
+    else:
+        return None, None, None
 
 def treemap():
     if os.path.exists("tmp/treemap.html"):
@@ -194,7 +210,7 @@ def treemap():
         source_code = file.read()
         return 'tmp/treemap.html', col_names, source_code
     else:
-        return None, None
+        return None, None, None
 
 def sunburst():
     if os.path.exists("tmp/sunburst.html"):
@@ -218,11 +234,9 @@ def sunburst():
         source_code = file.read()
         return 'tmp/sunburst.html', col_names, source_code
     else:
-        return None, None
+        return None, None, None
     
-def most_frequent(List): 
-    occurence_count = Counter(List) 
-    most_common = occurence_count.most_common(1)[0][0]
-    if (most_common == 999):
-        most_common = "N/A"
-    return most_common
+def most_frequent(profiles): 
+    CounterVariable  = Counter(profiles)
+    characteristics = [word for word, word_count in CounterVariable.most_common(3)]
+    return characteristics
