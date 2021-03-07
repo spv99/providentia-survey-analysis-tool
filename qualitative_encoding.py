@@ -3,7 +3,9 @@ matplotlib.use('Agg')
 import pandas as pd
 import nltk
 from nltk.tag import pos_tag
+import nltk.classify.util
 from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 from sklearn import feature_extraction
 from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -19,6 +21,8 @@ import plotly.graph_objects as go
 from nltk import FreqDist, classify, NaiveBayesClassifier
 from nltk.corpus import twitter_samples, stopwords
 stop_words = stopwords.words('english')
+import csv
+import operator
 
 # tokenising, lemming, cleaning and checking term freq of data
 
@@ -44,7 +48,7 @@ def lemmatize_sentence(tokens):
     return lemmatized_sentence
 
 def remove_noise(tokens, stop_words = ()):
-    stop_words.append('n/a')
+    # stop_words.append('n/a')
     cleaned_tokens = []
     for token, tag in pos_tag(tokens):
         token = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|'\
@@ -64,114 +68,167 @@ def remove_noise(tokens, stop_words = ()):
         if len(token) > 0 and token not in string.punctuation and token.lower() not in stop_words:
             cleaned_tokens.append(token.lower())
     return cleaned_tokens
-
-def get_all_words(cleaned_tokens_list):
-    for tokens in cleaned_tokens_list:
-        for token in tokens:
-            yield token
-            
-def token_to_dict_converter(cleaned_tokens_list):
-    for tokens in cleaned_tokens_list:
-        yield dict([token, True] for token in tokens)
+        
+def strip_non_ascii(string):
+    stripped = (c for c in string if 0 < ord(c) < 127)
+    return ''.join(stripped)
 
 def sentiment_analysis():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
     df = df.dropna()
-    sentiments = []
     
     for q in questions:
         if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
             del df[q.question]
+            
+    df = df.dropna()
     
     for col in range(len(df.columns)):    
-        sentiment = []  
-        totalvocab_tokenized = []
-        totalvocab_lemmetized = []
-        totalvocab_cleaned = []
-
+        lexicon = dict()
+        with open('csv/subjectivity-lexicon.csv', 'r') as csvfile:
+            reader = csv.reader(csvfile, delimiter=',')
+            for row in reader:
+                lexicon[row[0]] = int(row[1])
+            
+        text_body = []
         for x in range(len(df)):
-            if(isinstance(df.iloc[x,col], str) == False):
-                df.iloc[x,col] = "N/A" 
-            allwords_tokenized = tokenize_only(df.iloc[x,col])
-            totalvocab_tokenized.extend([allwords_tokenized])
-            totalvocab_lemmetized.extend([lemmatize_sentence(totalvocab_tokenized[x])])
-            totalvocab_cleaned.extend([remove_noise(totalvocab_lemmetized[x], stop_words)])
+            text_dict = dict()
+            text_dict['original'] = df.iloc[x,col]
+            text_dict['clean'] = strip_non_ascii(text_dict['original'])
+            text_dict['clean'] = text_dict['clean'].lower()
+            text_body.append(text_dict)
 
-        all_words = get_all_words(totalvocab_cleaned)
-        freq_dist = FreqDist(all_words)
+        for text in text_body:
+            score = 0
+            for word in text['clean'].split():
+                if word in lexicon:
+                    score = score + lexicon[word]
 
-        # training dataset
-        positive_tweet_tokens = twitter_samples.tokenized('positive_tweets.json')
-        negative_tweet_tokens = twitter_samples.tokenized('negative_tweets.json')
+            text['score'] = score
+            if (score > 0):
+                text['sentiment'] = 'positive'
+            elif (score < 0):
+                text['sentiment'] = 'negative'
+            else:
+                text['sentiment'] = 'neutral'
+                
+        total = float(len(text_body))
+        num_pos = sum([1 for t in text_body if t['sentiment'] == 'positive'])
+        num_neg = sum([1 for t in text_body if t['sentiment'] == 'negative'])
+        num_neu = sum([1 for t in text_body if t['sentiment'] == 'neutral'])
+        positive_percentage = 100.0 * (num_pos/total)
+        negative_percentage = 100.0 * (num_neg/total)
+        neutral_percentage = 100.0 * (num_neu/total)
+        
+        text_body_sorted = sorted(text_body, key=lambda k: k['score'])
+        negative_sentiments = []
+        positive_sentiments = []
+        neutral_sentiments = [] 
 
-        positive_cleaned_tokens_list = []
-        negative_cleaned_tokens_list = []
+        negative_text = [d for d in text_body_sorted if d['sentiment'] == 'negative']
+        for text_dict in negative_text:
+            negative_sentiments.append(text_dict['original'])
 
-        for tokens in positive_tweet_tokens:
-            positive_cleaned_tokens_list.append(remove_noise(tokens, stop_words))
+        positive_text = [d for d in text_body_sorted if d['sentiment'] == 'positive']
+        for text_dict in positive_text:
+            positive_sentiments.append(text_dict['original'])
 
-        for tokens in negative_tweet_tokens:
-            negative_cleaned_tokens_list.append(remove_noise(tokens, stop_words))
+        neutral_text = [d for d in text_body_sorted if d['sentiment'] == 'neutral']
+        for text_dict in neutral_text:
+            neutral_sentiments.append(text_dict['original'])
+    
+    return negative_percentage, positive_percentage, neutral_percentage, negative_sentiments, positive_sentiments, neutral_sentiments, df.columns.values.tolist()
 
-        all_pos_words = get_all_words(positive_cleaned_tokens_list)
-
-        freq_dist_pos = FreqDist(all_pos_words)
-
-        positive_tokens_for_model = token_to_dict_converter(positive_cleaned_tokens_list)
-        negative_tokens_for_model = token_to_dict_converter(negative_cleaned_tokens_list)
-
-        positive_dataset = [(tweet_dict, "Positive")
-                                for tweet_dict in positive_tokens_for_model]
-
-        negative_dataset = [(tweet_dict, "Negative")
-                                for tweet_dict in negative_tokens_for_model]
-
-        dataset = positive_dataset + negative_dataset
-        random.shuffle(dataset)
-        train_data = dataset[:7000]
-        test_data = dataset[7000:]
-
-        classifier = NaiveBayesClassifier.train(train_data)
-
-        print("Training data accuracy is: ", classify.accuracy(classifier, test_data))
-
-        for x in range(len(df)):
-            token_sentiment = classifier.classify(dict([token, True] for token in totalvocab_cleaned[x]))
-            sentiment.append([[(str(df.columns.values.tolist()[col]))], [token_sentiment], [totalvocab_cleaned[x]]])
-        sentiments.append(sentiment)
-    return sentiments, df.columns.values.tolist()
+def sentiment_tokens():
+    neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, questions = sentiment_analysis()
+    categories = {}            
+    lexicon = dict()
+    with open('csv/subjectivity-lexicon.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for row in reader:
+            lexicon[row[0]] = int(row[1])
+    for q in range(len(questions)):        
+        if(len(pos_sentiments) > 5):
+            pos_tokens = []
+            scrubbed = []
+            for pos in pos_sentiments:
+                for word in pos.split():
+                    if word in lexicon:
+                        scrubbed.append(word)
+            CounterVariable  = Counter(str(scrubbed).split())
+            pos_tokens = [word for word, word_count in CounterVariable.most_common(10)]                
+        else:
+            pos_tokens = []
+            
+        if(len(neg_sentiments) > 5):
+            neg_tokens = []
+            scrubbed = []
+            for neg in neg_sentiments:
+                for word in neg.split():
+                    if word in lexicon:
+                        scrubbed.append(word)
+            CounterVariable  = Counter(str(scrubbed).split())
+            neg_tokens = [word for word, word_count in CounterVariable.most_common(10)] 
+        else:
+            neg_tokens = []
+            
+        if(len(neu_sentiments) > 5):
+            neu_tokens = []
+            scrubbed = []
+            for neu in neu_sentiments:
+                for word in neu.split():
+                    if word in lexicon:
+                        scrubbed.append(word)
+            CounterVariable  = Counter(str(scrubbed).split())
+            neu_tokens = [word for word, word_count in CounterVariable.most_common(10)] 
+        else:
+            neu_tokens = []
+            
+        categories[questions[q]] = {
+            "pos_tokens": pos_tokens,
+            "positive_statements": pos_sentiments, 
+            "neg_tokens": neg_tokens,
+            "negative_statements": neg_sentiments, 
+            "neu_tokens": neu_tokens,
+            "neutral_statements": neu_sentiments
+        }
+    return categories
 
 def sentiment_piechart():
-    if os.path.exists("tmp/senti_piechart.html"):
-        os.remove("tmp/senti_piechart.html")
-    sentiments, questions = sentiment_analysis()
-    categories = {}
-    colors = ['mediumspringgreen', 'tomato']
+    if os.path.exists("tmp/sentiment_piechart.html"):
+        os.remove("tmp/sentiment_piechart.html")
+    neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, questions = sentiment_analysis()
+    colors = ['mediumspringgreen', 'tomato', 'dodgerblue']
     for q in range(len(questions)):
-        positive = 0
-        positive_tokens = []
-        negative = 0
-        negative_tokens = []
-        for sentiment in sentiments[q]:
-            if('Positive' in sentiment[1]):
-                positive += 1
-                positive_tokens.append(sentiment[2])
-            if('Negative' in sentiment[1]):
-                negative += 1
-                negative_tokens.append(sentiment[2])
-            fig = go.Figure([go.Pie(labels=["Positive", "Negative"], values=[positive, negative])])
-            fig.update_traces(marker=dict(colors=colors))
-            fig.update_layout(title=questions[q])
-            CounterVariable  = Counter(str(positive_tokens).split())
-            most_pos_occur = [word for word, word_count in CounterVariable.most_common(6)]
-            CounterVariable  = Counter(str(negative_tokens).split())
-            most_neg_occur = [word for word, word_count in CounterVariable.most_common(6)]
-            categories[questions[q]] = {"positive": most_pos_occur, "negative": most_neg_occur}
-        with open('tmp/senti_piechart.html', 'a') as f:
+        fig = go.Figure([go.Pie(labels=["Positive", "Negative", "Neutral"], values=[pos_percentage, neg_percentage, neu_percentage])])
+        fig.update_traces(marker=dict(colors=colors))
+        fig.update_layout(title=questions[q])
+        with open('tmp/sentiment_piechart.html', 'a') as f:
             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
-    if os.path.exists("tmp/senti_piechart.html"):
-        return 'tmp/senti_piechart.html', categories
+    if os.path.exists("tmp/sentiment_piechart.html"):
+        file = open("tmp/sentiment_piechart.html", 'r', encoding='utf-8')
+        source_code = file.read() 
+        return 'tmp/sentiment_piechart.html', source_code
+    else:
+        return None, None
+    
+def sentiment_bargraph():
+    if os.path.exists("tmp/sentiment_bargraph.html"):
+        os.remove("tmp/sentiment_bargraph.html")
+    neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, questions = sentiment_analysis()
+    colors = ['mediumspringgreen', 'tomato', 'dodgerblue']
+    for q in range(len(questions)):
+        fig = go.Figure([go.Bar(x=["Positive", "Negative", "Neutral"], y=[pos_percentage, neg_percentage, neu_percentage],  marker_color=colors)])
+        fig.update_layout(title=questions[q])
+        with open('tmp/sentiment_bargraph.html', 'a') as f:
+             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    if os.path.exists("tmp/sentiment_bargraph.html"):
+        file = open("tmp/sentiment_bargraph.html", 'r', encoding='utf-8')
+        source_code = file.read() 
+        return 'tmp/sentiment_bargraph.html', source_code
+    else:
+        return None, None
     
 def wordmaps():
     path = 'tmp/'

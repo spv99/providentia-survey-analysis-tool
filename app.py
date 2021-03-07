@@ -110,11 +110,23 @@ class Pca(Resource):
         pcaHTML, cluster_profiles,wordmap_files = multivariate_analysis.pca()
         return {"fileLocation": pcaHTML, "cluster_profiles": cluster_profiles, "wordmap_files": wordmap_files}
     
-@qual_encoding.route('/sentiment')
-class Sentiment(Resource):
+@qual_encoding.route('/sentiment-piechart')
+class SentimentPiechart(Resource):
     def get(self):
-        sentimentHTML, categories = qualitative_encoding.sentiment_piechart()
-        return {"fileLocation": sentimentHTML, "categories": categories}
+        sentimentHTML, sentimentContent = qualitative_encoding.sentiment_piechart()
+        return {"fileLocation": sentimentHTML, "renderContent": sentimentContent}
+    
+@qual_encoding.route('/sentiment-barchart')
+class SentimentBargraph(Resource):
+    def get(self):
+        sentimentHTML, sentimentContent = qualitative_encoding.sentiment_bargraph()
+        return {"fileLocation": sentimentHTML, "renderContent": sentimentContent}
+    
+@qual_encoding.route('/sentiment-analysis')
+class SentimentAnalysis(Resource):
+    def get(self):
+        categories = qualitative_encoding.sentiment_tokens()
+        return categories
     
 @qual_encoding.route('/wordmaps')
 class Wordmaps(Resource):
