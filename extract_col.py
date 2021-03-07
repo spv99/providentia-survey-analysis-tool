@@ -24,15 +24,13 @@ class Question:
                 "flattened_options": self.flattened_options}
 
 def extract_cols(csv):  
-    df = pd.read_csv(csv)
+    df = pd.read_csv(csv, encoding= 'unicode_escape')
     with open('raw_data_store.dat', 'wb') as f:
         pickle.dump(df, f) 
     cols = list(df.columns.values)
     total_respondents = df.shape[0]
     index = 0
     questions = [[] for _ in range(len(cols))]
-    # getting question types
-    # TODO: Remove id - determined by ui/business data layout (tes by adding id col back in) - do in validate()
     for col in cols:
         unique_vals = df.iloc[:,index].dropna().unique()
         options = unique_vals
@@ -45,11 +43,16 @@ def extract_cols(csv):
             dataType = QUANT
         else:
             dataType = QUAL
-        if(len(unique_vals) > 10): #TODO: Make percentage unique values - what if there were 10 rows of data?
+        if(len(unique_vals) > 10):
             questions[index] = Question(col, FREE_TEXT, dataType, options, unique_vals)
         else:
             questions[index] = Question(col, MULTIPLE_CHOICE, dataType, options, unique_vals)
         index +=1
+    index = 0
+    for q in questions:
+        if (q.question.lower() == 'id' or q.question.lower() == 'kerberos'):
+            questions.remove(questions[index])
+        index += 1
     with open('data_store.dat', 'wb') as f:
         pickle.dump(questions, f)
     return questions
@@ -60,10 +63,3 @@ def jsonParseCols(questions):
         data = q.to_dict()
         extracted_cols.append(data)
     return({"extracted_cols": extracted_cols})
- 
-# to run this file directly with args       
-if __name__ == '__main__':
-    import sys
-    function = getattr(sys.modules[__name__], sys.argv[1])
-    filename = sys.argv[2]
-    function(filename)

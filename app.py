@@ -105,13 +105,13 @@ class Sunburst(Resource):
         return {"fileLocation": sunburstHTML, "questions": questions, "renderContent": sunburstContent}
     
 @multivar_analysis.route('/pca-options')
-class Pca(Resource):
+class PcaOptions(Resource):
     def get(self):
         pcaHTML, pcaContent = multivariate_analysis.pca_options()
         return {"fileLocation": pcaHTML, "renderContent": pcaContent}
     
 @multivar_analysis.route('/pca-respondents')
-class Pca(Resource):
+class PcaRespondents(Resource):
     def get(self):
         pcaHTML, pcaContent, cluster_profiles = multivariate_analysis.pca_respondents()
         return {"fileLocation": pcaHTML, "renderContent": pcaContent, "cluster_profiles": cluster_profiles}
