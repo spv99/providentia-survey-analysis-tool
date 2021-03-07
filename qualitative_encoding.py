@@ -1,51 +1,21 @@
 import matplotlib
 matplotlib.use('Agg')
-import pandas as pd
-import nltk
-from nltk.tag import pos_tag
-import nltk.classify.util
-from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
-from sklearn import feature_extraction
-from nltk.stem.snowball import SnowballStemmer
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.cluster import KMeans
-import math
-import re, string, random, os, pickle, mpld3, sys
+from sklearn.datasets import fetch_20newsgroups
 from PIL import Image
 from wordcloud import WordCloud
 from collections import Counter 
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-from nltk import FreqDist, classify, NaiveBayesClassifier
-from nltk.corpus import twitter_samples, stopwords
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.cluster import KMeans
+import nltk.classify.util
+from nltk.tag import pos_tag
+from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.stem.snowball import SnowballStemmer
+from nltk.corpus import stopwords
 stop_words = stopwords.words('english')
-import csv
-import operator
-
-# tokenising, lemming, cleaning and checking term freq of data
-
-def tokenize_only(text):
-    tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-    filtered_tokens = []
-    for token in tokens:
-        if re.search('[a-zA-Z]', token):
-            filtered_tokens.append(token)
-    return filtered_tokens
-
-def lemmatize_sentence(tokens):
-    lemmatizer = WordNetLemmatizer()
-    lemmatized_sentence = []
-    for word, tag in pos_tag(tokens):
-        if tag.startswith('NN'):
-            pos = 'n'
-        elif tag.startswith('VB'):
-            pos = 'v'
-        else:
-            pos = 'a'
-        lemmatized_sentence.append(lemmatizer.lemmatize(word, pos))
-    return lemmatized_sentence
+import math, csv, operator, re, os, pickle, string, json
 
 def remove_noise(tokens, stop_words = ()):
     # stop_words.append('n/a')
@@ -271,6 +241,19 @@ def thematic_analysis():
     stopwords = nltk.corpus.stopwords.words('english')
     stemmer = SnowballStemmer("english")
     
+    def lemmatize_sentence(tokens):
+        lemmatizer = WordNetLemmatizer()
+        lemmatized_sentence = []
+        for word, tag in pos_tag(tokens):
+            if tag.startswith('NN'):
+                pos = 'n'
+            elif tag.startswith('VB'):
+                pos = 'v'
+            else:
+                pos = 'a'
+            lemmatized_sentence.append(lemmatizer.lemmatize(word, pos))
+        return lemmatized_sentence
+    
     def tokenize_and_stem(text):
         tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
         filtered_tokens = []
@@ -347,9 +330,9 @@ def thematic_analysis():
                 k_num = K_to_try[k]
             else:
                 break
-        print(k_num)
 
-        num_clusters = k_num #TODO: generate this via kmeans elbow ml algo
+        num_clusters = k_num - 1
+        print(num_clusters)
         km = KMeans(n_clusters=num_clusters, max_iter=10)
         km.fit(tfidf_matrix)
         clusters = km.labels_.tolist()
@@ -358,9 +341,8 @@ def thematic_analysis():
         for index, totalvocab_stemmed in enumerate(df[df.columns.values.tolist()[col]].values.tolist()):
             cluster_values[clusters[index]].append(str(totalvocab_stemmed))
 
-        categories = []
-        count = 0
-        path = 'tmp/'
+        categories = {}
+        themes = {}
         for i in range(len(cluster_values)):
             totalvocab_tokenized = []
             totalvocab_lemmetized = []
@@ -369,16 +351,61 @@ def thematic_analysis():
             totalvocab_tokenized.extend([allwords_tokenized])
             totalvocab_lemmetized.extend([lemmatize_sentence(totalvocab_tokenized[x in cluster_values[i]])])
             totalvocab_cleaned.extend([remove_noise(totalvocab_lemmetized[x in cluster_values[i]], stop_words)])
-            wordcloud = WordCloud(min_font_size=9, max_words=100, background_color="white").generate(str(totalvocab_cleaned))
-            plt.figure()
-            plt.imshow(wordcloud, interpolation='bilinear')
-            plt.axis("off")
-            plt.savefig('tmp/kmeans-wordmap-' + str(count) + '.png')
-            # CounterVariable  = Counter(str(totalvocab_cleaned).split())
-            # most_occur = [word for word, word_count in CounterVariable.most_common(6)]
-            # categories.append(most_occur)
-            count += 1
-    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'kmeans-wordmap' in i]
-    return ({"kmeans-wordmaps": [files]})
-#TODO - Scatter plot of clusters
-#TODO - Append sentiment and thematic variables onto questions class to use in uni and bi analysis
+            CounterVariable  = Counter(str(totalvocab_cleaned).split())
+            most_occur = [word for word, word_count in CounterVariable.most_common(10)]
+            topic = most_occur[0].translate(str.maketrans('', '', string.punctuation))
+            tokens = [word.translate(str.maketrans('', '', string.punctuation)) for word in most_occur]
+            statements = cluster_values[i]
+            themes[topic] = {
+                "theme": topic,
+                "tokens": tokens,
+                "statements": statements
+            }
+        categories[df.columns[col]] = {
+            "themes": themes
+        }
+    return categories, df.columns.values.tolist()
+
+def themes_bargraph():
+    if os.path.exists("tmp/themes_bargraph.html"):
+        os.remove("tmp/themes_bargraph.html")
+    categories, questions = thematic_analysis()
+    for q in questions:
+        themes = categories.get(q)
+        x = []
+        y = []
+        for v in themes.get("themes"):
+            x.append(themes.get("themes").get(v).get("theme"))
+            y.append(len(themes.get("themes").get(v).get("statements")))
+        fig = go.Figure([go.Bar(x=x, y=y)])
+        fig.update_layout(title=q)
+        with open('tmp/themes_bargraph.html', 'a') as f:
+             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    if os.path.exists("tmp/themes_bargraph.html"):
+        file = open("tmp/themes_bargraph.html", 'r', encoding='utf-8')
+        source_code = file.read() 
+        return 'tmp/themes_bargraph.html', source_code
+    else:
+        return None, None
+    
+def themes_piechart():
+    if os.path.exists("tmp/themes_piechart.html"):
+        os.remove("tmp/themes_piechart.html")
+    categories, questions = thematic_analysis()
+    for q in questions:
+        themes = categories.get(q)
+        x = []
+        y = []
+        for v in themes.get("themes"):
+            x.append(themes.get("themes").get(v).get("theme"))
+            y.append(len(themes.get("themes").get(v).get("statements")))
+        fig = go.Figure([go.Pie(labels=x, values=y)])
+        fig.update_layout(title=q)
+        with open('tmp/themes_piechart.html', 'a') as f:
+             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    if os.path.exists("tmp/themes_piechart.html"):
+        file = open("tmp/themes_piechart.html", 'r', encoding='utf-8')
+        source_code = file.read() 
+        return 'tmp/themes_piechart.html', source_code
+    else:
+        return None, None

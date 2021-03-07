@@ -126,7 +126,7 @@ class SentimentBargraph(Resource):
 class SentimentAnalysis(Resource):
     def get(self):
         categories = qualitative_encoding.sentiment_tokens()
-        return categories
+        return {"categories": categories}
     
 @qual_encoding.route('/wordmaps')
 class Wordmaps(Resource):
@@ -137,4 +137,18 @@ class Wordmaps(Resource):
 @qual_encoding.route('/themes')
 class Themes(Resource):
     def get(self):
-        return qualitative_encoding.thematic_analysis()
+        categories = qualitative_encoding.thematic_analysis()
+        return {"categories": categories}
+    
+@qual_encoding.route('/themes-bargraph')
+class ThemesBargraph(Resource):
+    def get(self):
+        themesHTML, themesContent = qualitative_encoding.themes_bargraph()
+        return {"fileLocation": themesHTML, "renderContent": themesContent}
+    
+@qual_encoding.route('/themes-piechart')
+class ThemesBargraph(Resource):
+    def get(self):
+        themesHTML, themesContent = qualitative_encoding.themes_piechart()
+        return {"fileLocation": themesHTML, "renderContent": themesContent}
+    
