@@ -1,6 +1,5 @@
 import matplotlib
 matplotlib.use('Agg')
-from sklearn.datasets import fetch_20newsgroups
 from PIL import Image
 from wordcloud import WordCloud
 from collections import Counter 
@@ -200,32 +199,14 @@ def sentiment_bargraph():
     else:
         return None, None
     
-def wordmaps():
-    path = 'tmp/'
-    #TODO: removing wordmap files not working 
-    #TODO: make separate wordmap.png files as 1
-    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path, i) and 'wordmap' in i)]
-    for f in files:
-        os.remove(f)
-    df = pickle.load(open("raw_data_store.dat", "rb"))
-    questions = pickle.load(open("data_store.dat", "rb"))
-    df = df.dropna()
-    title = []
-
-    count = 0
-    for q in questions:
-        if(q.questionType == 'FREE_TEXT' and q.dataType == 'QUALITATIVE'):
-            count += 1
-            title.append(q.question)
-            text = df[q.question].values.tolist()
-            wordcloud = WordCloud(min_font_size=9, max_words=100, background_color="white").generate(str(text))
-            plt.figure()
-            plt.imshow(wordcloud, interpolation='bilinear')
-            plt.axis("off")
-            plt.savefig('tmp/wordmap-' + str(count) + '.png')
-    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'wordmap' in i]
-    return files, title
-
+def tokenize_only(text):
+        tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
+        filtered_tokens = []
+        for token in tokens:
+            if re.search('[a-zA-Z]', token) and len(token) > 1:
+                filtered_tokens.append(token)
+        return filtered_tokens
+    
 def thematic_analysis():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
@@ -240,7 +221,7 @@ def thematic_analysis():
     columns = df.columns.values.tolist()
     stopwords = nltk.corpus.stopwords.words('english')
     stemmer = SnowballStemmer("english")
-    
+
     def lemmatize_sentence(tokens):
         lemmatizer = WordNetLemmatizer()
         lemmatized_sentence = []
@@ -263,15 +244,6 @@ def thematic_analysis():
         stems = [stemmer.stem(t) for t in filtered_tokens]
         return stems
 
-
-    def tokenize_only(text):
-        tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-        filtered_tokens = []
-        for token in tokens:
-            if re.search('[a-zA-Z]', token) and len(token) > 1:
-                filtered_tokens.append(token)
-        return filtered_tokens
-    
     for col in range(len(df.columns)):
         totalvocab_stemmed = [] 
         totalvocab_tokenized = []
@@ -409,3 +381,40 @@ def themes_piechart():
         return 'tmp/themes_piechart.html', source_code
     else:
         return None, None
+    
+def wordmaps():
+    df = pickle.load(open("raw_data_store.dat", "rb"))
+    questions = pickle.load(open("data_store.dat", "rb"))
+    df = df.dropna()
+    
+    for q in questions:
+        if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
+            del df[q.question]
+            
+    df = df.dropna()
+    
+    wordmap = {}
+    for col in range(len(df.columns)):
+        free_text = df[df.columns.values.tolist()[col]].values.tolist()
+        free_text = str(free_text).replace("'", "")
+        totalvocab_tokenized = []
+        totalvocab_lemmetized = []
+        totalvocab_cleaned = []
+        allwords_tokenized = tokenize_only(str(free_text))
+        totalvocab_tokenized.extend([allwords_tokenized])
+        totalvocab_cleaned = [w for w in totalvocab_tokenized[0] if not w in stop_words]
+        CounterVariable  = Counter(str(totalvocab_cleaned).split())
+        variable = [word for word, word_count in CounterVariable.most_common(30)]
+        counter = [word_count for word, word_count in CounterVariable.most_common(30)]
+        count = 0
+        words = {}
+        for i in range(0, len(counter)):
+            words[count] = {
+               "word": variable[i].translate(str.maketrans('', '', string.punctuation)),
+               "count": counter[i] 
+            }
+            count += 1
+        wordmap[df.columns[col]] = {
+            "wordmap": words
+        }
+    return wordmap
