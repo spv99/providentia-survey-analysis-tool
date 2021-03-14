@@ -5,23 +5,33 @@
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
-    padding-top: 6rem;
+    margin-top: 2rem;
+}
+
+.pstyle.insights {
+    font-family: Bahnschrift;
+    font-weight: 300;
+    line-height: 54px;
+    text-align: center;
+    margin-top: 4rem;
+    font-size: 51px;
 }
 
 .pstyle.get-started {
     font-family: Bahnschrift;
-    font-weight: 400;
-    line-height: 38px;
+    font-weight: 300;
+    line-height: 50px;
     text-align: center;
     margin-top: 4rem;
-    font-size: 48px;
+    font-size: 34px;
+    color: #2888ff
 }
 
 .pstyle.upload {
     font-family: Bahnschrift;
-    font-weight: 400;
+    font-weight: 300;
     line-height: 38px;
-    font-size: 21px;
+    font-size: 19px;
     margin-top: 1rem;
     place-content: center;
 }
@@ -29,10 +39,11 @@
 .pstyle.example {
     font-family: Bahnschrift;
     font-weight: 250;
-    line-height: 38px;
-    font-size: 19px;
+    line-height: 23px;
+    font-size: 17px;
     margin-top: 1rem;
     place-content: center;
+    text-align: -webkit-center;
 }
 
 .pstyle.file-uploaded {
@@ -55,15 +66,15 @@
 }
 
 .blue {
-    color: #70A9E0;
+    color: #76b3ff;
     cursor: pointer;
 }
 
 .btn.btn-primary {
-    background-color: #034963;
-    border-color: #034963;
+    background-color: #013a83;
+    border-color: #013a83;
     width: 12rem;
-    margin-left: 23rem;
+    border-radius: 40px;
 }
 
 .material-icons.cloud {
@@ -82,4 +93,51 @@
 
 .progress {
     width: 50% !important;
+}
+
+.pitchbook {
+    height: 16rem;
+}
+
+.img-container {
+    position: relative;
+    text-align: center;
+    color: #d83a96;
+}
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.line {
+    height: 7rem;
+    padding-left: 2rem;
+}
+.col-5 {
+    padding-left: 6rem;
+}
+
+.piechart {
+    height: 7rem;
+    margin-top: 2rem;
+    margin-left: 2rem;
+}
+
+.bargraph {
+    height: 8rem;
+    margin-top:1rem;
+}
+
+.man {
+    height: 13rem;
+    margin-left: 8rem;
+    margin-top: -3rem;
+}
+
+.calendar {
+    padding-left: 3rem;
+    height: 5rem;
 }
