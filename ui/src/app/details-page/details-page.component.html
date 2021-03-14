@@ -5,15 +5,21 @@
 <div class="container-fluid">
     <div class="row">
         <div id="bargraphs-box" class="col">
-            <h6 class="pstyle headers">Bargraphs:</h6>
+            <h6 class="pstyle headers">Bargraphs:
+                <span class="material-icons">open_in_new</span> 
+            </h6>
             <iframe id="bargraphs" src="about:blank"></iframe>
         </div>
         <div id="piecharts-box" class="col">
-            <h6 class="pstyle headers">Piecharts:</h6>
+            <h6 class="pstyle headers">Piecharts:
+                <span class="material-icons">open_in_new</span> 
+            </h6>
             <iframe id="piecharts" src="about:blank"></iframe>
         </div>
         <div id="boxplots-box" class="col">
-            <h6 class="pstyle headers">Boxplots:</h6>
+            <h6 class="pstyle headers">Boxplots:
+                <span class="material-icons">open_in_new</span> 
+            </h6>
             <iframe id="boxplots" src="about:blank"></iframe>
         </div>
     </div>
@@ -27,8 +33,10 @@
             <h6 class="pstyle headers">Bivariate Bargraphs:</h6>
             <div class="checkboxes">
                 <input id="clustered" type="checkbox" value="clustered-bargraph" (change)="selectChangeHandler($event)" checked> Clustered Bargraph
+                <span class="material-icons">open_in_new</span> 
                 <br>
                 <input id="stacked" type="checkbox" value="stacked-bargraph" (change)="selectChangeHandler($event)"> Stacked Bargraph
+                <span class="material-icons">open_in_new</span> 
             </div>
             <div class="bi-col" id="clustered-bargraph-box">
                 <iframe id="clustered-bargraph" src="about:blank"></iframe>
@@ -50,12 +58,30 @@
 <div class="container-fluid">
     <div class="row">
         <div id="sunburst-box" class="col">
-            <h6 class="pstyle headers">Sunburst Chart:</h6>
+            <h6 class="pstyle headers">Sunburst Chart:
+                <span class="material-icons">open_in_new</span> 
+            </h6>
             <iframe id="sunburst" src="about:blank"></iframe>
         </div>
         <div id="treemap-box" class="col">
-            <h6 class="pstyle headers">Treemap Chart:</h6>
+            <h6 class="pstyle headers">Treemap Chart:
+                <span class="material-icons" (click)="open(chartmodal, 'Treemap Chart', 'treemap')">open_in_new</span>
+            </h6>
             <iframe id="treemap" src="about:blank"></iframe>
         </div>
     </div>
 </div>
+
+<ng-template #chartmodal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-title">{{title}}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div id="treemap-box" class="col">
+            <iframe id="treemap" src="about:blank"></iframe>
+        </div>
+    </div>
+  </ng-template>

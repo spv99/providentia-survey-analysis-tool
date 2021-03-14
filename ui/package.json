@@ -19,6 +19,7 @@
     "@angular/platform-browser": "~8.1.2",
     "@angular/platform-browser-dynamic": "~8.1.2",
     "@angular/router": "~8.1.2",
+    "@material/dialog": "^10.0.0",
     "@ng-bootstrap/ng-bootstrap": "^5.3.1",
     "angular-material": "^1.2.1",
     "bootstrap": "^4.5.2",

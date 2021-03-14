@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AnalyticsService } from './details-page.service';
+import $ from "jquery";
 
 @Component({
   selector: 'app-details-page',
@@ -10,8 +12,11 @@ import { AnalyticsService } from './details-page.service';
 export class DetailsPageComponent implements OnInit {
   public data: any;
   public selectedBivarBargraph: string = '';
+  public closeResult: string;
+  public title: string;
+  public modalIFrame: Document;
 
-  constructor(private analyticsService: AnalyticsService) { }
+  constructor(private analyticsService: AnalyticsService, private modalService: NgbModal) { }
 
   ngOnInit() {
     this.analyticsService.getUnivariateBargraph().subscribe(data => {
@@ -61,27 +66,27 @@ export class DetailsPageComponent implements OnInit {
   }
 
   public resizeIFrameToFitContent(iFrame: any): void {
-    iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
+    iFrame.width = iFrame.contentWindow.document.body.scrollWidth;
     iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
   }
 
-  public selectChangeHandler (event: any): void {
+  public selectChangeHandler(event: any): void {
     let hiddenBargraph = "";
     this.selectedBivarBargraph = event.target.value;
 
     // deselect other checkbox if another checkbox is selected
     if (this.selectedBivarBargraph === 'stacked-bargraph') {
       hiddenBargraph = 'clustered';
-    } else if (this.selectedBivarBargraph === 'clustered-bargraph'){
+    } else if (this.selectedBivarBargraph === 'clustered-bargraph') {
       hiddenBargraph = 'stacked';
     }
-    let checkbox = <HTMLInputElement>document.getElementById(hiddenBargraph) as HTMLInputElement ;
+    let checkbox = <HTMLInputElement>document.getElementById(hiddenBargraph) as HTMLInputElement;
     checkbox.checked = false;
 
     // if no checkboxes are selected check the last selected
     const clustered = <HTMLInputElement>document.getElementById('clustered') as HTMLInputElement;
     const stacked = <HTMLInputElement>document.getElementById('stacked') as HTMLInputElement;
-    if(clustered.checked == false && stacked.checked == false) {
+    if (clustered.checked == false && stacked.checked == false) {
       if (this.selectedBivarBargraph.includes('clustered')) {
         clustered.checked = true;
       } else if (this.selectedBivarBargraph.includes('stacked')) {
@@ -98,6 +103,28 @@ export class DetailsPageComponent implements OnInit {
     const visibleIFrameContainerId = this.selectedBivarBargraph + '-box';
     let visibleIFrameContainer = <HTMLDivElement>document.getElementById(visibleIFrameContainerId) as HTMLDivElement;
     visibleIFrameContainer.setAttribute("style", "display: block");
+  }
+
+  // modal
+
+  public open(content, title, iframeId) {
+    this.title = title;
+    let htmlString = "<iframe id=\"" + iframeId + "\" src=\"about:blank\"></iframe>";
+    this.modalService.open(content, { ariaLabelledBy: 'modal-title' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
   }
 
 }
