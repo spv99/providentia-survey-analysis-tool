@@ -15,15 +15,15 @@ export class ProvidentiaComponent implements OnInit {
 
   public title1 = 'Decipher';
   public subtitle1 ="your data";
-  public text1 = "Upload your survey responses and generate visual insights and analysis in minutes!"
+  public text1 = "Upload your survey responses and generate visual insights and analysis!"
 
   public title2 = 'Discover';
   public subtitle2 ="your reach";
-  public text2 = "As well as classic analysis techniques we also use machine learning to find trends that you wouldn't usually find in Excel!"
+  public text2 = "As well as classic analysis techniques, we also use machine learning to find trends that you wouldn't usually find in Excel!"
 
   public title3 = 'Decide';
   public subtitle3 ="your next move";
-  public text3 = "Our easy-to-read analytical insights can help determine your next steps by identifying correlations and patterns!"
+  public text3 = "Our easy-to-read analytical insights can help determine your next steps!"
 
   constructor(private appService: ProvidentiaService, private router: Router) {}
 

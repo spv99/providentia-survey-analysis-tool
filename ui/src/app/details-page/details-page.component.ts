@@ -19,35 +19,35 @@ export class DetailsPageComponent implements OnInit {
   constructor(private analyticsService: AnalyticsService, private modalService: NgbModal) { }
 
   ngOnInit() {
-    this.analyticsService.getUnivariateBargraph().subscribe(data => {
-      this.injectHTML("bargraphs", data);
-    });
+    // this.analyticsService.getUnivariateBargraph().subscribe(data => {
+    //   this.injectHTML("bargraphs", data);
+    // });
 
-    this.analyticsService.getUnivariatePiechart().subscribe(data => {
-      this.injectHTML("piecharts", data);
-    });
+    // this.analyticsService.getUnivariatePiechart().subscribe(data => {
+    //   this.injectHTML("piecharts", data);
+    // });
 
-    this.analyticsService.getUnivariateBoxPlot().subscribe(data => {
-      this.injectHTML("boxplots", data);
-    });
+    // this.analyticsService.getUnivariateBoxPlot().subscribe(data => {
+    //   this.injectHTML("boxplots", data);
+    // });
 
-    this.analyticsService.getBivariateClusteredBargraph().subscribe(data => {
-      this.injectHTML("clustered-bargraph", data);
-    });
+    // this.analyticsService.getBivariateClusteredBargraph().subscribe(data => {
+    //   this.injectHTML("clustered-bargraph", data);
+    // });
 
-    this.analyticsService.getBivariateStackedBargraph().subscribe(data => {
-      this.injectHTML("stacked-bargraph", data);
-      let iFrameContainer = <HTMLDivElement>document.getElementById("stacked-bargraph-box") as HTMLDivElement;
-      iFrameContainer.setAttribute("style", "display: none");
-    });
+    // this.analyticsService.getBivariateStackedBargraph().subscribe(data => {
+    //   this.injectHTML("stacked-bargraph", data);
+    //   let iFrameContainer = <HTMLDivElement>document.getElementById("stacked-bargraph-box") as HTMLDivElement;
+    //   iFrameContainer.setAttribute("style", "display: none");
+    // });
 
-    this.analyticsService.getMultivariateSunburst().subscribe(data => {
-      this.injectHTML("sunburst", data);
-    });
+    // this.analyticsService.getMultivariateSunburst().subscribe(data => {
+    //   this.injectHTML("sunburst", data);
+    // });
 
-    this.analyticsService.getMultivariateTreemap().subscribe(data => {
-      this.injectHTML("treemap", data);
-    });
+    // this.analyticsService.getMultivariateTreemap().subscribe(data => {
+    //   this.injectHTML("treemap", data);
+    // });
   }
 
   public injectHTML(id: string, data: string): void {
@@ -103,28 +103,6 @@ export class DetailsPageComponent implements OnInit {
     const visibleIFrameContainerId = this.selectedBivarBargraph + '-box';
     let visibleIFrameContainer = <HTMLDivElement>document.getElementById(visibleIFrameContainerId) as HTMLDivElement;
     visibleIFrameContainer.setAttribute("style", "display: block");
-  }
-
-  // modal
-
-  public open(content, title, iframeId) {
-    this.title = title;
-    let htmlString = "<iframe id=\"" + iframeId + "\" src=\"about:blank\"></iframe>";
-    this.modalService.open(content, { ariaLabelledBy: 'modal-title' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
   }
 
 }

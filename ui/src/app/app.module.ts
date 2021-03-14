@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomepageCardsComponent } from './homepage-cards/homepage-cards.component';
 import { HeaderComponent } from './header/header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DetailsPageComponent } from './details-page/details-page.component';
@@ -14,14 +13,12 @@ import { AnalyticsService } from './details-page/details-page.service';
 
 @NgModule({
   entryComponents: [
-    HomepageCardsComponent
   ],
   declarations: [
     AppComponent,
     HeaderComponent,
-    HomepageCardsComponent,
     DetailsPageComponent,
-    ProvidentiaComponent
+    ProvidentiaComponent,
   ],
   imports: [
     BrowserModule,

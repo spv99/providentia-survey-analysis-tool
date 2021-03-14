@@ -1,14 +1,14 @@
-.pstyle.title {
+.body {
     font-family: Bahnschrift;
-    font-weight: 200;
+}
+
+.pstyle.title {
     line-height: 38px;
-    text-align: center;
-    margin-top: 4rem;
     font-size: 38px;
+    text-align: left;
 }
 
 .pstyle.subtitle {
-    font-family: Bahnschrift;
     font-weight: 200;
     line-height: 38px;
     text-align: center;
@@ -17,28 +17,22 @@
     text-decoration: underline;
 }
 
-.pstyle.headers {
-    font-family: Bahnschrift;
-    font-weight: 350;
-    line-height: 38px;
-    text-align: center;
-    margin-top: 4rem;
-    font-size: 24px;
-}
-
-
 .pstyle {
-    font-family: Bahnschrift;
     font-weight: 250;
     font-size: 25px;
     margin-top: 2rem;
     line-height: 0.4rem;
-    text-align: center;
 }
 
 .blue {
     color: #70A9E0;
     cursor: pointer;
+}
+
+.logo {
+    height: 6rem;
+    margin-left: 1rem;
+    margin-top: -2rem;
 }
 
 iframe {
@@ -49,28 +43,44 @@ iframe {
     width: 100%;
 }
 
-.col {
-    height: 400px;
+.sidenav {
+    height: 100%;
+    width: 25rem;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #f3f4f6;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+  
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 21px;
+    color: #000000;
+    display: block;
+    transition: 0.3s;
 }
 
-.bi-col {
-    height: 375px;
-}
-
-.container-fluid {
-    height: 475px;
-    margin-top: -3rem;
-}
-
-.checkboxes {
-    text-align: center;
-}
-
-.material-icons {
-    vertical-align: text-top;
+.sidenav a:hover {
+    color: #2a7be5;
     cursor: pointer;
 }
 
-.modal-header.close {
-    border: 3px solid white;
+.page-content {
+    margin-left: 28rem;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+// insights overview
+
+.graphic {
+        height: 20rem;
 }

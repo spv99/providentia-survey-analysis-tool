@@ -20,7 +20,7 @@ def pca_options():
 
     for q in questions:
         # TODO: make free text col mutliple choice
-        if(q.questionType == 'MULTIPLE_CHOICE'):
+        if(q.dataType == 'QUALITATIVE' or q.questionType != 'MULTIPLE_CHOICE'):
             col_names = df[q.question].dropna().unique().tolist()
             df[col_names] = pd.get_dummies(df[q.question])
             del df[q.question]
@@ -194,7 +194,7 @@ def treemap():
     questions = pickle.load(open("data_store.dat", "rb"))
     for q in questions:
         # TODO: make free text col mutliple choice
-        if(q.questionType != 'MULTIPLE_CHOICE'):
+        if(q.dataType != 'QUALITATIVE' or q.questionType != 'MULTIPLE_CHOICE'):
             del df[q.question]
     col_names = df.columns.values.tolist()
     #TODO: Make sure there is no col named 'count' else rename inserted col to count_x
@@ -219,7 +219,7 @@ def sunburst():
     questions = pickle.load(open("data_store.dat", "rb"))
     for q in questions:
         # TODO: make free text col mutliple choice
-        if(q.questionType != 'MULTIPLE_CHOICE'):
+        if(q.dataType != 'QUALITATIVE' or q.questionType != 'MULTIPLE_CHOICE'):
             del df[q.question]
     col_names = df.columns.values.tolist()
     #TODO: Make sure there is no col named 'count' else rename inserted col to count_x
