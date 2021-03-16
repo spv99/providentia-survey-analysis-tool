@@ -391,7 +391,7 @@ def wordmaps():
             
     df = df.dropna()
     
-    wordmap = {}
+    categories = []
     for col in range(len(df.columns)):
         free_text = df[df.columns.values.tolist()[col]].values.tolist()
         free_text = str(free_text).replace("'", "")
@@ -404,15 +404,14 @@ def wordmaps():
         CounterVariable  = Counter(str(totalvocab_cleaned).split())
         variable = [word for word, word_count in CounterVariable.most_common(30)]
         counter = [word_count for word, word_count in CounterVariable.most_common(30)]
-        count = 0
-        words = {}
+        words = []
         for i in range(0, len(counter)):
-            words[count] = {
-               "word": variable[i].translate(str.maketrans('', '', string.punctuation)),
-               "count": counter[i] 
-            }
-            count += 1
-        wordmap[df.columns[col]] = {
+            words.append({
+                "word": variable[i].translate(str.maketrans('', '', string.punctuation)),
+                "count": counter[i] 
+            })
+        categories.append({
+            "question": df.columns[col],
             "wordmap": words
-        }
-    return wordmap
+        })
+    return categories

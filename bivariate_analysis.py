@@ -51,10 +51,12 @@ def bivar_bargraph(bar_type):
         os.remove(bar_path)
         
     df, selected_cols, selected_cols_encoded = encode_cols()
+    df = df.astype(str)
+    df = df.replace(to_replace = "\.0+$",value = "", regex = True)
+    df = df.replace(to_replace = "nan",value = "N/A", regex = False)
     for i in range(0, len(selected_cols_encoded)):
         for j in range(0, len(selected_cols_encoded)):
-            if (i!=j and i<j):  
-                x_axis = selected_cols[i].options
+            if (i!=j and i<j):              
                 group_by_cols = df.groupby([selected_cols[i].question, selected_cols[j].question])[selected_cols[i].question].count().reset_index(name='frequency')
                 group_by_df = pd.DataFrame(group_by_cols)
                 

@@ -1,19 +1,125 @@
-<div class="sidenav">
+<nav class="sidenav">
     <img class="logo" src="assets/transparent-logo.png">
-    <a>Insights Overview</a>
-    <a>Export Report</a>
-</div>
+    <a class="hover active">Insights Overview</a>
+    <a class="hover">Export Report</a>
+    <a>Univariate Analysis:</a>
+    <a class="hover">&emsp;- Bargraphs</a>
+    <a class="hover">&emsp;- Piecharts</a>
+    <a class="hover">&emsp;- Boxplots</a>
+    <a class="hover">&emsp;- Wordmaps</a>
+    <a>Bivariate Analysis:</a>
+    <a class="hover">&emsp;- Clustered Bargraphs</a>
+    <a class="hover">&emsp;- Stacked Bargraphs</a>
+    <a class="hover">&emsp;- Scatter Plots</a>
+    <a>Multivariate Analysis:</a>
+    <a class="hover">&emsp;- Sunburst Chart</a>
+    <a class="hover">&emsp;- Treemap Chart</a>
+    <a class="hover">&emsp;- User Profiles</a>
+</nav>
 <main class="page-content">
-    <div class="insights-overview">
+    <!-- Insights Overview -->
+    <div id="Insights Overview" class="view">
         <h3 class="pstyle title">Insights Overview</h3>
+        <br>
+        <p class="text">What has been generated uni, bi, multi, sentiment, thematic</p>
+        <p class="text">Univariate analysis involves the analysis of a single variable (or column) to describe,
+            summarise and find patterns.</p>
+        <p class="text">Bivariate analysis involves the study of two variables to determine the relationship between
+            them and the strength of their correlation.</p>
+        <p class="text">Multivariate analysis occurs when three or more variables are being analysed, having multiple
+            intercorrelations and relationships between each variable.</p>
         <img class="graphic" src="assets/insights-overview-graphic.png">
     </div>
+
+    <!-- Export Report -->
+    <div id="Export Report" class="hide">
+        <h3 class="pstyle title">Export Report</h3>
+        <br>
+    </div>
+
+    <!-- Bargraphs -->
+    <div id="Bargraphs" class="hide">
+        <h3 class="pstyle title">Bargraphs</h3>
+        <br>
+        <div id="bargraphs-box" class="col">
+            <iframe id="bargraphs" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- Piecharts -->
+    <div id="Piecharts" class="hide">
+        <h3 class="pstyle title">Piecharts</h3>
+        <br>
+        <div id="piecharts-box" class="col">
+            <iframe id="piecharts" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- Boxplots -->
+    <div id="Boxplots" class="hide">
+        <h3 class="pstyle title">Boxplots</h3>
+        <br>
+        <div id="boxplots-box" class="col">
+            <iframe id="boxplots" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- Wordmaps -->
+    <div id="Wordmaps" class="hide">
+        <h3 class="pstyle title">Wordmaps</h3>
+        <div>
+            <!-- <angular-tag-cloud
+              [data]="wordCloudData"
+              [width]="options.width"
+              [height]="options.height"
+              [overflow]="options.overflow">
+            </angular-tag-cloud> -->
+        </div>
+    </div>
+
+    <!-- Clustered Bargraphs -->
+    <div id="Clustered Bargraphs" class="hide">
+        <h3 class="pstyle title">Clustered Bargraphs</h3>
+        <br>
+        <div id="clustered-bargraph-box" class="col">
+            <iframe id="clustered-bargraph" src="about:blank"></iframe>
+        </div>
+    </div>
+
+     <!-- Stacked Bargraphs -->
+     <div id="Stacked Bargraphs" class="hide">
+        <h3 class="pstyle title">Stacked Bargraphs</h3>
+        <br>
+        <div id="stacked-bargraph-box" class="col">
+            <iframe id="stacked-bargraph" src="about:blank"></iframe>
+        </div>
+    </div>
+
+     <!-- Scatter Plots -->
+     <div id="Scatter Plots" class="hide">
+        <h3 class="pstyle title">Scatter Plots</h3>
+        <br>
+        <div id="scatter-plots-box" class="col">
+            <iframe id="scatter-plots" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- Sunburst Chart -->
+    <div id="Sunburst Chart" class="hide">
+        <h3 class="pstyle title">Sunburst Chart</h3>
+        <br>
+        <div id="sunburst-box" class="col">
+            <iframe id="sunburst" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- Treemap Chart -->
+    <div id="Treemap Chart" class="hide">
+        <h3 class="pstyle title">Treemap Chart</h3>
+        <br>
+        <div id="treemap-box" class="col">
+            <iframe id="treemap" src="about:blank"></iframe>
+        </div>
+    </div>
+
 </main>
-
-
-<!-- <div id="bargraphs-box" class="col">
-    <h6 class="pstyle headers">Bargraphs:
-        <span class="material-icons">open_in_new</span> 
-    </h6>
-    <iframe id="bargraphs" src="about:blank"></iframe>
-</div> -->

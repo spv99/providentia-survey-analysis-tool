@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProvidentiaComponent } from './providentia/providentia.component';
 import { ProvidentiaService } from './providentia/providentia.service';
 import { AnalyticsService } from './details-page/details-page.service';
+import { TagCloudModule } from 'angular-tag-cloud-module';
 
 @NgModule({
   entryComponents: [
@@ -19,6 +20,7 @@ import { AnalyticsService } from './details-page/details-page.service';
     HeaderComponent,
     DetailsPageComponent,
     ProvidentiaComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -27,7 +29,8 @@ import { AnalyticsService } from './details-page/details-page.service';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    TagCloudModule
   ],
   providers: [ProvidentiaService, AnalyticsService],
   bootstrap: [AppComponent]

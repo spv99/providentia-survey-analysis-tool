@@ -55,7 +55,7 @@ def boxplot():
     questions = pickle.load(open("data_store.dat", "rb"))
     selected_cols = []
     for q in questions:
-        if(q.dataType == "QUANTITATIVE"):
+        if(q.dataType == "QUANTITATIVE" and q.questionType == "FREE_TEXT"):
             selected_cols.append(q)
     for sc in selected_cols:
         options = df[sc.question].dropna()

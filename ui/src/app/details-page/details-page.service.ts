@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "src/environments/environment";
 import {map} from "rxjs/operators";
 import { Chart } from "../models/chart.model";
+import { Wordmap } from "../models/wordmap.model";
 
 const PLOTLYJS = '../../assets/plotly.js';
 const regexFind = 'https://cdn.plot.ly/plotly-latest.min.js';
@@ -13,9 +14,11 @@ const MULTIVARIATE_ANALYSIS = '/multivariate-analysis';
 const QUALITATIVE_ENCODING = '/qualitative-encoding';
 const BARGRAPH = '/bargraph';
 const BOXPLOT = '/boxplot';
+const WORDMAPS = '/wordmaps';
 const PIECHART = '/piechart';
 const CLUSTERED_BARGRAPH = '/clustered-bargraph';
 const STACKED_BARGRAPH = '/stacked-bargraph';
+const SCATTER_PLOT = "/scatter-plot";
 const TREEMAP = '/treemap';
 const SUNBURST = '/sunburst';
 
@@ -58,6 +61,24 @@ export class AnalyticsService {
         }));
     }
 
+    public getUnivariateWordmaps(): Observable<any> {
+        const univariateWordmapsUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${WORDMAPS}`;
+        let wordmaps = [];
+        return this.httpClient.get<Wordmap>(univariateWordmapsUrl).pipe(map(res => {
+            res.categories.forEach(category => {
+                let cloudData = [];
+                category.wordmap.forEach(word => {
+                    cloudData.push({
+                        "text": word.word,
+                        "weight": word.count
+                    })
+                });
+                wordmaps.push(category.question, cloudData)
+            });
+            return wordmaps;
+        }));
+    }
+
     public getBivariateClusteredBargraph(): Observable<any> {
         const bivariateClusteredBargraph: string = this.baseUrl + `${BIVARIATE_ANALYSIS}${CLUSTERED_BARGRAPH}`;
         return this.httpClient.get<Chart>(bivariateClusteredBargraph).pipe(map(res => {
@@ -72,6 +93,17 @@ export class AnalyticsService {
     public getBivariateStackedBargraph(): Observable<any> {
         const bivariateStackedBargraph: string = this.baseUrl + `${BIVARIATE_ANALYSIS}${STACKED_BARGRAPH}`;
         return this.httpClient.get<Chart>(bivariateStackedBargraph).pipe(map(res => {
+            if(res.renderContent != null) {
+                let html = (res.renderContent.toString());
+                html = html.replace(regexFind, PLOTLYJS);
+                return html;
+            }
+        }));
+    }
+
+    public getBivariateScatterPlot(): Observable<any> {
+        const bivariateScatterPlot: string = this.baseUrl + `${BIVARIATE_ANALYSIS}${SCATTER_PLOT}`;
+        return this.httpClient.get<Chart>(bivariateScatterPlot).pipe(map(res => {
             if(res.renderContent != null) {
                 let html = (res.renderContent.toString());
                 html = html.replace(regexFind, PLOTLYJS);

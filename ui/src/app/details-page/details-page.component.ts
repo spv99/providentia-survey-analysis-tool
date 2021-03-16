@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AnalyticsService } from './details-page.service';
-import $ from "jquery";
+import { CloudData, CloudOptions } from 'angular-tag-cloud-module';
 
 @Component({
   selector: 'app-details-page',
@@ -11,43 +10,75 @@ import $ from "jquery";
 
 export class DetailsPageComponent implements OnInit {
   public data: any;
-  public selectedBivarBargraph: string = '';
-  public closeResult: string;
-  public title: string;
-  public modalIFrame: Document;
+  public wordCloudData: CloudData[];
+  public options: CloudOptions;
 
-  constructor(private analyticsService: AnalyticsService, private modalService: NgbModal) { }
+  constructor(private analyticsService: AnalyticsService) { }
 
   ngOnInit() {
-    // this.analyticsService.getUnivariateBargraph().subscribe(data => {
-    //   this.injectHTML("bargraphs", data);
-    // });
+    this.changeActiveTab();
+    this.analyticsService.getUnivariateBargraph().subscribe(data => {
+      this.injectHTML("bargraphs", data);
+    });
 
-    // this.analyticsService.getUnivariatePiechart().subscribe(data => {
-    //   this.injectHTML("piecharts", data);
-    // });
+    this.analyticsService.getUnivariatePiechart().subscribe(data => {
+      this.injectHTML("piecharts", data);
+    });
 
-    // this.analyticsService.getUnivariateBoxPlot().subscribe(data => {
-    //   this.injectHTML("boxplots", data);
-    // });
+    this.analyticsService.getUnivariateBoxPlot().subscribe(data => {
+      this.injectHTML("boxplots", data);
+    });
 
-    // this.analyticsService.getBivariateClusteredBargraph().subscribe(data => {
-    //   this.injectHTML("clustered-bargraph", data);
-    // });
+    this.analyticsService.getUnivariateWordmaps().subscribe(data => {
+      // console.log(data)
+      // this.wordCloudData = data[0][1];
+      // this.options = {
+      //   width: 1000,
+      //   height: 400,
+      //   overflow: false,
+      // };
+    
+    });
 
-    // this.analyticsService.getBivariateStackedBargraph().subscribe(data => {
-    //   this.injectHTML("stacked-bargraph", data);
-    //   let iFrameContainer = <HTMLDivElement>document.getElementById("stacked-bargraph-box") as HTMLDivElement;
-    //   iFrameContainer.setAttribute("style", "display: none");
-    // });
+    this.analyticsService.getBivariateClusteredBargraph().subscribe(data => {
+      this.injectHTML("clustered-bargraph", data);
+    });
 
-    // this.analyticsService.getMultivariateSunburst().subscribe(data => {
-    //   this.injectHTML("sunburst", data);
-    // });
+    this.analyticsService.getBivariateStackedBargraph().subscribe(data => {
+      this.injectHTML("stacked-bargraph", data);
+    });
 
-    // this.analyticsService.getMultivariateTreemap().subscribe(data => {
-    //   this.injectHTML("treemap", data);
-    // });
+    this.analyticsService.getBivariateScatterPlot().subscribe(data => {
+      this.injectHTML("scatter-plots", data);
+    });
+
+    this.analyticsService.getMultivariateSunburst().subscribe(data => {
+      this.injectHTML("sunburst", data);
+    });
+
+    this.analyticsService.getMultivariateTreemap().subscribe(data => {
+      this.injectHTML("treemap", data);
+    });
+
+  }
+
+  public changeActiveTab(): void {
+    let tabs = document.getElementsByClassName("hover");
+    let name;
+    for (let i = 0; i < tabs.length; i++) {
+        tabs[i].addEventListener("click", function() {
+        let currentTab = document.getElementsByClassName("active");
+        currentTab[0].className = currentTab[0].className.replace(" active", "");
+        let currentPage = document.getElementsByClassName("view");
+        currentPage[0].className = currentPage[0].className.replace("view", "hide");
+        
+        this.className += " active";
+        let selected = <HTMLElement> document.getElementsByClassName(this.className)[0] as HTMLElement;
+        selected.innerText.includes("-") ?  name = selected.innerText.replace(" - ", "") : name = selected.innerText;
+        let selectedPage = document.getElementById(name);
+        selectedPage.className = selectedPage.className.replace("hide", "view");
+      });
+    }
   }
 
   public injectHTML(id: string, data: string): void {
@@ -61,48 +92,7 @@ export class DetailsPageComponent implements OnInit {
       injectHTML.open();
       injectHTML.write(data);
       injectHTML.close();
-      this.resizeIFrameToFitContent(iframe);
     }
-  }
-
-  public resizeIFrameToFitContent(iFrame: any): void {
-    iFrame.width = iFrame.contentWindow.document.body.scrollWidth;
-    iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
-  }
-
-  public selectChangeHandler(event: any): void {
-    let hiddenBargraph = "";
-    this.selectedBivarBargraph = event.target.value;
-
-    // deselect other checkbox if another checkbox is selected
-    if (this.selectedBivarBargraph === 'stacked-bargraph') {
-      hiddenBargraph = 'clustered';
-    } else if (this.selectedBivarBargraph === 'clustered-bargraph') {
-      hiddenBargraph = 'stacked';
-    }
-    let checkbox = <HTMLInputElement>document.getElementById(hiddenBargraph) as HTMLInputElement;
-    checkbox.checked = false;
-
-    // if no checkboxes are selected check the last selected
-    const clustered = <HTMLInputElement>document.getElementById('clustered') as HTMLInputElement;
-    const stacked = <HTMLInputElement>document.getElementById('stacked') as HTMLInputElement;
-    if (clustered.checked == false && stacked.checked == false) {
-      if (this.selectedBivarBargraph.includes('clustered')) {
-        clustered.checked = true;
-      } else if (this.selectedBivarBargraph.includes('stacked')) {
-        stacked.checked = true;
-      }
-    }
-
-    // hide unselected bi_var bargraph
-    const hiddenIFrameContainerId = hiddenBargraph + '-bargraph-box';
-    let hiddenIFrameContainer = <HTMLDivElement>document.getElementById(hiddenIFrameContainerId) as HTMLDivElement;
-    hiddenIFrameContainer.setAttribute("style", "display: none");
-
-    // display selected bivar_bargraph
-    const visibleIFrameContainerId = this.selectedBivarBargraph + '-box';
-    let visibleIFrameContainer = <HTMLDivElement>document.getElementById(visibleIFrameContainerId) as HTMLDivElement;
-    visibleIFrameContainer.setAttribute("style", "display: block");
   }
 
 }
