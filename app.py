@@ -122,7 +122,7 @@ class SentimentPiechart(Resource):
         sentimentHTML, sentimentContent = qualitative_encoding.sentiment_piechart()
         return {"fileLocation": sentimentHTML, "renderContent": sentimentContent}
     
-@qual_encoding.route('/sentiment-barchart')
+@qual_encoding.route('/sentiment-bargraph')
 class SentimentBargraph(Resource):
     def get(self):
         sentimentHTML, sentimentContent = qualitative_encoding.sentiment_bargraph()

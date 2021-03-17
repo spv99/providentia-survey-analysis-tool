@@ -15,7 +15,7 @@ def bargraph():
         options = df[sc.question].dropna().unique()
         value_counts = df[sc.question].value_counts()
         fig = go.Figure([go.Bar(x=options, y=value_counts)])
-        fig.update_layout(title=sc.question)
+        fig.update_layout(title=sc.question, xaxis_title=sc.question, yaxis_title="Frequency",)
         with open('tmp/bargraphs.html', 'a') as f:
              f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/bargraphs.html"):

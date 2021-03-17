@@ -15,6 +15,12 @@ const QUALITATIVE_ENCODING = '/qualitative-encoding';
 const BARGRAPH = '/bargraph';
 const BOXPLOT = '/boxplot';
 const WORDMAPS = '/wordmaps';
+const SENTIMENT_ANALYSIS = '/sentiment-analysis'; // need to add
+const SENTIMENT_BARGRAPH = '/sentiment-bargraph'; // need to add 
+const SENTIMENT_PIECHART = '/sentiment-piechart';
+const THEMES = '/themes';
+const THEMES_BARGRAPH = '/themes-bargraph';
+const THEMES_PIECHART = '/themes-piechart';
 const PIECHART = '/piechart';
 const CLUSTERED_BARGRAPH = '/clustered-bargraph';
 const STACKED_BARGRAPH = '/stacked-bargraph';
@@ -76,6 +82,50 @@ export class AnalyticsService {
                 wordmaps.push(category.question, cloudData)
             });
             return wordmaps;
+        }));
+    }
+
+    public getUnivariateSentimentBargraph(): Observable<any> {
+        const univariateSentimentBargraphUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${SENTIMENT_BARGRAPH}`;
+        return this.httpClient.get<Chart>(univariateSentimentBargraphUrl).pipe(map(res => {
+            if(res.renderContent != null) {
+                let html = (res.renderContent.toString());
+                html = html.replace(regexFind, PLOTLYJS);
+                return html;
+            }
+        }));
+    }
+
+    public getUnivariateSentimentPiechart(): Observable<any> {
+        const univariateSentimentPiechartUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${SENTIMENT_PIECHART}`;
+        return this.httpClient.get<Chart>(univariateSentimentPiechartUrl).pipe(map(res => {
+            if(res.renderContent != null) {
+                let html = (res.renderContent.toString());
+                html = html.replace(regexFind, PLOTLYJS);
+                return html;
+            }
+        }));
+    }
+
+    public getUnivariateThemesBargraph(): Observable<any> {
+        const univariateThemesBargraphUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${THEMES_BARGRAPH}`;
+        return this.httpClient.get<Chart>(univariateThemesBargraphUrl).pipe(map(res => {
+            if(res.renderContent != null) {
+                let html = (res.renderContent.toString());
+                html = html.replace(regexFind, PLOTLYJS);
+                return html;
+            }
+        }));
+    }
+
+    public getUnivariateThemesPiechart(): Observable<any> {
+        const univariateThemesPiechartUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${THEMES_PIECHART}`;
+        return this.httpClient.get<Chart>(univariateThemesPiechartUrl).pipe(map(res => {
+            if(res.renderContent != null) {
+                let html = (res.renderContent.toString());
+                html = html.replace(regexFind, PLOTLYJS);
+                return html;
+            }
         }));
     }
 

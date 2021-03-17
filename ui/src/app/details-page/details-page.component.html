@@ -6,7 +6,7 @@
     <a class="hover">&emsp;- Bargraphs</a>
     <a class="hover">&emsp;- Piecharts</a>
     <a class="hover">&emsp;- Boxplots</a>
-    <a class="hover">&emsp;- Wordmaps</a>
+    <a class="hover">&emsp;- Free Text Analysis</a>
     <a>Bivariate Analysis:</a>
     <a class="hover">&emsp;- Clustered Bargraphs</a>
     <a class="hover">&emsp;- Stacked Bargraphs</a>
@@ -64,16 +64,18 @@
         </div>
     </div>
 
-    <!-- Wordmaps -->
-    <div id="Wordmaps" class="hide">
-        <h3 class="pstyle title">Wordmaps</h3>
-        <div>
-            <!-- <angular-tag-cloud
+    <!-- Free Text Analysis -->
+    <div id="Free Text Analysis" class="hide">
+        <h3 class="pstyle title">Free Text Analysis</h3>
+        <div *ngIf="!!wordCloudData">
+            <p>here</p>
+            <angular-tag-cloud
               [data]="wordCloudData"
-              [width]="options.width"
-              [height]="options.height"
-              [overflow]="options.overflow">
-            </angular-tag-cloud> -->
+              [width]="0.98"
+              [height]="500"
+              [overflow]="false"
+              [realignOnResize]="true">
+            </angular-tag-cloud>
         </div>
     </div>
 

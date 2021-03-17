@@ -37,13 +37,14 @@
 .logo {
     height: 6rem;
     margin-left: 1rem;
-    margin-top: -2rem;
+    margin-top: -3rem;
 }
 
 iframe {
     border: none;
     height: 90vh;
-    width: 70vw;
+    width: 100%;
+    overflow: visible;
 }
 
 .sidenav {
