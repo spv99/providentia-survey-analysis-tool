@@ -9,16 +9,14 @@ import math
 import os
 
 class Bivariate_Relationship:
-    def __init__(self, question1, question2, pvalue, cramersv):
+    def __init__(self, question1, question2, cramersv):
       self.question1 = question1
       self.question2 = question2
-      self.pvalue = pvalue
       self.cramersv = cramersv
       
     def to_dict(self):
         return {"question1": self.question1, 
                 "question2": self.question2, 
-                "pvalue": self.pvalue, 
                 "cramersv": self.cramersv}
         
 def encode_cols():
@@ -91,21 +89,61 @@ def relationshipStrength():
                 minDim = min(np_array.shape)-1
                 cramers_v = np.sqrt((chi_stat/n) / minDim)
 
-                bi = Bivariate_Relationship(selected_cols[i].question, selected_cols[j].question, p_val, cramers_v)
+                bi = Bivariate_Relationship(selected_cols[i].question, selected_cols[j].question, cramers_v)
                 bi_relats.append(bi)
     return bi_relats
 
-def jsonParseBivarRelationships(bi_relats):
-    bi_relats.sort(key=byCramers)
-    bi_relats_parsed = []
+def visualiseRelationship(bi_relats):
+    if os.path.exists("tmp/bivariate-relationships.html"):
+        os.remove("tmp/bivariate-relationships.html")
+    cramersv=[]
+    questions=[]
     for b in bi_relats:
-        data = b.to_dict()
-        bi_relats_parsed.append(data)
-    return({"bivariate_relationships": bi_relats_parsed})
+        cramersv.append(b.cramersv)
+        questions.append(b.question1 + " and " + b.question2 + "\n")
+    xaxis = [1 for _ in range(len(cramersv))]
+    cramersv.sort(reverse=True)
+    right_pos_cv = [cramersv[i] for i in range(0, len(cramersv), 2)]
+    right_pos_qs = [questions[i] for i in range(0, len(questions), 2)]
+    left_pos_cv = [cramersv[i] for i in range(1, len(cramersv), 2)]
+    left_pos_qs = [questions[i] for i in range(1, len(questions), 2)]
+    right_trace=go.Scatter(
+        x=xaxis,
+        y=right_pos_cv,
+        mode='markers+text',
+        marker_color=right_pos_cv,
+        marker_colorscale=px.colors.sequential.dense,
+        text=right_pos_qs,
+        textposition="middle right",
+        marker=dict(
+            line=dict(width=1, color='DodgerBlue'), size=25,
+        ),
+        hoverinfo="text+y"
+    )
+    left_trace=go.Scatter(
+        x=xaxis,
+        y=left_pos_cv,
+        mode='markers+text',
+        marker_color=left_pos_cv,
+        marker_colorscale=px.colors.sequential.dense,
+        text=left_pos_qs,
+        textposition="middle left",
+        marker=dict(
+            line=dict(width=1, color='DodgerBlue'), size=25,
+        ),
+        hoverinfo="text+y"
+    )
 
-# sort by cramer's v ascending
-def byCramers(elem):
-    return elem.cramersv
+    layout = dict(xaxis=dict(visible=False), showlegend=False)
+    fig = go.Figure([right_trace, left_trace], layout)
+    with open('tmp/bivariate-relationships.html', 'a') as f:
+        f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    if os.path.exists("tmp/bivariate-relationships.html"):
+        file = open("tmp/bivariate-relationships.html", 'r', encoding='utf-8')
+        source_code = file.read()
+        return 'tmp/bivariate-relationships.html', source_code
+    else:
+        return None, None
 
 def scatter_plot():
     if os.path.exists("tmp/scatterplots.html"):
@@ -136,7 +174,8 @@ def scatter_plot():
                 normalised_sizes = []
                 for size in sizes:
                     normalised_sizes.append((size-min(sizes))/(max(sizes)-min(sizes)) * (80 - 20) + 20)
-                fig = go.Figure()
+                update_layout = go.Layout({"showlegend": False})
+                fig = go.Figure(layout= update_layout)
                 fig.add_trace(go.Scatter(
                     x=df[selected_cols[i].question].dropna().tolist(),
                     y=df[selected_cols[j].question].dropna().tolist(),
@@ -144,8 +183,7 @@ def scatter_plot():
                     text=["count:" + str(size) for size in sizes],
                     marker=dict(size=normalised_sizes, sizemode = 'diameter',
                                 line=dict(width=1, color='DarkSlateGrey'),
-                                color=normalised_sizes, colorscale= "dense", showscale=False),
-                    name="Scatter Points"
+                                color=normalised_sizes, colorscale= "dense", showscale=False)
                 ))
                 trendline_fig = px.scatter(x=df[selected_cols[i].question].dropna().tolist(), y=df[selected_cols[j].question].dropna().tolist(), trendline="ols")
                 trendline = trendline_fig.data[1]

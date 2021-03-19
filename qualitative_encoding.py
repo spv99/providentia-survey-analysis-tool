@@ -3,7 +3,9 @@ matplotlib.use('Agg')
 from PIL import Image
 from collections import Counter 
 import matplotlib.pyplot as plt
+from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+from wordcloud import WordCloud
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
@@ -162,38 +164,22 @@ def sentiment_tokens():
         }
     return categories
 
-def sentiment_piechart():
-    if os.path.exists("tmp/sentiment_piechart.html"):
-        os.remove("tmp/sentiment_piechart.html")
+def sentiment_charts():
+    if os.path.exists("tmp/sentiment_charts.html"):
+        os.remove("tmp/sentiment_charts.html")
     neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, questions = sentiment_analysis()
     colors = ['mediumspringgreen', 'tomato', 'dodgerblue']
+    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "bar"}, {"type": "pie"}]])
     for q in range(len(questions)):
-        fig = go.Figure([go.Pie(labels=["Positive", "Negative", "Neutral"], values=[pos_percentage, neg_percentage, neu_percentage])])
-        fig.update_traces(marker=dict(colors=colors))
-        fig.update_layout(title=questions[q])
-        with open('tmp/sentiment_piechart.html', 'a') as f:
+        fig.add_trace(go.Bar(x=["Positive", "Negative", "Neutral"], y=[pos_percentage, neg_percentage, neu_percentage],  marker_color=colors, showlegend=False), row=1, col=1)
+        fig.add_trace(go.Pie(labels=["Positive", "Negative", "Neutral"], values=[pos_percentage, neg_percentage, neu_percentage], marker=dict(colors=colors)), row=1, col=2)
+        fig.update_layout(title=questions[q], xaxis_title="Sentiments", yaxis_title="Frequency")
+        with open('tmp/sentiment_charts.html', 'a') as f:
             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
-    if os.path.exists("tmp/sentiment_piechart.html"):
-        file = open("tmp/sentiment_piechart.html", 'r', encoding='utf-8')
+    if os.path.exists("tmp/sentiment_charts.html"):
+        file = open("tmp/sentiment_charts.html", 'r', encoding='utf-8')
         source_code = file.read() 
-        return 'tmp/sentiment_piechart.html', source_code
-    else:
-        return None, None
-    
-def sentiment_bargraph():
-    if os.path.exists("tmp/sentiment_bargraph.html"):
-        os.remove("tmp/sentiment_bargraph.html")
-    neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, questions = sentiment_analysis()
-    colors = ['mediumspringgreen', 'tomato', 'dodgerblue']
-    for q in range(len(questions)):
-        fig = go.Figure([go.Bar(x=["Positive", "Negative", "Neutral"], y=[pos_percentage, neg_percentage, neu_percentage],  marker_color=colors)])
-        fig.update_layout(title=questions[q])
-        with open('tmp/sentiment_bargraph.html', 'a') as f:
-             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
-    if os.path.exists("tmp/sentiment_bargraph.html"):
-        file = open("tmp/sentiment_bargraph.html", 'r', encoding='utf-8')
-        source_code = file.read() 
-        return 'tmp/sentiment_bargraph.html', source_code
+        return 'tmp/sentiment_charts.html', source_code
     else:
         return None, None
     
@@ -336,10 +322,11 @@ def thematic_analysis():
         }
     return categories, df.columns.values.tolist()
 
-def themes_bargraph():
-    if os.path.exists("tmp/themes_bargraph.html"):
-        os.remove("tmp/themes_bargraph.html")
+def themes_charts():
+    if os.path.exists("tmp/themes_charts.html"):
+        os.remove("tmp/themes_charts.html")
     categories, questions = thematic_analysis()
+    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "bar"}, {"type": "pie"}]])
     for q in questions:
         themes = categories.get(q)
         x = []
@@ -347,71 +334,81 @@ def themes_bargraph():
         for v in themes.get("themes"):
             x.append(themes.get("themes").get(v).get("theme"))
             y.append(len(themes.get("themes").get(v).get("statements")))
-        fig = go.Figure([go.Bar(x=x, y=y)])
-        fig.update_layout(title=q)
-        with open('tmp/themes_bargraph.html', 'a') as f:
+        fig.add_trace(go.Bar(x=x, y=y, showlegend=False), row=1, col=1)
+        fig.add_trace(go.Pie(labels=x, values=y), row=1, col=2)
+        fig.update_layout(title=q, xaxis_title="Themes", yaxis_title="Frequency")
+        with open('tmp/themes_charts.html', 'a') as f:
              f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
-    if os.path.exists("tmp/themes_bargraph.html"):
-        file = open("tmp/themes_bargraph.html", 'r', encoding='utf-8')
+    if os.path.exists("tmp/themes_charts.html"):
+        file = open("tmp/themes_charts.html", 'r', encoding='utf-8')
         source_code = file.read() 
-        return 'tmp/themes_bargraph.html', source_code
-    else:
-        return None, None
-    
-def themes_piechart():
-    if os.path.exists("tmp/themes_piechart.html"):
-        os.remove("tmp/themes_piechart.html")
-    categories, questions = thematic_analysis()
-    for q in questions:
-        themes = categories.get(q)
-        x = []
-        y = []
-        for v in themes.get("themes"):
-            x.append(themes.get("themes").get(v).get("theme"))
-            y.append(len(themes.get("themes").get(v).get("statements")))
-        fig = go.Figure([go.Pie(labels=x, values=y)])
-        fig.update_layout(title=q)
-        with open('tmp/themes_piechart.html', 'a') as f:
-             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
-    if os.path.exists("tmp/themes_piechart.html"):
-        file = open("tmp/themes_piechart.html", 'r', encoding='utf-8')
-        source_code = file.read() 
-        return 'tmp/themes_piechart.html', source_code
+        return 'tmp/themes_charts.html', source_code
     else:
         return None, None
     
 def wordmaps():
+    ## wordmaps package methods - figure out how this is used 
+    
+    path = 'tmp/'
+    #TODO: removing wordmap files not working 
+    #TODO: make separate wordmap.png files as 1
+    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path, i) and 'wordmap' in i)]
+    for f in files:
+        os.remove(f)
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
     df = df.dropna()
-    
+    title = []
+
+    count = 0
     for q in questions:
-        if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
-            del df[q.question]
-            
-    df = df.dropna()
+        if(q.questionType == 'FREE_TEXT' and q.dataType == 'QUALITATIVE'):
+            count += 1
+            title = q.question
+            text = df[q.question].values.tolist()
+            wordcloud = WordCloud(min_font_size=9, max_words=100, title="Test", background_color="white").generate(str(text))
+            plt.figure()
+            plt.imshow(wordcloud, interpolation='bilinear')
+            plt.axis("off")
+            plt.savefig('tmp/wordmap-' + str(count) + '.png')
+    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'wordmap' in i]
+    # TODO: how to return title or add title to image?
+    return "tmp/wordmap-1.png", title
+
+
+    ## kmeans way with tokenisation and nlp:
     
-    categories = []
-    for col in range(len(df.columns)):
-        free_text = df[df.columns.values.tolist()[col]].values.tolist()
-        free_text = str(free_text).replace("'", "")
-        totalvocab_tokenized = []
-        totalvocab_lemmetized = []
-        totalvocab_cleaned = []
-        allwords_tokenized = tokenize_only(str(free_text))
-        totalvocab_tokenized.extend([allwords_tokenized])
-        totalvocab_cleaned = [w for w in totalvocab_tokenized[0] if not w in stop_words]
-        CounterVariable  = Counter(str(totalvocab_cleaned).split())
-        variable = [word for word, word_count in CounterVariable.most_common(30)]
-        counter = [word_count for word, word_count in CounterVariable.most_common(30)]
-        words = []
-        for i in range(0, len(counter)):
-            words.append({
-                "word": variable[i].translate(str.maketrans('', '', string.punctuation)),
-                "count": counter[i] 
-            })
-        categories.append({
-            "question": df.columns[col],
-            "wordmap": words
-        })
-    return categories
+    # df = pickle.load(open("raw_data_store.dat", "rb"))
+    # questions = pickle.load(open("data_store.dat", "rb"))
+    # df = df.dropna()
+    
+    # for q in questions:
+    #     if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
+    #         del df[q.question]
+            
+    # df = df.dropna()
+    
+    # categories = []
+    # for col in range(len(df.columns)):
+    #     free_text = df[df.columns.values.tolist()[col]].values.tolist()
+    #     free_text = str(free_text).replace("'", "")
+    #     totalvocab_tokenized = []
+    #     totalvocab_lemmetized = []
+    #     totalvocab_cleaned = []
+    #     allwords_tokenized = tokenize_only(str(free_text))
+    #     totalvocab_tokenized.extend([allwords_tokenized])
+    #     totalvocab_cleaned = [w for w in totalvocab_tokenized[0] if not w in stop_words]
+    #     CounterVariable  = Counter(str(totalvocab_cleaned).split())
+    #     variable = [word for word, word_count in CounterVariable.most_common(30)]
+    #     counter = [word_count for word, word_count in CounterVariable.most_common(30)]
+    #     words = []
+    #     for i in range(0, len(counter)):
+    #         words.append({
+    #             "word": variable[i].translate(str.maketrans('', '', string.punctuation)),
+    #             "count": counter[i] 
+    #         })
+    #     categories.append({
+    #         "question": df.columns[col],
+    #         "wordmap": words
+    #     })
+    # return categories

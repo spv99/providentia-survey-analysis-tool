@@ -6,8 +6,12 @@
     <a class="hover">&emsp;- Bargraphs</a>
     <a class="hover">&emsp;- Piecharts</a>
     <a class="hover">&emsp;- Boxplots</a>
-    <a class="hover">&emsp;- Free Text Analysis</a>
+    <a>Free Text Analysis</a>
+    <a class="hover">&emsp;- Sentiment Analysis</a>
+    <a class="hover">&emsp;- Thematic Analysis</a>
+    <a class="hover">&emsp;- Wordmaps</a>
     <a>Bivariate Analysis:</a>
+    <a class="hover">&emsp;- Bivariate Relationships</a>
     <a class="hover">&emsp;- Clustered Bargraphs</a>
     <a class="hover">&emsp;- Stacked Bargraphs</a>
     <a class="hover">&emsp;- Scatter Plots</a>
@@ -64,18 +68,42 @@
         </div>
     </div>
 
-    <!-- Free Text Analysis -->
-    <div id="Free Text Analysis" class="hide">
-        <h3 class="pstyle title">Free Text Analysis</h3>
-        <div *ngIf="!!wordCloudData">
-            <p>here</p>
-            <angular-tag-cloud
-              [data]="wordCloudData"
-              [width]="0.98"
-              [height]="500"
-              [overflow]="false"
-              [realignOnResize]="true">
+    <!-- Wordmaps-->
+    <div id="Wordmaps" class="hide">
+        <h3 class="pstyle title">Wordmaps</h3>
+        <img [src]="wordcloudImage"
+            alt="Wordcloud showing top themes from free text responses">
+        <!-- <div *ngIf="!!wordCloudData">
+            <angular-tag-cloud [data]="wordCloudData" [width]="0.98" [height]="500" [overflow]="false"
+                [realignOnResize]="true">
             </angular-tag-cloud>
+        </div> -->
+    </div>
+
+    <!-- Sentiment Analysis-->
+    <div id="Sentiment Analysis" class="hide">
+        <h3 class="pstyle title">Sentiment Analysis</h3>
+        <br>
+        <div id="sentiment-charts-box" class="col">
+            <iframe id="sentiment-charts" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- Thematic Analysis-->
+    <div id="Thematic Analysis" class="hide">
+        <h3 class="pstyle title">Thematic Analysis</h3>
+        <br>
+        <div id="themes-charts-box" class="col">
+            <iframe id="themes-charts" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- Bivariate Relationships -->
+    <div id="Bivariate Relationships" class="hide">
+        <h3 class="pstyle title">Bivariate Relationships</h3>
+        <br>
+        <div id="bivariate-relationships-box" class="col">
+            <iframe id="bivariate-relationships" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -88,8 +116,8 @@
         </div>
     </div>
 
-     <!-- Stacked Bargraphs -->
-     <div id="Stacked Bargraphs" class="hide">
+    <!-- Stacked Bargraphs -->
+    <div id="Stacked Bargraphs" class="hide">
         <h3 class="pstyle title">Stacked Bargraphs</h3>
         <br>
         <div id="stacked-bargraph-box" class="col">
@@ -97,8 +125,8 @@
         </div>
     </div>
 
-     <!-- Scatter Plots -->
-     <div id="Scatter Plots" class="hide">
+    <!-- Scatter Plots -->
+    <div id="Scatter Plots" class="hide">
         <h3 class="pstyle title">Scatter Plots</h3>
         <br>
         <div id="scatter-plots-box" class="col">

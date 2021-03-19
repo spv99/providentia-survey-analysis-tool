@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './details-page.service';
 import { CloudData, CloudOptions } from 'angular-tag-cloud-module';
+import { BivariateRelationship } from '../models/bivariate_relationship.model';
 
 @Component({
   selector: 'app-details-page',
@@ -12,6 +13,8 @@ export class DetailsPageComponent implements OnInit {
   public data: any;
   public wordCloudData: CloudData[];
   public dataMap = new Map();
+  public bivariateRelationships: BivariateRelationship;
+  public wordcloudImage: any;
 
   constructor(private analyticsService: AnalyticsService) { }
 
@@ -31,24 +34,23 @@ export class DetailsPageComponent implements OnInit {
     });
 
     this.analyticsService.getUnivariateWordmaps().subscribe(data => {
-      this.wordCloudData = data[1];    
-      console.log(this.wordCloudData)
+      // this.wordCloudData = data[1];    
+      // console.log(this.wordCloudData)
+      this.analyticsService.getUnivariateWordmaps().subscribe(data => {
+        this.createImageFromBlob(data);
+      });
     });
 
-    this.analyticsService.getUnivariateSentimentBargraph().subscribe(data => {
-      this.dataMap.set("sentiment-bargraph", data);
+    this.analyticsService.getSentimentCharts().subscribe(data => {
+      this.dataMap.set("sentiment-charts", data);
     });
 
-    this.analyticsService.getUnivariateSentimentPiechart().subscribe(data => {
-      this.dataMap.set("sentiment-piechart", data);
+    this.analyticsService.getThemesCharts().subscribe(data => {
+      this.dataMap.set("themes-charts", data);
     });
 
-    this.analyticsService.getUnivariateThemesBargraph().subscribe(data => {
-      this.dataMap.set("themes-bargraph", data);
-    });
-
-    this.analyticsService.getUnivariateThemesPiechart().subscribe(data => {
-      this.dataMap.set("themes-piechart", data);
+    this.analyticsService.getBivariateRelationships().subscribe(data => {
+      this.dataMap.set("bivariate-relationships", data);
     });
 
     this.analyticsService.getBivariateClusteredBargraph().subscribe(data => {
@@ -91,11 +93,11 @@ export class DetailsPageComponent implements OnInit {
         selectedPage.className = selectedPage.className.replace("hide", "view");
 
         // injecting new active tab's iframe where appropriate
-        if (selectedPage.id != "Free Text Analysis") {
+        if (selectedPage.id != "Wordmaps") {
           let iframe = selectedPage.getElementsByTagName("iframe")[0].id;
           let data = this.dataMap.get(iframe);
           this.injectHTML(iframe, data)
-        }
+        } 
       });
     }
   }
@@ -119,5 +121,16 @@ export class DetailsPageComponent implements OnInit {
     iFrame.width = iFrame.contentWindow.document.body.scrollWidth + "px";
     iFrame.height = iFrame.contentWindow.document.body.scrollHeight + "px";
   }
+
+  public createImageFromBlob(image: Blob) {
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+       this.wordcloudImage = reader.result;
+    }, false);
+ 
+    if (image) {
+       reader.readAsDataURL(image);
+    }
+ }
 
 }

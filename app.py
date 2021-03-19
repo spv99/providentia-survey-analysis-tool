@@ -1,4 +1,4 @@
-from flask import Flask, make_response, render_template, request, abort
+from flask import Flask, make_response, render_template, request, abort, send_file
 from flask_restplus import Api, Resource
 from werkzeug.datastructures import FileStorage
 import pickle
@@ -71,8 +71,8 @@ class Boxplot(Resource):
 class BivariateRelationships(Resource):
     def get(self):
         bi_relats = bivariate_analysis.relationshipStrength()
-        json_bi_relats = bivariate_analysis.jsonParseBivarRelationships(bi_relats)
-        return json_bi_relats
+        birelationshipHTML, relationshipContent = bivariate_analysis.visualiseRelationship(bi_relats)
+        return {"fileLocation": birelationshipHTML, "renderContent": relationshipContent}
     
 @bivar_analysis.route('/clustered-bargraph')
 class ClusteredBargraph(Resource):
@@ -116,44 +116,34 @@ class PcaRespondents(Resource):
         pcaHTML, pcaContent, cluster_profiles = multivariate_analysis.pca_respondents()
         return {"fileLocation": pcaHTML, "renderContent": pcaContent, "cluster_profiles": cluster_profiles}
     
-@qual_encoding.route('/sentiment-piechart')
-class SentimentPiechart(Resource):
-    def get(self):
-        sentimentHTML, sentimentContent = qualitative_encoding.sentiment_piechart()
-        return {"fileLocation": sentimentHTML, "renderContent": sentimentContent}
-    
-@qual_encoding.route('/sentiment-bargraph')
-class SentimentBargraph(Resource):
-    def get(self):
-        sentimentHTML, sentimentContent = qualitative_encoding.sentiment_bargraph()
-        return {"fileLocation": sentimentHTML, "renderContent": sentimentContent}
-    
 @qual_encoding.route('/sentiment-analysis')
 class SentimentAnalysis(Resource):
     def get(self):
         categories = qualitative_encoding.sentiment_tokens()
         return {"categories": categories}
     
-@qual_encoding.route('/themes')
+@qual_encoding.route('/sentiment-charts')
+class SentimentBargraph(Resource):
+    def get(self):
+        sentimentHTML, sentimentContent = qualitative_encoding.sentiment_charts()
+        return {"fileLocation": sentimentHTML, "renderContent": sentimentContent}
+    
+@qual_encoding.route('/thematic-analysis')
 class Themes(Resource):
     def get(self):
         categories = qualitative_encoding.thematic_analysis()
         return {"categories": categories}
     
-@qual_encoding.route('/themes-bargraph')
+@qual_encoding.route('/themes-charts')
 class ThemesBargraph(Resource):
     def get(self):
-        themesHTML, themesContent = qualitative_encoding.themes_bargraph()
-        return {"fileLocation": themesHTML, "renderContent": themesContent}
-    
-@qual_encoding.route('/themes-piechart')
-class ThemesBargraph(Resource):
-    def get(self):
-        themesHTML, themesContent = qualitative_encoding.themes_piechart()
+        themesHTML, themesContent = qualitative_encoding.themes_charts()
         return {"fileLocation": themesHTML, "renderContent": themesContent}
     
 @qual_encoding.route('/wordmaps')
 class Wordmaps(Resource):
     def get(self):
-        categories = qualitative_encoding.wordmaps()
-        return {"categories": categories}
+        # categories = qualitative_encoding.wordmaps()
+        # return {"categories": categories}
+        img, title = qualitative_encoding.wordmaps()
+        return send_file(img, mimetype='image/png', attachment_filename='wordmap.png')

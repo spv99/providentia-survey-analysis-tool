@@ -5,6 +5,7 @@ import {environment} from "src/environments/environment";
 import {map} from "rxjs/operators";
 import { Chart } from "../models/chart.model";
 import { Wordmap } from "../models/wordmap.model";
+import { BivariateRelationship } from "../models/bivariate_relationship.model";
 
 const PLOTLYJS = '../../assets/plotly.js';
 const regexFind = 'https://cdn.plot.ly/plotly-latest.min.js';
@@ -15,18 +16,17 @@ const QUALITATIVE_ENCODING = '/qualitative-encoding';
 const BARGRAPH = '/bargraph';
 const BOXPLOT = '/boxplot';
 const WORDMAPS = '/wordmaps';
-const SENTIMENT_ANALYSIS = '/sentiment-analysis'; // need to add
-const SENTIMENT_BARGRAPH = '/sentiment-bargraph'; // need to add 
-const SENTIMENT_PIECHART = '/sentiment-piechart';
-const THEMES = '/themes';
-const THEMES_BARGRAPH = '/themes-bargraph';
-const THEMES_PIECHART = '/themes-piechart';
+const SENTIMENT_ANALYSIS = '/sentiment-analysis';
+const SENTIMENT_CHARTS = '/sentiment-charts';
+const THEMATIC_ANALYSIS = '/themes-analysis';
+const THEMES_CHARTS = '/themes-charts';
 const PIECHART = '/piechart';
 const CLUSTERED_BARGRAPH = '/clustered-bargraph';
 const STACKED_BARGRAPH = '/stacked-bargraph';
 const SCATTER_PLOT = "/scatter-plot";
 const TREEMAP = '/treemap';
 const SUNBURST = '/sunburst';
+const BIVAR_RELATIONSHIPS = '/bivariate-relationships';
 
 @Injectable()
 export class AnalyticsService {
@@ -67,27 +67,28 @@ export class AnalyticsService {
         }));
     }
 
-    public getUnivariateWordmaps(): Observable<any> {
+    public getUnivariateWordmaps(): Observable<Blob> {
         const univariateWordmapsUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${WORDMAPS}`;
-        let wordmaps = [];
-        return this.httpClient.get<Wordmap>(univariateWordmapsUrl).pipe(map(res => {
-            res.categories.forEach(category => {
-                let cloudData = [];
-                category.wordmap.forEach(word => {
-                    cloudData.push({
-                        "text": word.word,
-                        "weight": word.count
-                    })
-                });
-                wordmaps.push(category.question, cloudData)
-            });
-            return wordmaps;
+        // let wordmaps = [];
+        return this.httpClient.get(univariateWordmapsUrl, { responseType: 'blob' }).pipe(map(res => {
+            return res;
+            // res.categories.forEach(category => {
+            //     let cloudData = [];
+            //     category.wordmap.forEach(word => {
+            //         cloudData.push({
+            //             "text": word.word,
+            //             "weight": word.count
+            //         })
+            //     });
+            //     wordmaps.push(category.question, cloudData)
+            // });
+            // return wordmaps;
         }));
     }
 
-    public getUnivariateSentimentBargraph(): Observable<any> {
-        const univariateSentimentBargraphUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${SENTIMENT_BARGRAPH}`;
-        return this.httpClient.get<Chart>(univariateSentimentBargraphUrl).pipe(map(res => {
+    public getSentimentCharts(): Observable<any> {
+        const sentimentChartsUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${SENTIMENT_CHARTS}`;
+        return this.httpClient.get<Chart>(sentimentChartsUrl).pipe(map(res => {
             if(res.renderContent != null) {
                 let html = (res.renderContent.toString());
                 html = html.replace(regexFind, PLOTLYJS);
@@ -96,9 +97,9 @@ export class AnalyticsService {
         }));
     }
 
-    public getUnivariateSentimentPiechart(): Observable<any> {
-        const univariateSentimentPiechartUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${SENTIMENT_PIECHART}`;
-        return this.httpClient.get<Chart>(univariateSentimentPiechartUrl).pipe(map(res => {
+    public getThemesCharts(): Observable<any> {
+        const themesChartsUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${THEMES_CHARTS}`;
+        return this.httpClient.get<Chart>(themesChartsUrl).pipe(map(res => {
             if(res.renderContent != null) {
                 let html = (res.renderContent.toString());
                 html = html.replace(regexFind, PLOTLYJS);
@@ -107,20 +108,9 @@ export class AnalyticsService {
         }));
     }
 
-    public getUnivariateThemesBargraph(): Observable<any> {
-        const univariateThemesBargraphUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${THEMES_BARGRAPH}`;
-        return this.httpClient.get<Chart>(univariateThemesBargraphUrl).pipe(map(res => {
-            if(res.renderContent != null) {
-                let html = (res.renderContent.toString());
-                html = html.replace(regexFind, PLOTLYJS);
-                return html;
-            }
-        }));
-    }
-
-    public getUnivariateThemesPiechart(): Observable<any> {
-        const univariateThemesPiechartUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${THEMES_PIECHART}`;
-        return this.httpClient.get<Chart>(univariateThemesPiechartUrl).pipe(map(res => {
+    public getBivariateRelationships(): Observable<any> {
+        const bivariateRelationshipsUrl: string = this.baseUrl + `${BIVARIATE_ANALYSIS}${BIVAR_RELATIONSHIPS}`;
+        return this.httpClient.get<Chart>(bivariateRelationshipsUrl).pipe(map(res => {
             if(res.renderContent != null) {
                 let html = (res.renderContent.toString());
                 html = html.replace(regexFind, PLOTLYJS);
