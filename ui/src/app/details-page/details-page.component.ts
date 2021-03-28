@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './details-page.service';
 import { CloudData, CloudOptions } from 'angular-tag-cloud-module';
 import { BivariateRelationship } from '../models/bivariate_relationship.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as $ from "jquery";
 
 @Component({
   selector: 'app-details-page',
@@ -15,11 +17,27 @@ export class DetailsPageComponent implements OnInit {
   public dataMap = new Map();
   public bivariateRelationships: BivariateRelationship;
   public wordcloudImage: any;
+  public form: FormGroup;
+  public generatedPreview = false;
 
-  constructor(private analyticsService: AnalyticsService) { }
+  constructor(private analyticsService: AnalyticsService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.changeActiveTab();
+
+    this.form = this.formBuilder.group({
+      bargraph: [false],
+      piechart: [false],
+      boxplot: [false],
+      sentimentAnalysis: [false],
+      thematicAnalysis: [false],
+      bivariateRelationship: [false],
+      clusteredBargraph: [false],
+      stackedBargraph: [false],
+      scatterPlot: [false],
+      sunburstChart: [false],
+      treemapChart: [false]
+    });
 
     this.analyticsService.getUnivariateBargraph().subscribe(data => {
       this.dataMap.set("bargraphs", data);
@@ -93,7 +111,7 @@ export class DetailsPageComponent implements OnInit {
         selectedPage.className = selectedPage.className.replace("hide", "view");
 
         // injecting new active tab's iframe where appropriate
-        if (selectedPage.id != "Wordmaps") {
+        if (selectedPage.id != "Wordmaps" && selectedPage.id != "Insights Overview" && selectedPage.id != "Export Report") {
           let iframe = selectedPage.getElementsByTagName("iframe")[0].id;
           let data = this.dataMap.get(iframe);
           this.injectHTML(iframe, data)
@@ -131,6 +149,21 @@ export class DetailsPageComponent implements OnInit {
     if (image) {
        reader.readAsDataURL(image);
     }
+ }
+
+ public generatePreview(): void {
+    let serialisedForm = JSON.stringify(this.form.value);
+    const formObject = JSON.parse(serialisedForm);
+    const formControlNames = ["bargraph","piechart","boxplot","sentimentAnalysis","thematicAnalysis","bivariateRelationship","clusteredBargraph","stackedBargraph","scatterPlot","sunburstChart","treemapChart"];
+    let selectedGraphs = []
+    formControlNames.forEach(checkboxName => {
+      if(formObject[checkboxName] === true) {
+        let element = <HTMLInputElement> document.querySelector("input[formControlName='" + checkboxName + "']") as HTMLInputElement;
+        selectedGraphs.push(element.value)
+      }
+    })
+    console.log(selectedGraphs)
+    
  }
 
 }

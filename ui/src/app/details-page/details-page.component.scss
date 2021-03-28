@@ -34,6 +34,10 @@
     cursor: pointer;
 }
 
+.emphasis {
+    color: #d83a96;
+}
+
 .logo {
     height: 6rem;
     margin-left: 1rem;
@@ -99,12 +103,31 @@ iframe {
 
 // Insights Overview
 
-.graphic {
+.overview-graphic {
     height: 20rem;
     display: block;
     margin-left: auto;
     margin-right: auto;
     margin-top: 3rem;
 }
+
+// Export report
+
+.export-graphic {
+    height: 20rem;
+    display: block;
+    margin-left: auto;
+    margin-right: 2rem;
+    margin-top: -4rem;
+}
+
+.btn.btn-primary {
+    background-color: #013a83;
+    border-color: #013a83;
+    width: 12rem;
+    border-radius: 40px;
+    margin-top: 2rem;
+}
+
 
 // Wordmaps

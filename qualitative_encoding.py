@@ -287,7 +287,7 @@ def thematic_analysis():
             else:
                 break
 
-        num_clusters = k_num - 1
+        num_clusters = k_num
         print(num_clusters)
         km = KMeans(n_clusters=num_clusters, max_iter=10)
         km.fit(tfidf_matrix)

@@ -3,17 +3,17 @@
     <a class="hover active">Insights Overview</a>
     <a class="hover">Export Report</a>
     <a>Univariate Analysis:</a>
-    <a class="hover">&emsp;- Bargraphs</a>
-    <a class="hover">&emsp;- Piecharts</a>
-    <a class="hover">&emsp;- Boxplots</a>
+    <a class="hover">&emsp;- Bar Graphs</a>
+    <a class="hover">&emsp;- Pie Charts</a>
+    <a class="hover">&emsp;- Box Plots</a>
     <a>Free Text Analysis</a>
     <a class="hover">&emsp;- Sentiment Analysis</a>
     <a class="hover">&emsp;- Thematic Analysis</a>
     <a class="hover">&emsp;- Wordmaps</a>
     <a>Bivariate Analysis:</a>
     <a class="hover">&emsp;- Bivariate Relationships</a>
-    <a class="hover">&emsp;- Clustered Bargraphs</a>
-    <a class="hover">&emsp;- Stacked Bargraphs</a>
+    <a class="hover">&emsp;- Clustered Bar Graphs</a>
+    <a class="hover">&emsp;- Stacked Bar Graphs</a>
     <a class="hover">&emsp;- Scatter Plots</a>
     <a>Multivariate Analysis:</a>
     <a class="hover">&emsp;- Sunburst Chart</a>
@@ -32,18 +32,51 @@
             them and the strength of their correlation.</p>
         <p class="text">Multivariate analysis occurs when three or more variables are being analysed, having multiple
             intercorrelations and relationships between each variable.</p>
-        <img class="graphic" src="assets/insights-overview-graphic.png">
+        <img class="overview-graphic" src="assets/insights-overview-graphic.png">
     </div>
 
     <!-- Export Report -->
     <div id="Export Report" class="hide">
         <h3 class="pstyle title">Export Report</h3>
         <br>
+        <p class="text">Select the charts that you would like to export and we will <span class="emphasis"> generate a preview </span>for you</p>
+        <p class="text">Once you are happy with your preview, click the <span class="emphasis"> Export </span> button and choose your desired output option</p>
+        <br>
+        <div class="row">
+            <div class="col-4">
+                <p class="text">Charts Available for Export:</p>
+                <form [formGroup]="form">
+                    <div class="form-group form-check">
+                        <input class="form-check-input text" type="checkbox" value="Bar Graphs" formControlName="bargraph"> Bar Graphs<br>
+                        <input class="form-check-input text" type="checkbox" value="Pie Charts" formControlName="piechart"> Pie Charts<br>
+                        <input class="form-check-input text" type="checkbox" value="Box Plots" formControlName="boxplot"> Box Plots<br>
+                        <input class="form-check-input text" type="checkbox" value="Sentiment Analysis" formControlName="sentimentAnalysis"> Sentiment Analysis<br>
+                        <input class="form-check-input text" type="checkbox" value="Thematic Analysis" formControlName="thematicAnalysis"> Thematic Analysis<br>
+                        <!-- <input class="form-check-input text" type="checkbox"> Wordmaps<br> -->
+                        <input class="form-check-input text" type="checkbox" value="Bivariate Relationships" formControlName="bivariateRelationship"> Bivariate Relationships<br>
+                        <input class="form-check-input text" type="checkbox" value="Clustered Bar Graphs" formControlName="clusteredBargraph"> Clustered Bar Graphs<br>
+                        <input class="form-check-input text" type="checkbox" value="Stacked Bar Graphs" formControlName="stackedBargraph"> Stacked Bar Graphs<br>
+                        <input class="form-check-input text" type="checkbox" value="Scatter Plots" formControlName="scatterPlot"> Scatter Plots<br>
+                        <input class="form-check-input text" type="checkbox" value="Sunburst Chart" formControlName="sunburstChart"> Sunburst Chart<br>
+                        <input class="form-check-input text" type="checkbox" value="Treemap Chart" formControlName="treemapChart"> Treemap Chart<br>
+                    </div>
+                    <button type="button" class="btn btn-primary" (click)="generatePreview()">Generate Preview</button>
+                </form>
+            </div>
+            <div class="col-4">
+                <!-- <p class="text">Export Output File Type:</p>
+                <div class="form-check">
+                    <input class="form-check-input text" type="checkbox">html<br>
+                    <input class="form-check-input text" type="checkbox">pdf<br>
+                </div> -->
+            </div>
+        </div>
+        <img class="export-graphic" src="assets/export-icon.png">
     </div>
 
     <!-- Bargraphs -->
-    <div id="Bargraphs" class="hide">
-        <h3 class="pstyle title">Bargraphs</h3>
+    <div id="Bar Graphs" class="hide">
+        <h3 class="pstyle title">Bar Graphs</h3>
         <br>
         <div id="bargraphs-box" class="col">
             <iframe id="bargraphs" src="about:blank"></iframe>
@@ -51,8 +84,8 @@
     </div>
 
     <!-- Piecharts -->
-    <div id="Piecharts" class="hide">
-        <h3 class="pstyle title">Piecharts</h3>
+    <div id="Pie Charts" class="hide">
+        <h3 class="pstyle title">Pie Charts</h3>
         <br>
         <div id="piecharts-box" class="col">
             <iframe id="piecharts" src="about:blank"></iframe>
@@ -60,8 +93,8 @@
     </div>
 
     <!-- Boxplots -->
-    <div id="Boxplots" class="hide">
-        <h3 class="pstyle title">Boxplots</h3>
+    <div id="Box Plots" class="hide">
+        <h3 class="pstyle title">Box Plots</h3>
         <br>
         <div id="boxplots-box" class="col">
             <iframe id="boxplots" src="about:blank"></iframe>
@@ -108,8 +141,8 @@
     </div>
 
     <!-- Clustered Bargraphs -->
-    <div id="Clustered Bargraphs" class="hide">
-        <h3 class="pstyle title">Clustered Bargraphs</h3>
+    <div id="Clustered Bar Graphs" class="hide">
+        <h3 class="pstyle title">Clustered Bar Graphs</h3>
         <br>
         <div id="clustered-bargraph-box" class="col">
             <iframe id="clustered-bargraph" src="about:blank"></iframe>
@@ -117,8 +150,8 @@
     </div>
 
     <!-- Stacked Bargraphs -->
-    <div id="Stacked Bargraphs" class="hide">
-        <h3 class="pstyle title">Stacked Bargraphs</h3>
+    <div id="Stacked Bar Graphs" class="hide">
+        <h3 class="pstyle title">Stacked Bar Graphs</h3>
         <br>
         <div id="stacked-bargraph-box" class="col">
             <iframe id="stacked-bargraph" src="about:blank"></iframe>
