@@ -227,6 +227,7 @@ def sunburst():
     df = df.groupby(col_names)["count"].count().reset_index()
     df = df.sort_values(by=["count"], ascending=False)
     fig = px.sunburst(df, path=col_names, values='count', color ='count', color_continuous_scale='dense')
+    # fig.update_layout(uniformtext_minsize=8, uniformtext_mode='show')
     with open('tmp/sunburst.html', 'a') as f:
         f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/sunburst.html"):

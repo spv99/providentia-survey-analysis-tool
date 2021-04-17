@@ -1,0 +1,33 @@
+.body {
+    font-family: Bahnschrift;
+}
+
+.pstyle.title {
+    line-height: 38px;
+    font-size: 38px;
+    text-align: center;
+}
+
+.pstyle.subtitle {
+    font-weight: 200;
+    line-height: 38px;
+    text-align: left;
+    margin-top: 4rem;
+    font-size: 30px;
+    margin-left: 2rem;
+}
+
+.pstyle {
+    font-weight: 250;
+    font-size: 25px;
+    margin-top: 2rem;
+    line-height: 0.4rem;
+}
+
+iframe {
+    border: none;
+    height: 90vh;
+    width: 100%;
+    overflow: visible;
+}
+

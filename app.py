@@ -126,7 +126,8 @@ class SentimentAnalysis(Resource):
 class SentimentBargraph(Resource):
     def get(self):
         sentimentHTML, sentimentContent = qualitative_encoding.sentiment_charts()
-        return {"fileLocation": sentimentHTML, "renderContent": sentimentContent}
+        categories = qualitative_encoding.sentiment_tokens()
+        return {"fileLocation": sentimentHTML, "renderContent": sentimentContent, "categories": categories}
     
 @qual_encoding.route('/thematic-analysis')
 class Themes(Resource):
@@ -147,3 +148,10 @@ class Wordmaps(Resource):
         # return {"categories": categories}
         img, title = qualitative_encoding.wordmaps()
         return send_file(img, mimetype='image/png', attachment_filename='wordmap.png')
+    
+@qual_encoding.route('/questions')
+class FreeTextQuestions(Resource):
+    def get(self):
+        questions =  qualitative_encoding.free_text_questions()
+        print(questions)
+        return {"questions": questions}

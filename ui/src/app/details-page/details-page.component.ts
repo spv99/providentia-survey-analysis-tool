@@ -3,7 +3,8 @@ import { AnalyticsService } from './details-page.service';
 import { CloudData, CloudOptions } from 'angular-tag-cloud-module';
 import { BivariateRelationship } from '../models/bivariate_relationship.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import * as $ from "jquery";
+import { Router } from '@angular/router';
+import { ProvidentiaService } from '../providentia/providentia.service';
 
 @Component({
   selector: 'app-details-page',
@@ -11,16 +12,19 @@ import * as $ from "jquery";
   styleUrls: ['./details-page.component.scss']
 })
 
-export class DetailsPageComponent implements OnInit {
+export class DetailsPageComponent implements OnInit  {
   public data: any;
   public wordCloudData: CloudData[];
   public dataMap = new Map();
   public bivariateRelationships: BivariateRelationship;
   public wordcloudImage: any;
   public form: FormGroup;
-  public generatedPreview = false;
 
-  constructor(private analyticsService: AnalyticsService, private formBuilder: FormBuilder) { }
+  constructor(
+    private analyticsService: AnalyticsService, 
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private localStorageService: ProvidentiaService) { }
 
   ngOnInit() {
     this.changeActiveTab();
@@ -152,18 +156,35 @@ export class DetailsPageComponent implements OnInit {
  }
 
  public generatePreview(): void {
+   this.localStorageService.clear();
     let serialisedForm = JSON.stringify(this.form.value);
     const formObject = JSON.parse(serialisedForm);
-    const formControlNames = ["bargraph","piechart","boxplot","sentimentAnalysis","thematicAnalysis","bivariateRelationship","clusteredBargraph","stackedBargraph","scatterPlot","sunburstChart","treemapChart"];
+    const formControlNames = 
+      [["bargraph", "bargraphs"],
+      ["piechart", "piecharts"],
+      ["boxplot", "boxplot"], 
+      ["sentimentAnalysis", "sentiment-charts"],
+      ["thematicAnalysis", "themes-charts"],
+      ["bivariateRelationship", "bivariate-relationships"],
+      ["clusteredBargraph", "clustered-bargraph"],
+      ["stackedBargraph", "stacked-bargraph"], 
+      ["scatterPlot", "scatter-plots"],
+      ["sunburstChart", "sunburst"],
+      ["treemapChart", "treemap"]];
     let selectedGraphs = []
     formControlNames.forEach(checkboxName => {
-      if(formObject[checkboxName] === true) {
-        let element = <HTMLInputElement> document.querySelector("input[formControlName='" + checkboxName + "']") as HTMLInputElement;
-        selectedGraphs.push(element.value)
+      if(formObject[checkboxName[0]] === true) {
+        let element = <HTMLInputElement> document.querySelector("input[formControlName='" + checkboxName[0] + "']") as HTMLInputElement;
+        selectedGraphs.push([element.value, checkboxName[1]]);
       }
-    })
-    console.log(selectedGraphs)
-    
+    });
+    selectedGraphs.forEach(selectedGraph => {
+      let graph = document.getElementById(selectedGraph[0]);
+      graph.className = graph.className.replace("hide", "view");
+      this.localStorageService.set(selectedGraph[0], this.dataMap.get(selectedGraph[1]));
+    });
+    const link = 'providentia/results/preview';
+    this.router.navigate([]).then(result => {  window.open(link, '_blank'); });
  }
 
 }

@@ -17,6 +17,18 @@ from nltk.corpus import stopwords
 stop_words = stopwords.words('english')
 import math, csv, operator, re, os, pickle, string
 
+def free_text_questions():
+    df = pickle.load(open("raw_data_store.dat", "rb"))
+    questions = pickle.load(open("data_store.dat", "rb"))
+    df = df.dropna()
+    cols = []
+    
+    for q in questions:
+        if(q.questionType == 'FREE_TEXT' and q.dataType == 'QUALITATIVE'):
+            cols.append(q.question)
+            
+    return cols      
+
 def remove_noise(tokens, stop_words = ()):
     cleaned_tokens = []
     for token, tag in pos_tag(tokens):
@@ -111,7 +123,7 @@ def sentiment_analysis():
 
 def sentiment_tokens():
     neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, questions = sentiment_analysis()
-    categories = {}            
+    categories = []            
     lexicon = dict()
     with open('csv/subjectivity-lexicon.csv', 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
@@ -154,14 +166,15 @@ def sentiment_tokens():
         else:
             neu_tokens = []
             
-        categories[questions[q]] = {
+        categories.append({
+            "question": questions[q],
             "pos_tokens": pos_tokens,
             "positive_statements": pos_sentiments, 
             "neg_tokens": neg_tokens,
             "negative_statements": neg_sentiments, 
             "neu_tokens": neu_tokens,
             "neutral_statements": neu_sentiments
-        }
+        })
     return categories
 
 def sentiment_charts():

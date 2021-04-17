@@ -47,6 +47,7 @@
                 <p class="text">Charts Available for Export:</p>
                 <form [formGroup]="form">
                     <div class="form-group form-check">
+                        <!-- Select All option -->
                         <input class="form-check-input text" type="checkbox" value="Bar Graphs" formControlName="bargraph"> Bar Graphs<br>
                         <input class="form-check-input text" type="checkbox" value="Pie Charts" formControlName="piechart"> Pie Charts<br>
                         <input class="form-check-input text" type="checkbox" value="Box Plots" formControlName="boxplot"> Box Plots<br>
@@ -60,7 +61,7 @@
                         <input class="form-check-input text" type="checkbox" value="Sunburst Chart" formControlName="sunburstChart"> Sunburst Chart<br>
                         <input class="form-check-input text" type="checkbox" value="Treemap Chart" formControlName="treemapChart"> Treemap Chart<br>
                     </div>
-                    <button type="button" class="btn btn-primary" (click)="generatePreview()">Generate Preview</button>
+                    <button type="button" class="btn btn-primary" (click)="generatePreview(content)">Generate Preview</button>
                 </form>
             </div>
             <div class="col-4">
@@ -186,3 +187,9 @@
     </div>
 
 </main>
+
+
+        <!-- <div *ngFor="let graph of exportGraphs">
+            <div *ngIf="graph" [innerHTML]="graph"></div>
+        </div> -->
+  
