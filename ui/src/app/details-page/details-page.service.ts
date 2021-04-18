@@ -92,7 +92,7 @@ export class AnalyticsService {
             if(res.renderContent != null) {
                 let html = (res.renderContent.toString());
                 html = html.replace(regexFind, PLOTLYJS);
-                return [res.categories, html];
+                return html;
             }
         }));
     }

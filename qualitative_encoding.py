@@ -64,7 +64,7 @@ def sentiment_analysis():
             del df[q.question]
             
     df = df.dropna()
-    
+    sentiment_data = []
     for col in range(len(df.columns)):    
         lexicon = dict()
         with open('csv/subjectivity-lexicon.csv', 'r') as csvfile:
@@ -119,74 +119,90 @@ def sentiment_analysis():
         for text_dict in neutral_text:
             neutral_sentiments.append(text_dict['original'])
     
-    return negative_percentage, positive_percentage, neutral_percentage, negative_sentiments, positive_sentiments, neutral_sentiments, df.columns.values.tolist()
+        sentiment_data.append([negative_percentage, positive_percentage, neutral_percentage, negative_sentiments, positive_sentiments, neutral_sentiments, df.columns[col]])
+    return sentiment_data
 
-def sentiment_tokens():
-    neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, questions = sentiment_analysis()
-    categories = []            
+def sentiment_data_tokens(neg_sentiments, pos_sentiments, neu_sentiments):
     lexicon = dict()
     with open('csv/subjectivity-lexicon.csv', 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for row in reader:
             lexicon[row[0]] = int(row[1])
-    for q in range(len(questions)):        
-        if(len(pos_sentiments) > 5):
-            pos_tokens = []
-            scrubbed = []
-            for pos in pos_sentiments:
-                for word in pos.split():
-                    if word in lexicon:
-                        scrubbed.append(word)
-            CounterVariable  = Counter(str(scrubbed).split())
-            pos_tokens = [word for word, word_count in CounterVariable.most_common(10)]                
-        else:
-            pos_tokens = []
-            
-        if(len(neg_sentiments) > 5):
-            neg_tokens = []
-            scrubbed = []
-            for neg in neg_sentiments:
-                for word in neg.split():
-                    if word in lexicon:
-                        scrubbed.append(word)
-            CounterVariable  = Counter(str(scrubbed).split())
-            neg_tokens = [word for word, word_count in CounterVariable.most_common(10)] 
-        else:
-            neg_tokens = []
-            
-        if(len(neu_sentiments) > 5):
-            neu_tokens = []
-            scrubbed = []
-            for neu in neu_sentiments:
-                for word in neu.split():
-                    if word in lexicon:
-                        scrubbed.append(word)
-            CounterVariable  = Counter(str(scrubbed).split())
-            neu_tokens = [word for word, word_count in CounterVariable.most_common(10)] 
-        else:
-            neu_tokens = []
-            
-        categories.append({
-            "question": questions[q],
-            "pos_tokens": pos_tokens,
-            "positive_statements": pos_sentiments, 
-            "neg_tokens": neg_tokens,
-            "negative_statements": neg_sentiments, 
-            "neu_tokens": neu_tokens,
-            "neutral_statements": neu_sentiments
-        })
+    if(len(pos_sentiments) > 0):
+        pos_tokens = []
+        scrubbed = []
+        for pos in pos_sentiments:
+            for word in pos.split():
+                if word in lexicon:
+                    scrubbed.append(word)
+        CounterVariable  = Counter(str(scrubbed).split())
+        pos_tokens = [word.translate(str.maketrans('', '', string.punctuation)) for word, word_count in CounterVariable.most_common(10)]                
+    else:
+        pos_tokens = []
+        
+    if(len(neg_sentiments) > 0):
+        neg_tokens = []
+        scrubbed = []
+        for neg in neg_sentiments:
+            for word in neg.split():
+                if word in lexicon:
+                    scrubbed.append(word)
+        CounterVariable  = Counter(str(scrubbed).split())
+        neg_tokens = [word.translate(str.maketrans('', '', string.punctuation)) for word, word_count in CounterVariable.most_common(10)] 
+    else:
+        neg_tokens = []
+        
+    if(len(neu_sentiments) > 0):
+        neu_tokens = []
+        scrubbed = []
+        for neu in neu_sentiments:
+            for word in neu.split():
+                if word in lexicon:
+                    scrubbed.append(word)
+        CounterVariable  = Counter(str(scrubbed).split())
+        neu_tokens = [word.translate(str.maketrans('', '', string.punctuation)) for word, word_count in CounterVariable.most_common(10)] 
+    else:
+        neu_tokens = []
+    return pos_tokens, neg_tokens, neu_tokens
+
+def sentiment_tokens():
+    sentiment_data = sentiment_analysis()
+    categories = []            
+    for neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, question in sentiment_data:        
+       pos_tokens, neg_tokens, neu_tokens = sentiment_data_tokens(neg_sentiments, pos_sentiments, neu_sentiments)
+       categories.append({
+        "question": question,
+        "pos_tokens": pos_tokens,
+        "positive_statements": pos_sentiments, 
+        "neg_tokens": neg_tokens,
+        "negative_statements": neg_sentiments, 
+        "neu_tokens": neu_tokens,
+        "neutral_statements": neu_sentiments
+       })
     return categories
 
 def sentiment_charts():
     if os.path.exists("tmp/sentiment_charts.html"):
         os.remove("tmp/sentiment_charts.html")
-    neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, questions = sentiment_analysis()
+    sentiment_data = sentiment_analysis()
     colors = ['mediumspringgreen', 'tomato', 'dodgerblue']
-    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "bar"}, {"type": "pie"}]])
-    for q in range(len(questions)):
-        fig.add_trace(go.Bar(x=["Positive", "Negative", "Neutral"], y=[pos_percentage, neg_percentage, neu_percentage],  marker_color=colors, showlegend=False), row=1, col=1)
-        fig.add_trace(go.Pie(labels=["Positive", "Negative", "Neutral"], values=[pos_percentage, neg_percentage, neu_percentage], marker=dict(colors=colors)), row=1, col=2)
-        fig.update_layout(title=questions[q], xaxis_title="Sentiments", yaxis_title="Frequency")
+    for neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, question in sentiment_data:
+        pos_tokens, neg_tokens, neu_tokens = sentiment_data_tokens(neg_sentiments, pos_sentiments, neu_sentiments)
+        fig = make_subplots(rows=1, cols=2, specs=[[{"type": "bar"}, {"type": "pie"}]])
+        fig.add_trace(go.Bar(x=["Positive", "Negative", "Neutral"], 
+                             y=[pos_percentage, neg_percentage, neu_percentage],   
+                             text = [pos_tokens, neg_tokens, neu_tokens],
+                            #  hovertemplate = "<br>Tokens: %{text} </br>",
+                             marker_color=colors, 
+                             showlegend=False), 
+                             row=1, col=1)
+        fig.add_trace(go.Pie(text=["Positive", "Negative", "Neutral"], 
+                             values=[pos_percentage, neg_percentage, neu_percentage],
+                             labels = [pos_tokens, neg_tokens, neu_tokens],
+                            #  hovertemplate ="<br>Tokens: %{label} </br>",
+                             marker=dict(colors=colors)), 
+                             row=1, col=2)
+        fig.update_layout(title=question, xaxis_title="Sentiments", yaxis_title="Frequency")
         with open('tmp/sentiment_charts.html', 'a') as f:
             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/sentiment_charts.html"):

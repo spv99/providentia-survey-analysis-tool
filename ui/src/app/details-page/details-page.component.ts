@@ -19,6 +19,7 @@ export class DetailsPageComponent implements OnInit  {
   public bivariateRelationships: BivariateRelationship;
   public wordcloudImage: any;
   public form: FormGroup;
+  public sentiment_text: string
 
   constructor(
     private analyticsService: AnalyticsService, 

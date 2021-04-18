@@ -123,7 +123,7 @@ class SentimentAnalysis(Resource):
         return {"categories": categories}
     
 @qual_encoding.route('/sentiment-charts')
-class SentimentBargraph(Resource):
+class SentimentCharts(Resource):
     def get(self):
         sentimentHTML, sentimentContent = qualitative_encoding.sentiment_charts()
         categories = qualitative_encoding.sentiment_tokens()
@@ -136,7 +136,7 @@ class Themes(Resource):
         return {"categories": categories}
     
 @qual_encoding.route('/themes-charts')
-class ThemesBargraph(Resource):
+class ThemesCharts(Resource):
     def get(self):
         themesHTML, themesContent = qualitative_encoding.themes_charts()
         return {"fileLocation": themesHTML, "renderContent": themesContent}
