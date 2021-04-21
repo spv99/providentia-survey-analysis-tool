@@ -162,14 +162,16 @@ def pca_respondents():
         cluster_profile = []
         for q in mc_questions:
             grouped_frame = frame.loc[frame['cluster'] == i]
-            profile_data = {
+            profile_data = [{
                 "question": q.question,
                 "common_response": most_frequent(grouped_frame[q.question].values.tolist()),
-            }
+                "common_response_count": most_frequent_count(grouped_frame[q.question].values.tolist())
+            }]
             cluster_profile.append(profile_data)
         count += 1
         cluster_profile.append({"respondents": clusters.count(i)})
-        all_profiles.append({"Profile "+str(i+1): cluster_profile})   
+        cluster_profile.append({"colour": px.colors.qualitative.Plotly[i]})
+        all_profiles.append(cluster_profile)   
     fig = go.Figure()
     for i in range(k_num):
         fig.add_trace(go.Scatter(x=pca_data[y == i, 0], y=pca_data[y == i, 1], mode='markers', 
@@ -177,7 +179,7 @@ def pca_respondents():
                                 width=2,
                                 color=px.colors.qualitative.Plotly[i])), 
                                 name="Profile " + str(i+1)))
-    fig.update_layout(title="User Profiles")
+    fig.update_layout(title="User Clusters")
     with open('tmp/pca_respondents.html', 'a') as f:
              f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/pca_respondents.html"):
@@ -240,4 +242,9 @@ def sunburst():
 def most_frequent(profiles): 
     CounterVariable  = Counter(profiles)
     characteristics = [word for word, word_count in CounterVariable.most_common(3)]
+    return characteristics
+
+def most_frequent_count(profiles): 
+    CounterVariable  = Counter(profiles)
+    characteristics = [word_count for word, word_count in CounterVariable.most_common(3)]
     return characteristics

@@ -200,6 +200,16 @@
         </div>
     </div>
 
+    <!-- User Profiles -->
+    <div id="User Profiles" class="hide">
+        <h3 class="pstyle title">User Profiles</h3>
+        <div *ngFor="let profile of userProfiles">
+            <user-profiles [userProfiles]="profile"></user-profiles>
+        </div>
+        <div id="user-profiles-box" class="col">
+            <iframe id="user-profiles" src="about:blank"></iframe>
+        </div>
+    </div>
 </main>
 
 

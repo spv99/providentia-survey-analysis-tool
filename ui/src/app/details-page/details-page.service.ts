@@ -27,6 +27,7 @@ const SCATTER_PLOT = "/scatter-plot";
 const TREEMAP = '/treemap';
 const SUNBURST = '/sunburst';
 const BIVAR_RELATIONSHIPS = '/bivariate-relationships';
+const PCA_RESPONDENTS = '/pca-respondents';
 
 @Injectable()
 export class AnalyticsService {
@@ -170,6 +171,18 @@ export class AnalyticsService {
                 let html = (res.renderContent.toString());
                 html = html.replace(regexFind, PLOTLYJS);
                 return html;
+            }
+        }));
+    }
+    
+    public getUserProfiles(): Observable<any> {
+        const userProfiles: string = this.baseUrl + `${MULTIVARIATE_ANALYSIS}${PCA_RESPONDENTS}`;
+        return this.httpClient.get<any>(userProfiles).pipe(map(res => {
+            if(res.renderContent != null) {
+                let html = (res.renderContent.toString());
+                html = html.replace(regexFind, PLOTLYJS);
+                let cluster_profiles = res.cluster_profiles
+                return [html, cluster_profiles];
             }
         }));
     }

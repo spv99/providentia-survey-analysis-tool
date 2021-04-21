@@ -12,6 +12,7 @@ import { ProvidentiaService } from './providentia/providentia.service';
 import { AnalyticsService } from './details-page/details-page.service';
 import { TagCloudModule } from 'angular-tag-cloud-module';
 import { PreviewPageComponent } from './preview-page/preview-page.component';
+import { UserProfilesComponent } from './details-page/user-profiles/user-profiles.component';
 
 @NgModule({
   entryComponents: [
@@ -21,7 +22,8 @@ import { PreviewPageComponent } from './preview-page/preview-page.component';
     HeaderComponent,
     DetailsPageComponent,
     ProvidentiaComponent,
-    PreviewPageComponent
+    PreviewPageComponent,
+    UserProfilesComponent
   ],
   imports: [
     BrowserModule,

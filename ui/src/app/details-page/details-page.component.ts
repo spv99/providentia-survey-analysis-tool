@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './details-page.service';
 import { CloudData, CloudOptions } from 'angular-tag-cloud-module';
 import { BivariateRelationship } from '../models/bivariate_relationship.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProvidentiaService } from '../providentia/providentia.service';
+import { Profile } from '../models/profile.model';
 
 @Component({
   selector: 'app-details-page',
@@ -12,14 +13,15 @@ import { ProvidentiaService } from '../providentia/providentia.service';
   styleUrls: ['./details-page.component.scss']
 })
 
-export class DetailsPageComponent implements OnInit  {
+export class DetailsPageComponent implements OnInit {
   public data: any;
   public wordCloudData: CloudData[];
   public dataMap = new Map();
   public bivariateRelationships: BivariateRelationship;
   public wordcloudImage: any;
   public form: FormGroup;
-  public sentiment_text: string
+  public sentiment_text: string;
+  public userProfiles = [];
 
   constructor(
     private analyticsService: AnalyticsService, 
@@ -41,9 +43,13 @@ export class DetailsPageComponent implements OnInit  {
       stackedBargraph: [false],
       scatterPlot: [false],
       sunburstChart: [false],
-      treemapChart: [false]
+      treemapChart: [false],
+      userProfiles: [false]
     });
+    this.callCharts();
+  }
 
+  public callCharts(): void {
     this.analyticsService.getUnivariateBargraph().subscribe(data => {
       this.dataMap.set("bargraphs", data);
     });
@@ -94,6 +100,11 @@ export class DetailsPageComponent implements OnInit  {
 
     this.analyticsService.getMultivariateTreemap().subscribe(data => {
       this.dataMap.set("treemap", data);
+    });
+
+    this.analyticsService.getUserProfiles().subscribe(data => {
+      this.dataMap.set("user-profiles", data[0]);
+      this.userProfiles.push(data[1]);
     });
   }
 
@@ -171,7 +182,8 @@ export class DetailsPageComponent implements OnInit  {
       ["stackedBargraph", "stacked-bargraph"], 
       ["scatterPlot", "scatter-plots"],
       ["sunburstChart", "sunburst"],
-      ["treemapChart", "treemap"]];
+      ["treemapChart", "treemap"],
+      ["userProfiles", "user-profiles"]];
     let selectedGraphs = []
     formControlNames.forEach(checkboxName => {
       if(formObject[checkboxName[0]] === true) {
