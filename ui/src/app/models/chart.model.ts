@@ -5,4 +5,5 @@ export class Chart {
     renderContent: string;
     categories?: string;
     cluster_profiles?: Profile[];
+    titles?: string[];
 }

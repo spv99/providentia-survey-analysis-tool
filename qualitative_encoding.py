@@ -186,6 +186,7 @@ def sentiment_charts():
         os.remove("tmp/sentiment_charts.html")
     sentiment_data = sentiment_analysis()
     colors = ['mediumspringgreen', 'tomato', 'dodgerblue']
+    titles = []
     for neg_percentage, pos_percentage, neu_percentage, neg_sentiments, pos_sentiments, neu_sentiments, question in sentiment_data:
         pos_tokens, neg_tokens, neu_tokens = sentiment_data_tokens(neg_sentiments, pos_sentiments, neu_sentiments)
         fig = make_subplots(rows=1, cols=2, specs=[[{"type": "bar"}, {"type": "pie"}]])
@@ -203,14 +204,15 @@ def sentiment_charts():
                              marker=dict(colors=colors)), 
                              row=1, col=2)
         fig.update_layout(title=question, xaxis_title="Sentiments", yaxis_title="Frequency")
+        titles.append(question)
         with open('tmp/sentiment_charts.html', 'a') as f:
             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/sentiment_charts.html"):
         file = open("tmp/sentiment_charts.html", 'r', encoding='utf-8')
         source_code = file.read() 
-        return 'tmp/sentiment_charts.html', source_code
+        return 'tmp/sentiment_charts.html', source_code, titles
     else:
-        return None, None
+        return None, None, None
     
 def tokenize_only(text):
         tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
@@ -356,6 +358,7 @@ def themes_charts():
         os.remove("tmp/themes_charts.html")
     categories, questions = thematic_analysis()
     fig = make_subplots(rows=1, cols=2, specs=[[{"type": "bar"}, {"type": "pie"}]])
+    titles = []
     for q in questions:
         themes = categories.get(q)
         x = []
@@ -366,14 +369,15 @@ def themes_charts():
         fig.add_trace(go.Bar(x=x, y=y, showlegend=False), row=1, col=1)
         fig.add_trace(go.Pie(labels=x, values=y), row=1, col=2)
         fig.update_layout(title=q, xaxis_title="Themes", yaxis_title="Frequency")
+        titles.append(q)
         with open('tmp/themes_charts.html', 'a') as f:
              f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/themes_charts.html"):
         file = open("tmp/themes_charts.html", 'r', encoding='utf-8')
         source_code = file.read() 
-        return 'tmp/themes_charts.html', source_code
+        return 'tmp/themes_charts.html', source_code, titles
     else:
-        return None, None
+        return None, None, None
     
 def wordmaps():
     ## wordmaps package methods - figure out how this is used 

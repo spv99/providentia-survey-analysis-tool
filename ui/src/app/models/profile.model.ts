@@ -7,5 +7,4 @@ export class ClusterInfo {
 export class Profile {
     clusterInfo: ClusterInfo[];
     respondents?: number;
-    colour?: string;
 }

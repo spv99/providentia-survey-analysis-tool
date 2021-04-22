@@ -131,3 +131,9 @@ iframe {
 
 
 // Wordmaps
+
+// User Profiles
+div[id='User Profiles'] {
+    overflow-y: auto !important;
+    height: inherit !important;
+}

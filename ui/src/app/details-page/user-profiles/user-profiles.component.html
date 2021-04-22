@@ -1,3 +1,103 @@
-<div *ngFor="let profile of userProfiles">
-    <span class="material-icons">face</span>
+<div class="toggle" *ngIf="!showDetails" (click)="showDetails=true">Show Breakdown of User Profiles
+    <span class="expanders material-icons">expand_more</span>
+</div>
+<div *ngIf="showDetails">
+
+    <div *ngIf="!!profileOne" class="profile-one card">
+        <div class="card-body">
+            <h3 class="profile-one card-title"><span class="material-icons">face</span>User Profile 1</h3>
+            <div class="total">Total: {{profileOneTotal}}</div>
+            <div *ngFor="let profile of profileOne">
+                <li *ngIf="!!profile[0] && !!profile[0].question" class="question">{{profile[0].question}}</li>
+                <div class="info-group" *ngIf="!!profile[0] && !!profile[0].common_response">
+                    <div *ngFor="let record of profile[0].common_response; let i = index">
+                        <div class="info form-inline">
+                            <div *ngIf="!!record">{{record}}:</div>
+                            <div *ngIf="!!profile[0].common_response_count[i]" style="margin-left: 1rem;">
+                                {{profile[0].common_response_count[i]}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!!profileTwo" class="profile-two card">
+        <div class="card-body">
+            <h3 class="profile-two card-title"><span class="material-icons">face</span>User Profile 2</h3>
+            <div class="total">Total: {{profileTwoTotal}}</div>
+            <div *ngFor="let profile of profileTwo">
+                <li *ngIf="!!profile[0] && !!profile[0].question" class="question">{{profile[0].question}}</li>
+                <div class="info-group" *ngIf="!!profile[0] && !!profile[0].common_response">
+                    <div *ngFor="let record of profile[0].common_response; let i = index">
+                        <div class="info form-inline">
+                            <div *ngIf="!!record">{{record}}:</div>
+                            <div *ngIf="!!profile[0].common_response_count[i]" style="margin-left: 1rem;">
+                                {{profile[0].common_response_count[i]}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!!profileThree" class="profile-three card">
+        <div class="card-body">
+            <h3 class="profile-three card-title"><span class="material-icons">face</span>User Profile 3</h3>
+            <div class="total">Total: {{profileThreeTotal}}</div>
+            <div *ngFor="let profile of profileThree">
+                <li *ngIf="!!profile[0] && !!profile[0].question" class="question">{{profile[0].question}}</li>
+                <div class="info-group" *ngIf="!!profile[0] && !!profile[0].common_response">
+                    <div *ngFor="let record of profile[0].common_response; let i = index">
+                        <div class="info form-inline">
+                            <div *ngIf="!!record">{{record}}:</div>
+                            <div *ngIf="!!profile[0].common_response_count[i]" style="margin-left: 1rem;">
+                                {{profile[0].common_response_count[i]}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!!profileFour" class="profile-four card">
+        <div class="card-body">
+            <h3 class="profile-four card-title"><span class="material-icons">face</span>User Profile 4</h3>
+            <div class="total">Total: {{profileFourTotal}}</div>
+            <div *ngFor="let profile of profileFour">
+                <li *ngIf="!!profile[0] && !!profile[0].question" class="question">{{profile[0].question}}</li>
+                <div class="info-group" *ngIf="!!profile[0] && !!profile[0].common_response">
+                    <div *ngFor="let record of profile[0].common_response; let i = index">
+                        <div class="info form-inline">
+                            <div *ngIf="!!record">{{record}}:</div>
+                            <div *ngIf="!!profile[0].common_response_count[i]" style="margin-left: 1rem;">
+                                {{profile[0].common_response_count[i]}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!!profileFive" class="profile-five card">
+        <div class="card-body">
+            <h3 class="profile-five card-title"><span class="material-icons">face</span>User Profile 5</h3>
+            <div class="total">Total: {{profileFiveTotal}}</div>
+            <div *ngFor="let profile of profileFive">
+                <li *ngIf="!!profile[0] && !!profile[0].question" class="question">{{profile[0].question}}</li>
+                <div class="info-group" *ngIf="!!profile[0] && !!profile[0].common_response">
+                    <div *ngFor="let record of profile[0].common_response; let i = index">
+                        <div class="info form-inline">
+                            <div *ngIf="!!record">{{record}}:</div>
+                            <div *ngIf="!!profile[0].common_response_count[i]" style="margin-left: 1rem;">
+                                {{profile[0].common_response_count[i]}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="toggle" *ngIf="showDetails" (click)="showDetails=false">Hide Breakdown of User Profiles
+    <span class="expanders material-icons">expand_less</span>
 </div>

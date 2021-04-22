@@ -170,7 +170,6 @@ def pca_respondents():
             cluster_profile.append(profile_data)
         count += 1
         cluster_profile.append({"respondents": clusters.count(i)})
-        cluster_profile.append({"colour": px.colors.qualitative.Plotly[i]})
         all_profiles.append(cluster_profile)   
     fig = go.Figure()
     for i in range(k_num):

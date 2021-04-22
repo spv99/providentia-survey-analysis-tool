@@ -48,6 +48,7 @@ def bivar_bargraph(bar_type):
     if os.path.exists(bar_path):
         os.remove(bar_path)
         
+    titles = []
     df, selected_cols, selected_cols_encoded = encode_cols()
     df = df.astype(str)
     df = df.replace(to_replace = "\.0+$",value = "", regex = True)
@@ -57,9 +58,9 @@ def bivar_bargraph(bar_type):
             if (i!=j and i<j):              
                 group_by_cols = df.groupby([selected_cols[i].question, selected_cols[j].question])[selected_cols[i].question].count().reset_index(name='frequency')
                 group_by_df = pd.DataFrame(group_by_cols)
-                
+                titles.append('Comparing ' + selected_cols[i].question + ' and ' + selected_cols[j].question)
                 fig = px.bar(group_by_df, x=selected_cols[i].question, color=selected_cols[j].question, y='frequency',
-                            title=selected_cols[i].question + ' ' + selected_cols[j].question,
+                            title='Comparing ' + selected_cols[i].question + ' and ' + selected_cols[j].question,
                             barmode=bar_type,
                             height=600)
 
@@ -68,9 +69,9 @@ def bivar_bargraph(bar_type):
     if os.path.exists(bar_path):
         file = open(bar_path, 'r', encoding='utf-8')
         source_code = file.read()
-        return bar_path, source_code
+        return bar_path, source_code, titles
     else:
-        return None, None
+        return None, None, None
 
             
 def relationshipStrength():
@@ -151,6 +152,7 @@ def scatter_plot():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
     selected_cols = []
+    titles = []
     for q in questions:
         if(q.dataType == 'QUANTITATIVE'):
             selected_cols.append(q)
@@ -187,13 +189,14 @@ def scatter_plot():
                 ))
                 trendline_fig = px.scatter(x=df[selected_cols[i].question].dropna().tolist(), y=df[selected_cols[j].question].dropna().tolist(), trendline="ols")
                 trendline = trendline_fig.data[1]
+                titles.append('Comparing ' + selected_cols[i].question + ' and ' + selected_cols[j].question)
                 fig.add_trace(trendline)
-                fig.update_layout(plot_bgcolor='#fafafa', title=selected_cols[i].question + ' ' + selected_cols[j].question)
+                fig.update_layout(plot_bgcolor='#fafafa', title='Comparing ' + selected_cols[i].question + ' and ' + selected_cols[j].question)
                 with open('tmp/scatterplots.html', 'a') as f:
                     f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/scatterplots.html"):
         file = open("tmp/scatterplots.html", 'r', encoding='utf-8')
         source_code = file.read()
-        return 'tmp/scatterplots.html', source_code
+        return 'tmp/scatterplots.html', source_code, titles
     else:
-        return None, None
+        return None, None, None

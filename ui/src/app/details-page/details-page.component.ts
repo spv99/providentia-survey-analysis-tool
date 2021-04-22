@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProvidentiaService } from '../providentia/providentia.service';
 import { Profile } from '../models/profile.model';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-details-page',

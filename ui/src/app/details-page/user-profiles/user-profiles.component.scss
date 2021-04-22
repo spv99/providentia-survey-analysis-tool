@@ -1,3 +1,88 @@
 .material-icons {
     font-size: xxx-large;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+    margin-top: -0.5rem;
 }
+
+.card {
+    margin-right: 3rem;
+    margin-top: 2rem;
+}
+
+.total {
+    margin-left: 3.5rem;;
+    margin-bottom: 0.5rem;
+    font-size: 26px;
+    font-weight: 400;
+}
+
+.question {
+    font-weight: 700;
+    font-size: large;
+    margin-left: 4rem;
+}
+
+.info {
+    font-size: 18px;
+    margin-left: 3rem;
+}
+
+.info-group {
+    margin-bottom: 1rem;
+    margin-left: 4rem;
+}
+
+.toggle {
+    font-size: medium;
+    font-weight: 500;
+    color: #013a83;
+    cursor: pointer;
+    margin-top: 0.7rem;
+}
+
+.expanders {
+    font-size: x-large;
+    margin-top: 0rem;
+}
+
+.profile-one.card-title {
+    color: #636efa;
+}
+
+.profile-two.card-title {
+    color: #ef553b;
+}
+
+.profile-three.card-title {
+    color: #00cc96;
+}
+
+.profile-four.card-title {
+    color: #ab63fa;
+}
+
+.profile-five.card-title {
+    color: #ffa15a;
+}
+
+.profile-one.card {
+    border: 6px solid #636efa;
+}
+
+.profile-two.card {
+    border: 6px solid #ef553b;
+}
+
+.profile-three.card {
+    border: 6px solid #00cc96;
+}
+
+.profile-four.card {
+    border: 6px solid #ab63fa;
+}
+
+.profile-five.card {
+    border: 6px solid #ffa15a;
+}
+

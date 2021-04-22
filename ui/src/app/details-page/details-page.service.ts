@@ -29,19 +29,36 @@ const SUNBURST = '/sunburst';
 const BIVAR_RELATIONSHIPS = '/bivariate-relationships';
 const PCA_RESPONDENTS = '/pca-respondents';
 
+const QUESTIONS_HEADER = '<div><p style="font-family: Segoe UI; font-size: 25px; font-weight: 200; margin-top: 1rem; margin-bottom: 1rem;">Questions: </p>';
+const LIST_STYLE = 'style="font-family: Bahnschrift; text-decoration-line: none; font-weight: 200; font-size: 19px; line-height: 26px; color: #013a83;"';
+
 @Injectable()
 export class AnalyticsService {
     baseUrl = environment.baseUrl;
     
     constructor(private httpClient: HttpClient) {}
 
+    private renderIframe(renderContent, titles): any {
+        let html = (renderContent.toString());
+        html = html.replace(regexFind, PLOTLYJS);
+        titles.forEach(title => {
+            let anchor = '<a id="' + title + '"></a><div id';
+            html = html.replace("   <div id", anchor)
+        })
+        let toc = QUESTIONS_HEADER;
+        titles.forEach(title => {
+            toc = toc + '<li><a '+ LIST_STYLE +' href="#'+title+'">'+ title +'</a></li>';
+        })
+        toc = toc + "</div>";
+        html = toc + html;
+        return html;
+    }
+
     public getUnivariateBargraph(): Observable<any> {
         const univariateBargraphUrl: string = this.baseUrl + `${UNIVARIATE_ANALYSIS}${BARGRAPH}`;
         return this.httpClient.get<Chart>(univariateBargraphUrl).pipe(map(res => {
             if(res.renderContent != null) {
-                let html = (res.renderContent.toString());
-                html = html.replace(regexFind, PLOTLYJS);
-                return html;
+                return this.renderIframe(res.renderContent, res.titles)
             }
         }));
     }
@@ -50,9 +67,7 @@ export class AnalyticsService {
         const univariatePieChartUrl: string = this.baseUrl + `${UNIVARIATE_ANALYSIS}${PIECHART}`;
         return this.httpClient.get<Chart>(univariatePieChartUrl).pipe(map(res => {
             if(res.renderContent != null) {
-                let html = (res.renderContent.toString());
-                html = html.replace(regexFind, PLOTLYJS);
-                return html;
+                return this.renderIframe(res.renderContent, res.titles)
             }
         }));
     }
@@ -61,9 +76,7 @@ export class AnalyticsService {
         const univariateBoxplotUrl: string = this.baseUrl + `${UNIVARIATE_ANALYSIS}${BOXPLOT}`;
         return this.httpClient.get<Chart>(univariateBoxplotUrl).pipe(map(res => {
             if(res.renderContent != null) {
-                let html = (res.renderContent.toString());
-                html = html.replace(regexFind, PLOTLYJS);
-                return html;
+                return this.renderIframe(res.renderContent, res.titles)
             }
         }));
     }
@@ -91,9 +104,7 @@ export class AnalyticsService {
         const sentimentChartsUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${SENTIMENT_CHARTS}`;
         return this.httpClient.get<Chart>(sentimentChartsUrl).pipe(map(res => {
             if(res.renderContent != null) {
-                let html = (res.renderContent.toString());
-                html = html.replace(regexFind, PLOTLYJS);
-                return html;
+                return this.renderIframe(res.renderContent, res.titles)
             }
         }));
     }
@@ -102,9 +113,7 @@ export class AnalyticsService {
         const themesChartsUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${THEMES_CHARTS}`;
         return this.httpClient.get<Chart>(themesChartsUrl).pipe(map(res => {
             if(res.renderContent != null) {
-                let html = (res.renderContent.toString());
-                html = html.replace(regexFind, PLOTLYJS);
-                return html;
+                return this.renderIframe(res.renderContent, res.titles)
             }
         }));
     }
@@ -124,9 +133,7 @@ export class AnalyticsService {
         const bivariateClusteredBargraph: string = this.baseUrl + `${BIVARIATE_ANALYSIS}${CLUSTERED_BARGRAPH}`;
         return this.httpClient.get<Chart>(bivariateClusteredBargraph).pipe(map(res => {
             if(res.renderContent != null) {
-                let html = (res.renderContent.toString());
-                html = html.replace(regexFind, PLOTLYJS);
-                return html;
+                return this.renderIframe(res.renderContent, res.titles)
             }
         }));
     }
@@ -135,9 +142,7 @@ export class AnalyticsService {
         const bivariateStackedBargraph: string = this.baseUrl + `${BIVARIATE_ANALYSIS}${STACKED_BARGRAPH}`;
         return this.httpClient.get<Chart>(bivariateStackedBargraph).pipe(map(res => {
             if(res.renderContent != null) {
-                let html = (res.renderContent.toString());
-                html = html.replace(regexFind, PLOTLYJS);
-                return html;
+                return this.renderIframe(res.renderContent, res.titles)
             }
         }));
     }
@@ -146,9 +151,7 @@ export class AnalyticsService {
         const bivariateScatterPlot: string = this.baseUrl + `${BIVARIATE_ANALYSIS}${SCATTER_PLOT}`;
         return this.httpClient.get<Chart>(bivariateScatterPlot).pipe(map(res => {
             if(res.renderContent != null) {
-                let html = (res.renderContent.toString());
-                html = html.replace(regexFind, PLOTLYJS);
-                return html;
+                return this.renderIframe(res.renderContent, res.titles)
             }
         }));
     }

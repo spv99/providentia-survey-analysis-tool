@@ -52,20 +52,20 @@ class Main(Resource):
 @univar_analysis.route('/bargraph')
 class Bargraph(Resource):
     def get(self):
-        bargraphHTML, bargraphContent = univariate_analysis.bargraph()
-        return {"fileLocation": bargraphHTML, "renderContent": bargraphContent}
+        bargraphHTML, bargraphContent, titles = univariate_analysis.bargraph()
+        return {"fileLocation": bargraphHTML, "renderContent": bargraphContent, "titles": titles}
       
 @univar_analysis.route('/piechart')
 class Piechart(Resource):
     def get(self):
-        piechartHTML, piechartContent = univariate_analysis.piechart()
-        return {"fileLocation": piechartHTML, "renderContent": piechartContent}  
+        piechartHTML, piechartContent, titles = univariate_analysis.piechart()
+        return {"fileLocation": piechartHTML, "renderContent": piechartContent, "titles": titles}  
 
 @univar_analysis.route('/boxplot')
 class Boxplot(Resource):
     def get(self):
-        boxplotHTML, boxplotContent = univariate_analysis.boxplot()
-        return {"fileLocation": boxplotHTML, "renderContent": boxplotContent}
+        boxplotHTML, boxplotContent, titles = univariate_analysis.boxplot()
+        return {"fileLocation": boxplotHTML, "renderContent": boxplotContent, "titles": titles}
     
 @bivar_analysis.route('/bivariate-relationships')
 class BivariateRelationships(Resource):
@@ -77,20 +77,20 @@ class BivariateRelationships(Resource):
 @bivar_analysis.route('/clustered-bargraph')
 class ClusteredBargraph(Resource):
     def get(self):
-        clusteredbargraphHTML, stackedContent = bivariate_analysis.bivar_bargraph('group')
-        return {"fileLocation": clusteredbargraphHTML, "renderContent": stackedContent}
+        clusteredbargraphHTML, stackedContent, titles = bivariate_analysis.bivar_bargraph('group')
+        return {"fileLocation": clusteredbargraphHTML, "renderContent": stackedContent, "titles": titles}
     
 @bivar_analysis.route('/stacked-bargraph')
 class StackedBargraph(Resource):
     def get(self):
-        stackedbargraphHTML, clusteredContent = bivariate_analysis.bivar_bargraph('stack')
-        return {"fileLocation": stackedbargraphHTML, "renderContent": clusteredContent}
+        stackedbargraphHTML, clusteredContent, titles = bivariate_analysis.bivar_bargraph('stack')
+        return {"fileLocation": stackedbargraphHTML, "renderContent": clusteredContent, "titles": titles}
     
 @bivar_analysis.route('/scatter-plot')
 class StackedBargraph(Resource):
     def get(self):
-        stackedScatterHTML, scatterContent = bivariate_analysis.scatter_plot()
-        return {"fileLocation": stackedScatterHTML, "renderContent": scatterContent}
+        stackedScatterHTML, scatterContent, titles = bivariate_analysis.scatter_plot()
+        return {"fileLocation": stackedScatterHTML, "renderContent": scatterContent, "titles": titles}
     
 @multivar_analysis.route('/treemap')
 class Treemap(Resource):
@@ -125,9 +125,9 @@ class SentimentAnalysis(Resource):
 @qual_encoding.route('/sentiment-charts')
 class SentimentCharts(Resource):
     def get(self):
-        sentimentHTML, sentimentContent = qualitative_encoding.sentiment_charts()
+        sentimentHTML, sentimentContent, titles = qualitative_encoding.sentiment_charts()
         categories = qualitative_encoding.sentiment_tokens()
-        return {"fileLocation": sentimentHTML, "renderContent": sentimentContent, "categories": categories}
+        return {"fileLocation": sentimentHTML, "renderContent": sentimentContent, "categories": categories, "titles": titles}
     
 @qual_encoding.route('/thematic-analysis')
 class Themes(Resource):
@@ -138,8 +138,8 @@ class Themes(Resource):
 @qual_encoding.route('/themes-charts')
 class ThemesCharts(Resource):
     def get(self):
-        themesHTML, themesContent = qualitative_encoding.themes_charts()
-        return {"fileLocation": themesHTML, "renderContent": themesContent}
+        themesHTML, themesContent, titles = qualitative_encoding.themes_charts()
+        return {"fileLocation": themesHTML, "renderContent": themesContent, "titles": titles}
     
 @qual_encoding.route('/wordmaps')
 class Wordmaps(Resource):
