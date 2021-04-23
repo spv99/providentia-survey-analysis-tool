@@ -144,10 +144,10 @@ class ThemesCharts(Resource):
 @qual_encoding.route('/wordmaps')
 class Wordmaps(Resource):
     def get(self):
-        # categories = qualitative_encoding.wordmaps()
-        # return {"categories": categories}
-        img, title = qualitative_encoding.wordmaps()
-        return send_file(img, mimetype='image/png', attachment_filename='wordmap.png')
+        categories = qualitative_encoding.wordmaps()
+        return {"categories": categories}
+        # img, title = qualitative_encoding.wordmaps()
+        # return send_file(img, mimetype='image/png', attachment_filename='wordmap.png')
     
 @qual_encoding.route('/questions')
 class FreeTextQuestions(Resource):

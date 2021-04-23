@@ -382,66 +382,66 @@ def themes_charts():
 def wordmaps():
     ## wordmaps package methods - figure out how this is used 
     
-    path = 'tmp/'
-    #TODO: removing wordmap files not working 
-    #TODO: make separate wordmap.png files as 1
-    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path, i) and 'wordmap' in i)]
-    for f in files:
-        os.remove(f)
-    df = pickle.load(open("raw_data_store.dat", "rb"))
-    questions = pickle.load(open("data_store.dat", "rb"))
-    df = df.dropna()
-    title = []
+    # path = 'tmp/'
+    # #TODO: removing wordmap files not working 
+    # #TODO: make separate wordmap.png files as 1
+    # files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path, i) and 'wordmap' in i)]
+    # for f in files:
+    #     os.remove(f)
+    # df = pickle.load(open("raw_data_store.dat", "rb"))
+    # questions = pickle.load(open("data_store.dat", "rb"))
+    # df = df.dropna()
+    # title = []
 
-    count = 0
-    for q in questions:
-        if(q.questionType == 'FREE_TEXT' and q.dataType == 'QUALITATIVE'):
-            count += 1
-            title = q.question
-            text = df[q.question].values.tolist()
-            wordcloud = WordCloud(min_font_size=9, max_words=100, title="Test", background_color="white").generate(str(text))
-            plt.figure()
-            plt.imshow(wordcloud, interpolation='bilinear')
-            plt.axis("off")
-            plt.savefig('tmp/wordmap-' + str(count) + '.png')
-    files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'wordmap' in i]
+    # count = 0
+    # for q in questions:
+    #     if(q.questionType == 'FREE_TEXT' and q.dataType == 'QUALITATIVE'):
+    #         count += 1
+    #         title = q.question
+    #         text = df[q.question].values.tolist()
+    #         wordcloud = WordCloud(min_font_size=9, max_words=100, title="Test", background_color="white").generate(str(text))
+    #         plt.figure()
+    #         plt.imshow(wordcloud, interpolation='bilinear')
+    #         plt.axis("off")
+    #         plt.savefig('tmp/wordmap-' + str(count) + '.png')
+    # files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'wordmap' in i]
     # TODO: how to return title or add title to image?
-    return "tmp/wordmap-1.png", title
+    # return "tmp/wordmap-1.png", title
 
 
     ## kmeans way with tokenisation and nlp:
     
-    # df = pickle.load(open("raw_data_store.dat", "rb"))
-    # questions = pickle.load(open("data_store.dat", "rb"))
-    # df = df.dropna()
+    df = pickle.load(open("raw_data_store.dat", "rb"))
+    questions = pickle.load(open("data_store.dat", "rb"))
+    df = df.dropna()
     
-    # for q in questions:
-    #     if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
-    #         del df[q.question]
+    for q in questions:
+        if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
+            del df[q.question]
             
-    # df = df.dropna()
+    df = df.dropna()
     
-    # categories = []
-    # for col in range(len(df.columns)):
-    #     free_text = df[df.columns.values.tolist()[col]].values.tolist()
-    #     free_text = str(free_text).replace("'", "")
-    #     totalvocab_tokenized = []
-    #     totalvocab_lemmetized = []
-    #     totalvocab_cleaned = []
-    #     allwords_tokenized = tokenize_only(str(free_text))
-    #     totalvocab_tokenized.extend([allwords_tokenized])
-    #     totalvocab_cleaned = [w for w in totalvocab_tokenized[0] if not w in stop_words]
-    #     CounterVariable  = Counter(str(totalvocab_cleaned).split())
-    #     variable = [word for word, word_count in CounterVariable.most_common(30)]
-    #     counter = [word_count for word, word_count in CounterVariable.most_common(30)]
-    #     words = []
-    #     for i in range(0, len(counter)):
-    #         words.append({
-    #             "word": variable[i].translate(str.maketrans('', '', string.punctuation)),
-    #             "count": counter[i] 
-    #         })
-    #     categories.append({
-    #         "question": df.columns[col],
-    #         "wordmap": words
-    #     })
-    # return categories
+    categories = []
+    for col in range(len(df.columns)):
+        free_text = df[df.columns.values.tolist()[col]].values.tolist()
+        free_text = str(free_text).replace("'", "")
+        totalvocab_tokenized = []
+        totalvocab_lemmetized = []
+        totalvocab_cleaned = []
+        allwords_tokenized = tokenize_only(str(free_text))
+        totalvocab_tokenized.extend([allwords_tokenized])
+        totalvocab_cleaned = [w for w in totalvocab_tokenized[0] if not w in stop_words]
+        CounterVariable  = Counter(str(totalvocab_cleaned).split())
+        variable = [word for word, word_count in CounterVariable.most_common(30)]
+        counter = [word_count for word, word_count in CounterVariable.most_common(30)]
+        words = []
+        for i in range(0, len(counter)):
+            words.append({
+                "word": variable[i].translate(str.maketrans('', '', string.punctuation)),
+                "count": counter[i] 
+            })
+        categories.append({
+            "question": df.columns[col],
+            "wordmap": words
+        })
+    return categories

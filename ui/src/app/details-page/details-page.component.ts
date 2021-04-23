@@ -16,12 +16,8 @@ import * as $ from 'jquery';
 
 export class DetailsPageComponent implements OnInit {
   public data: any;
-  public wordCloudData: CloudData[];
   public dataMap = new Map();
-  public bivariateRelationships: BivariateRelationship;
-  public wordcloudImage: any;
   public form: FormGroup;
-  public sentiment_text: string;
   public userProfiles = [];
 
   constructor(
@@ -61,14 +57,6 @@ export class DetailsPageComponent implements OnInit {
 
     this.analyticsService.getUnivariateBoxPlot().subscribe(data => {
       this.dataMap.set("boxplots", data);
-    });
-
-    this.analyticsService.getUnivariateWordmaps().subscribe(data => {
-      // this.wordCloudData = data[1];    
-      // console.log(this.wordCloudData)
-      this.analyticsService.getUnivariateWordmaps().subscribe(data => {
-        this.createImageFromBlob(data);
-      });
     });
 
     this.analyticsService.getSentimentCharts().subscribe(data => {
@@ -128,7 +116,7 @@ export class DetailsPageComponent implements OnInit {
         selectedPage.className = selectedPage.className.replace("hide", "view");
 
         // injecting new active tab's iframe where appropriate
-        if (selectedPage.id != "Wordmaps" && selectedPage.id != "Insights Overview" && selectedPage.id != "Export Report") {
+        if (selectedPage.id != "Insights Overview" && selectedPage.id != "Export Report") {
           let iframe = selectedPage.getElementsByTagName("iframe")[0].id;
           let data = this.dataMap.get(iframe);
           this.injectHTML(iframe, data)
@@ -156,17 +144,6 @@ export class DetailsPageComponent implements OnInit {
     iFrame.width = iFrame.contentWindow.document.body.scrollWidth + "px";
     iFrame.height = iFrame.contentWindow.document.body.scrollHeight + "px";
   }
-
-  public createImageFromBlob(image: Blob) {
-    let reader = new FileReader();
-    reader.addEventListener("load", () => {
-       this.wordcloudImage = reader.result;
-    }, false);
- 
-    if (image) {
-       reader.readAsDataURL(image);
-    }
- }
 
  public generatePreview(): void {
    this.localStorageService.clear();
