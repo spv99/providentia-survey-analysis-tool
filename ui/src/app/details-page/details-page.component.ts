@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './details-page.service';
-import { CloudData, CloudOptions } from 'angular-tag-cloud-module';
-import { BivariateRelationship } from '../models/bivariate_relationship.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProvidentiaService } from '../providentia/providentia.service';
-import { Profile } from '../models/profile.model';
 import * as $ from 'jquery';
 
 @Component({
@@ -69,6 +66,7 @@ export class DetailsPageComponent implements OnInit {
 
     this.analyticsService.getSentimentCharts().subscribe(data => {
       this.dataMap.set("sentiment-charts", data);
+      console.log(data)
     });
 
     this.analyticsService.getThemesCharts().subscribe(data => {

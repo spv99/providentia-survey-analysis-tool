@@ -31,6 +31,7 @@ const PCA_RESPONDENTS = '/pca-respondents';
 
 const QUESTIONS_HEADER = '<div><p style="font-family: Segoe UI; font-size: 25px; font-weight: 200; margin-top: 1rem; margin-bottom: 1rem;">Questions: </p>';
 const LIST_STYLE = 'style="font-family: Bahnschrift; text-decoration-line: none; font-weight: 200; font-size: 19px; line-height: 26px; color: #013a83;"';
+const COLLAPSIBLE_STYLE = '<style type="text/css">   input[type="checkbox"] {   display: none;   }   .lbl-toggle {   display: block;   font-weight: bold;   font-family: monospace;   font-family: "Segoe UI";   font-size: 1.2rem;   text-transform: uppercase;   text-align: center;   padding: 1rem;   color: #FFFFFF;   background: #2A7BE5;   cursor: pointer;   margin-right: 3rem;   margin-left: 3rem;   border-radius: 7px;   transition: all 0.25s ease-out;   margin-bottom: 0rem;   }   .lbl-toggle:hover {   color: #FFFFFF;   }   .lbl-toggle::before {   content: " "; display: inline-block;   border-top: 5px solid transparent;   border-bottom: 5px solid transparent;   border-left: 5px solid currentColor;   vertical-align: middle;   margin-right: .7rem;   transform: translateY(-2px);   transition: transform .2s ease-out;   }   .collapsible-content {   max-height: 0px;   overflow: hidden;   transition: max-height .25s ease-in-out;   }   .collapsible-content {   max-height: 0px;   overflow: hidden;   transition: max-height .25s ease-in-out;   }   .toggle:checked + .lbl-toggle + .collapsible-content {   max-height: 100vh;   }   .toggle:checked + .lbl-toggle::before {   transform: rotate(90deg) translateX(-3px);   }   .toggle:checked + .lbl-toggle {   border-bottom-right-radius: 0;   border-bottom-left-radius: 0;   }   .collapsible-content .content-inner {   height: 30rem;   overflow-y: auto;   margin-right: 3rem;   margin-left: 3rem;   font-family: Bahnschrift;   background-color: #f0f8ff ;   padding: 1.3rem;   border: 1px solid black;   }</style>';
 
 @Injectable()
 export class AnalyticsService {
@@ -51,6 +52,43 @@ export class AnalyticsService {
         })
         toc = toc + "</div>";
         html = toc + html;
+        return html;
+    }
+
+    private renderSentimentIframe(renderContent, titles, categories): any {
+        let html = (renderContent.toString());
+        html = html.replace(regexFind, PLOTLYJS);
+        let collapsible = COLLAPSIBLE_STYLE + '<div class="wrap-collabsible"><input id="collapsible" class="toggle" type="checkbox"> <label for="collapsible" class="lbl-toggle">View Full Text Responses</label> <div class="collapsible-content"> <div class="content-inner"><div *ngFor="let sentiment of ';
+        let endGraph = '      </script>\n';
+        titles.forEach((title, index) => {
+            let sentiment = categories[index]
+            // details.forEach(sentiment => {
+                collapsible = collapsible + categories + '"><p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">Positive Statements</p>';
+                sentiment.positive_statements.forEach(pos => {
+                    collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + pos + ' </li></div>';
+                })
+                collapsible = collapsible + '<p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">Neutral Statements</p>';
+                sentiment.neutral_statements.forEach(neu => {
+                    collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + neu + ' </li></div>';
+                })
+                collapsible = collapsible + '<p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">Negative Statements</p>';
+                sentiment.negative_statements.forEach(neg => {
+                    collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + neg + ' </li></div>';
+                })
+                collapsible = collapsible + '</div></div>';
+            // })
+            let anchor = '<a id="' + title + '"></a><div id';
+            html = html.replace("   <div id", anchor)
+            html = html.replace(endGraph, '      </script> '+ collapsible)
+        })
+        let toc = QUESTIONS_HEADER;
+        titles.forEach(title => {
+            toc = toc + '<li><a '+ LIST_STYLE +' href="#'+title+'">'+ title +'</a></li>';
+        })
+        toc = toc + "</div>";
+        html = toc + html;
+        let plotlyGraph = '        <script type=\"text/javascript\">window.PlotlyConfig ';
+       
         return html;
     }
 
@@ -104,7 +142,7 @@ export class AnalyticsService {
         const sentimentChartsUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${SENTIMENT_CHARTS}`;
         return this.httpClient.get<Chart>(sentimentChartsUrl).pipe(map(res => {
             if(res.renderContent != null) {
-                return this.renderIframe(res.renderContent, res.titles)
+                return this.renderSentimentIframe(res.renderContent, res.titles, res.categories)
             }
         }));
     }
