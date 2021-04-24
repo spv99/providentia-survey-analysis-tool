@@ -5,6 +5,7 @@ from collections import Counter
 import matplotlib.pyplot as plt
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+import plotly.express as px
 from wordcloud import WordCloud
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -226,6 +227,8 @@ def thematic_analysis():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
     df = df.dropna()
+    categories = []
+    thematic_details = []
 
     for q in questions:
         if(q.questionType != 'FREE_TEXT' or q.dataType != 'QUALITATIVE'):
@@ -328,8 +331,10 @@ def thematic_analysis():
         for index, totalvocab_stemmed in enumerate(df[df.columns.values.tolist()[col]].values.tolist()):
             cluster_values[clusters[index]].append(str(totalvocab_stemmed))
 
-        categories = {}
         themes = {}
+        topics = []
+        keywords = []
+        statements_count = []
         for i in range(len(cluster_values)):
             totalvocab_tokenized = []
             totalvocab_lemmetized = []
@@ -341,35 +346,38 @@ def thematic_analysis():
             CounterVariable  = Counter(str(totalvocab_cleaned).split())
             most_occur = [word for word, word_count in CounterVariable.most_common(10)]
             topic = most_occur[0].translate(str.maketrans('', '', string.punctuation))
+            topics.append(topic)
             tokens = [word.translate(str.maketrans('', '', string.punctuation)) for word in most_occur]
+            keywords.append(tokens)
             statements = cluster_values[i]
-            themes[topic] = {
+            statements_count.append(len(statements))
+            themes = {
                 "theme": topic,
                 "tokens": tokens,
                 "statements": statements
             }
-        categories[df.columns[col]] = {
+        thematic_details.append([df.columns.values.tolist()[col], topics, keywords, statements_count])
+        categories.append({
+            "question": df.columns.values.tolist()[col],
             "themes": themes
-        }
-    return categories, df.columns.values.tolist()
+        })    
+    return categories, df.columns.values.tolist(), thematic_details
 
 def themes_charts():
     if os.path.exists("tmp/themes_charts.html"):
         os.remove("tmp/themes_charts.html")
-    categories, questions = thematic_analysis()
-    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "bar"}, {"type": "pie"}]])
+    categories, questions, thematic_details = thematic_analysis()
     titles = []
-    for q in questions:
-        themes = categories.get(q)
-        x = []
-        y = []
-        for v in themes.get("themes"):
-            x.append(themes.get("themes").get(v).get("theme"))
-            y.append(len(themes.get("themes").get(v).get("statements")))
-        fig.add_trace(go.Bar(x=x, y=y, showlegend=False), row=1, col=1)
-        fig.add_trace(go.Pie(labels=x, values=y), row=1, col=2)
-        fig.update_layout(title=q, xaxis_title="Themes", yaxis_title="Frequency")
-        titles.append(q)
+    for theme in thematic_details:
+        question = theme[0]
+        x = theme[1]
+        y = theme[3]
+        tokens = theme[2]
+        fig = make_subplots(rows=1, cols=2, specs=[[{"type": "bar"}, {"type": "pie"}]])
+        fig.add_trace(go.Bar(x=x, y=y, text = tokens, marker_color=px.colors.qualitative.Plotly, showlegend=False), row=1, col=1)
+        fig.add_trace(go.Pie(text=x, values=y, labels = tokens), row=1, col=2)
+        fig.update_layout(title=question, xaxis_title="Themes", yaxis_title="Frequency")
+        titles.append(question)
         with open('tmp/themes_charts.html', 'a') as f:
              f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
     if os.path.exists("tmp/themes_charts.html"):

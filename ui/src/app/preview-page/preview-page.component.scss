@@ -26,8 +26,12 @@
 
 iframe {
     border: none;
-    height: 90vh;
-    width: 100%;
-    overflow: visible;
+    height: 0.1vh;
+    width: 1vw;
+    padding-left: 3rem;
+}
+
+iframe::-webkit-scrollbar {
+    display: none;
 }
 

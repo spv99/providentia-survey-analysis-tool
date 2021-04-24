@@ -21,7 +21,9 @@ export class PreviewPageComponent implements OnInit  {
       injectHTML.open();
       injectHTML.write(this.localStorageService.get(key));
       injectHTML.close();   
-      this.resizeIFrameToFitContent(iframe)
+      iframe.style.height = "90vh";
+      iframe.style.width = "100%";
+      this.resizeIFrameToFitContent(iframe);
     });
   }
 

@@ -19,6 +19,7 @@ export class DetailsPageComponent implements OnInit {
   public dataMap = new Map();
   public form: FormGroup;
   public userProfiles = [];
+  public showLoading: boolean = true;
 
   constructor(
     private analyticsService: AnalyticsService, 
@@ -43,7 +44,14 @@ export class DetailsPageComponent implements OnInit {
       treemapChart: [false],
       userProfiles: [false]
     });
+
     this.callCharts();
+
+    // export checkboxes
+    // $("#all").click(function () {
+    //   $(".form-check-input.text").prop('checked', $(this).prop('checked'));
+    // });
+    
   }
 
   public callCharts(): void {
@@ -98,6 +106,7 @@ export class DetailsPageComponent implements OnInit {
   }
 
   public changeActiveTab(): void {
+    this.showLoading = true;
     let tabs = document.getElementsByClassName("hover");
     let name;
     for (let i = 0; i < tabs.length; i++) {
@@ -143,6 +152,7 @@ export class DetailsPageComponent implements OnInit {
   public resizeIFrameToFitContent(iFrame: any): void {
     iFrame.width = iFrame.contentWindow.document.body.scrollWidth + "px";
     iFrame.height = iFrame.contentWindow.document.body.scrollHeight + "px";
+    this.showLoading = false;
   }
 
  public generatePreview(): void {
