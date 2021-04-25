@@ -58,25 +58,23 @@ export class AnalyticsService {
     private renderSentimentIframe(renderContent, titles, categories): any {
         let html = (renderContent.toString());
         html = html.replace(regexFind, PLOTLYJS);
-        let collapsible = COLLAPSIBLE_STYLE + '<div class="wrap-collabsible"><input id="collapsible" class="toggle" type="checkbox"> <label for="collapsible" class="lbl-toggle">View Full Text Responses</label> <div class="collapsible-content"> <div class="content-inner"><div *ngFor="let sentiment of ';
         let endGraph = '      </script>\n';
         titles.forEach((title, index) => {
+            let collapsible = COLLAPSIBLE_STYLE + '<div class="wrap-collabsible"><input id="collapsible'+'-' +index+'" class="toggle" type="checkbox"> <label for="collapsible'+'-' +index+'" class="lbl-toggle">View Full Text Responses</label> <div class="collapsible-content"> <div class="content-inner"><div ';
             let sentiment = categories[index]
-            // details.forEach(sentiment => {
-                collapsible = collapsible + categories + '"><p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">Positive Statements</p>';
-                sentiment.positive_statements.forEach(pos => {
-                    collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + pos + ' </li></div>';
-                })
-                collapsible = collapsible + '<p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">Neutral Statements</p>';
-                sentiment.neutral_statements.forEach(neu => {
-                    collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + neu + ' </li></div>';
-                })
-                collapsible = collapsible + '<p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">Negative Statements</p>';
-                sentiment.negative_statements.forEach(neg => {
-                    collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + neg + ' </li></div>';
-                })
-                collapsible = collapsible + '</div></div>';
-            // })
+            collapsible = collapsible + '><p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">Positive Statements</p>';
+            sentiment.positive_statements.forEach(pos => {
+                collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + pos + ' </li></div>';
+            })
+            collapsible = collapsible + '<p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">Neutral Statements</p>';
+            sentiment.neutral_statements.forEach(neu => {
+                collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + neu + ' </li></div>';
+            })
+            collapsible = collapsible + '<p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">Negative Statements</p>';
+            sentiment.negative_statements.forEach(neg => {
+                collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + neg + ' </li></div>';
+            })
+            collapsible = collapsible + '</div></div></div></div>';
             let anchor = '<a id="' + title + '"></a><div id';
             html = html.replace("   <div id", anchor)
             html = html.replace(endGraph, '      </script> '+ collapsible)
@@ -87,8 +85,35 @@ export class AnalyticsService {
         })
         toc = toc + "</div>";
         html = toc + html;
-        let plotlyGraph = '        <script type=\"text/javascript\">window.PlotlyConfig ';
-       
+        return html;
+    }
+
+    public renderThematicIframe(renderContent, titles, categories): any {
+        let html = (renderContent.toString());
+        html = html.replace(regexFind, PLOTLYJS);
+        let endGraph = '      </script>\n';
+        console.log(categories)
+        titles.forEach((title, index) => {
+            let collapsible = COLLAPSIBLE_STYLE + '<div class="wrap-collabsible"><input id="collapsible'+'-' +index+'" class="toggle" type="checkbox"> <label for="collapsible'+'-' +index+'" class="lbl-toggle">View Full Text Responses</label> <div class="collapsible-content"> <div class="content-inner"><div ';
+            let thematic = categories[index]
+            console.log(thematic)
+            thematic.themes.forEach(theme => {
+                collapsible = collapsible + '><p class="senti-subheader" style="font-size: 22px; margin-top: 1rem;">'+ theme.theme +'</p>';
+                theme.statements.forEach(statements => {
+                    collapsible = collapsible + '<div><li class="senti-details" style="font-size: 17px; font-weight: 200;"> ' + statements + ' </li></div>';
+                })
+            })
+            collapsible = collapsible + '</div></div></div></div>';
+            let anchor = '<a id="' + title + '"></a><div id';
+            html = html.replace("   <div id", anchor)
+            html = html.replace(endGraph, '      </script> '+ collapsible)
+        })
+        let toc = QUESTIONS_HEADER;
+        titles.forEach(title => {
+            toc = toc + '<li><a '+ LIST_STYLE +' href="#'+title+'">'+ title +'</a></li>';
+        })
+        toc = toc + "</div>";
+        html = toc + html;
         return html;
     }
 
@@ -151,7 +176,7 @@ export class AnalyticsService {
         const themesChartsUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${THEMES_CHARTS}`;
         return this.httpClient.get<Chart>(themesChartsUrl).pipe(map(res => {
             if(res.renderContent != null) {
-                return this.renderIframe(res.renderContent, res.titles)
+                return this.renderThematicIframe(res.renderContent, res.titles, res.categories)
             }
         }));
     }

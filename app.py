@@ -209,8 +209,8 @@ class Themes(Resource):
 class ThemesCharts(Resource):
     def get(self):
         try:
-            themesHTML, themesContent, titles = qualitative_encoding.themes_charts()
-            return {"fileLocation": themesHTML, "renderContent": themesContent, "titles": titles}
+            themesHTML, themesContent, titles, categories = qualitative_encoding.themes_charts()
+            return {"fileLocation": themesHTML, "renderContent": themesContent, "titles": titles, "categories": categories}
         except KeyError as e:
             abort(500, "Could not retrieve chart", statusCode = "500")
         except Exception as e:

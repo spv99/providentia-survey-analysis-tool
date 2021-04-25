@@ -66,7 +66,6 @@ export class DetailsPageComponent implements OnInit {
 
     this.analyticsService.getSentimentCharts().subscribe(data => {
       this.dataMap.set("sentiment-charts", data);
-      console.log(data)
     });
 
     this.analyticsService.getThemesCharts().subscribe(data => {

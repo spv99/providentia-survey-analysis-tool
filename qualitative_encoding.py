@@ -331,7 +331,7 @@ def thematic_analysis():
         for index, totalvocab_stemmed in enumerate(df[df.columns.values.tolist()[col]].values.tolist()):
             cluster_values[clusters[index]].append(str(totalvocab_stemmed))
 
-        themes = {}
+        themes = []
         topics = []
         keywords = []
         statements_count = []
@@ -351,11 +351,11 @@ def thematic_analysis():
             keywords.append(tokens)
             statements = cluster_values[i]
             statements_count.append(len(statements))
-            themes = {
+            themes.append({
                 "theme": topic,
                 "tokens": tokens,
                 "statements": statements
-            }
+            })
         thematic_details.append([df.columns.values.tolist()[col], topics, keywords, statements_count])
         categories.append({
             "question": df.columns.values.tolist()[col],
@@ -383,9 +383,9 @@ def themes_charts():
     if os.path.exists("tmp/themes_charts.html"):
         file = open("tmp/themes_charts.html", 'r', encoding='utf-8')
         source_code = file.read() 
-        return 'tmp/themes_charts.html', source_code, titles
+        return 'tmp/themes_charts.html', source_code, titles, categories
     else:
-        return None, None, None
+        return None, None, None, None
     
 def wordmaps():
     ## wordmaps package methods - figure out how this is used 
