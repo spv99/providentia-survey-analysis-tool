@@ -75,93 +75,114 @@
 
     <!-- Bargraphs -->
     <div id="Bar Graphs" class="hide">
-        <h3 class="pstyle title">Bar Graphs</h3>
+        <!-- <h3 class="pstyle title">Bar Graphs</h3> -->
         <div id="bargraphs-box" class="col">
-            <iframe id="bargraphs" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="bargraphs" src="about:blank" onload="document.getElementById('bargraphs').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- Piecharts -->
     <div id="Pie Charts" class="hide">
-        <h3 class="pstyle title">Pie Charts</h3>
+        <!-- <h3 class="pstyle title">Pie Charts</h3> -->
         <div id="piecharts-box" class="col">
-            <iframe id="piecharts" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="piecharts" src="about:blank" onload="document.getElementById('piecharts').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- Boxplots -->
     <div id="Box Plots" class="hide">
-        <h3 class="pstyle title">Box Plots</h3>
+        <!-- <h3 class="pstyle title">Box Plots</h3> -->
         <div id="boxplots-box" class="col">
-            <iframe id="boxplots" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="boxplots" src="about:blank" onload="document.getElementById('boxplots').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- Sentiment Analysis-->
     <div id="Sentiment Analysis" class="hide">
-        <h3 class="pstyle title">Sentiment Analysis</h3>
+        <!-- <h3 class="pstyle title">Sentiment Analysis</h3> -->
         <div id="sentiment-charts-box" class="col">
-            <iframe id="sentiment-charts" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg"/></div></div>
+            <iframe id="sentiment-charts" src="about:blank" onload="document.getElementById('sentiment-charts').style.display='inherit';"></iframe>
         </div>
     </div>
 
     <!-- Thematic Analysis-->
     <div id="Thematic Analysis" class="hide">
-        <h3 class="pstyle title">Thematic Analysis</h3>
+        <!-- <h3 class="pstyle title">Thematic Analysis</h3> -->
         <div id="themes-charts-box" class="col">
-            <iframe id="themes-charts" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="themes-charts" src="about:blank" onload="document.getElementById('themes-charts').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- Bivariate Relationships -->
     <div id="Bivariate Relationships" class="hide">
-        <h3 class="pstyle title">Bivariate Relationships</h3>
+        <!-- <h3 class="pstyle title">Bivariate Relationships</h3> -->
         <br>
         <div id="bivariate-relationships-box" class="col">
-            <iframe id="bivariate-relationships" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="bivariate-relationships" src="about:blank" onload="document.getElementById('bivariate-relationships').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- Clustered Bargraphs -->
     <div id="Clustered Bar Graphs" class="hide">
-        <h3 class="pstyle title">Clustered Bar Graphs</h3>
+        <!-- <h3 class="pstyle title">Clustered Bar Graphs</h3> -->
         <div id="clustered-bargraph-box" class="col">
-            <iframe id="clustered-bargraph" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="clustered-bargraph" src="about:blank" onload="document.getElementById('clustered-bargraph').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- Stacked Bargraphs -->
     <div id="Stacked Bar Graphs" class="hide">
-        <h3 class="pstyle title">Stacked Bar Graphs</h3>
+        <!-- <h3 class="pstyle title">Stacked Bar Graphs</h3> -->
         <div id="stacked-bargraph-box" class="col">
-            <iframe id="stacked-bargraph" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="stacked-bargraph" src="about:blank" onload="document.getElementById('stacked-bargraph').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- Scatter Plots -->
     <div id="Scatter Plots" class="hide">
-        <h3 class="pstyle title">Scatter Plots</h3>
+        <!-- <h3 class="pstyle title">Scatter Plots</h3> -->
         <div id="scatter-plots-box" class="col">
-            <iframe id="scatter-plots" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="scatter-plots" src="about:blank" onload="document.getElementById('scatter-plots').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- Sunburst Chart -->
     <div id="Sunburst Chart" class="hide">
-        <h3 class="pstyle title">Sunburst Chart</h3>
+        <!-- <h3 class="pstyle title">Sunburst Chart</h3> -->
         <br>
         <div id="sunburst-box" class="col">
-            <iframe id="sunburst" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="sunburst" src="about:blank" onload="document.getElementById('sunburst').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- Treemap Chart -->
     <div id="Treemap Chart" class="hide">
-        <h3 class="pstyle title">Treemap Chart</h3>
+        <!-- <h3 class="pstyle title">Treemap Chart</h3> -->
         <br>
         <div id="treemap-box" class="col">
-            <iframe id="treemap" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="treemap" src="about:blank" onload="document.getElementById('treemap').style.display='inherit';"></iframe>
         </div>
+        <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
 
     <!-- User Profiles -->
@@ -171,7 +192,8 @@
             <user-profiles [userProfiles]="profile"></user-profiles>
         </div>
         <div id="user-profiles-box" class="col">
-            <iframe id="user-profiles" src="about:blank"></iframe>
+            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
+            <iframe id="user-profiles" src="about:blank" onload="document.getElementById('user-profiles').style.display='inherit';"></iframe>
         </div>
     </div>
 </main>

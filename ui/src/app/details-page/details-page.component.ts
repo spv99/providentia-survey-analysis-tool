@@ -16,7 +16,9 @@ export class DetailsPageComponent implements OnInit {
   public dataMap = new Map();
   public form: FormGroup;
   public userProfiles = [];
-  public showLoading: boolean = true;
+  public showLoading: boolean = false;
+  public noGraph: boolean = false;
+  public noGraphType: string;
 
   constructor(
     private analyticsService: AnalyticsService, 
@@ -43,12 +45,6 @@ export class DetailsPageComponent implements OnInit {
     });
 
     this.callCharts();
-
-    // export checkboxes
-    // $("#all").click(function () {
-    //   $(".form-check-input.text").prop('checked', $(this).prop('checked'));
-    // });
-    
   }
 
   public callCharts(): void {
@@ -104,6 +100,8 @@ export class DetailsPageComponent implements OnInit {
 
   public changeActiveTab(): void {
     this.showLoading = true;
+    this.noGraph = false;
+    this.noGraphType = "";
     let tabs = document.getElementsByClassName("hover");
     let name;
     for (let i = 0; i < tabs.length; i++) {
@@ -134,8 +132,11 @@ export class DetailsPageComponent implements OnInit {
   public injectHTML(id: string, data: string): void {
     if (data == undefined) {
       const iFrameContainerId = id + '-box';
+      console.log(id + " does not exist")
       let iFrameContainer = <HTMLDivElement>document.getElementById(iFrameContainerId) as HTMLDivElement;
       iFrameContainer.setAttribute("style", "display: none");
+      this.noGraph = true;
+      this.noGraphType = id;
     } else {
       let iframe = <HTMLIFrameElement>document.getElementById(id) as HTMLIFrameElement;
       let injectHTML = iframe.contentWindow.document;
@@ -143,6 +144,9 @@ export class DetailsPageComponent implements OnInit {
       injectHTML.write(data);
       injectHTML.close();   
       this.resizeIFrameToFitContent(iframe)
+      // $('#bargraphs').on("load", function () {
+      //   console.log('iframe loaded'); //replace with code to hide loader
+      // });
     }
   }
 
