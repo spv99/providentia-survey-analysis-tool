@@ -132,7 +132,6 @@ export class DetailsPageComponent implements OnInit {
   public injectHTML(id: string, data: string): void {
     if (data == undefined) {
       const iFrameContainerId = id + '-box';
-      console.log(id + " does not exist")
       let iFrameContainer = <HTMLDivElement>document.getElementById(iFrameContainerId) as HTMLDivElement;
       iFrameContainer.setAttribute("style", "display: none");
       this.noGraph = true;
@@ -144,9 +143,6 @@ export class DetailsPageComponent implements OnInit {
       injectHTML.write(data);
       injectHTML.close();   
       this.resizeIFrameToFitContent(iframe)
-      // $('#bargraphs').on("load", function () {
-      //   console.log('iframe loaded'); //replace with code to hide loader
-      // });
     }
   }
 

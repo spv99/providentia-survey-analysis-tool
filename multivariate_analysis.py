@@ -241,6 +241,8 @@ def sunburst():
 def most_frequent(profiles): 
     CounterVariable  = Counter(profiles)
     characteristics = [word for word, word_count in CounterVariable.most_common(3)]
+    characteristics = ['N/A' if x==999 else x for x in characteristics]
+    characteristics = ['0' if x==0 else x for x in characteristics]
     return characteristics
 
 def most_frequent_count(profiles): 
