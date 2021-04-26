@@ -19,8 +19,10 @@
         </div>
         <h5 class="pstyle upload form-inline">
           Upload a
-          <div class="pstyle blue">&nbsp;.csv&nbsp;</div>
-          of your survey responses:
+          <!-- <div class="pstyle blue">&nbsp;.csv&nbsp;</div> -->
+          <span data-toggle="tooltip" data-placement="top"
+             title="Tip: You can convert your Excel document to a csv by saving it as a .csv file type!"
+             class="pstyle blue">&nbsp;.csv</span>
         </h5>
         <div class="uploading" *ngIf="fileToUpload">
           <div class="progress">
@@ -41,7 +43,7 @@
       </div>
       <h5 class="pstyle example form-inline">
         Or use our
-        <span class="pstyle blue form-inline">&nbsp;example file&nbsp;</span>
+        <span class="pstyle blue form-inline" (click)="downloadSampleSurvey()">&nbsp;example file&nbsp; </span>
         to get a preview of what our analytic insights look like!
       </h5>
     </div>

@@ -21,7 +21,8 @@
             "aot": false,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              { "glob": "sample-survey.csv", "input": "./", "output": "./assets/" }
             ],
             "styles": [
               "src/styles.scss"

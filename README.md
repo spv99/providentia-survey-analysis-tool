@@ -12,7 +12,6 @@ set FLASK_ENV=development
 deactivate to exit venv
 `py` to run python shell
 `flask run` to run swagger
-`python extract_col.py extract_cols "csv/grad-pays.csv"` to run specific file with args
 
 ### Running UI:
 `cd ui`
