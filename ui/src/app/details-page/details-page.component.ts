@@ -14,7 +14,8 @@ import { ModalConfig } from '../reusable-modal/modal.config';
 })
 
 export class DetailsPageComponent implements OnInit {
-  @ViewChild('modal', {static: false}) private modal: ModalComponent
+  @ViewChild('modal', {static: false}) private modal: ModalComponent;
+  @ViewChild('barGraphModal', {static: false}) private barGraphModal: ModalComponent
 
   public data: any;
   public dataMap = new Map();
@@ -170,6 +171,22 @@ export class DetailsPageComponent implements OnInit {
 
   async openModal() {
     return await this.modal.open()
+  }
+
+  public modalBarGraphConfig: ModalConfig = {
+    modalTitle: "Bar Graphs",
+    onDismiss: () => {
+      return true
+    },
+    dismissButtonLabel: "Dismiss",
+    onClose: () => {
+      return true
+    },
+    closeButtonLabel: "Close"
+  }
+
+  async openBarGraphModal() {
+    return await this.barGraphModal.open()
   }
 
  public generatePreview(): void {

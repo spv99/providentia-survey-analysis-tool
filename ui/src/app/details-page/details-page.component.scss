@@ -137,7 +137,17 @@ iframe {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.table {
+    margin-top: 2rem;
+}
+
+#graph-type {
+    cursor: pointer;
+    color: #013a83;
 }
 
 // Export report

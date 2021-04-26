@@ -27,18 +27,37 @@
         <p class="text">From your dataset, a variety of graphs have been generated ready for you to use and interact
             with! These graphs are categorised into <span (click)="openModal()" class="emphasis">univariate, bivariate
                 and multiviarate <sup><span class="material-icons info">info</span></sup></span> charts as follows:</p>
+        <p class="text">Click on each chart type to see a .gif what the graph looks like and how to interact with it!</p>
         <table class="table table-sm">
             <thead>
                 <tr><th scope="col">Chart</th>
                 <th scope="col">Description</th></tr>
             </thead>
             <tbody>
-                <tr><th>Bargraphs</th>
+                <tr><th id="graph-type" (click)="openBarGraphModal()">Bargraphs</th>
                 <td>A graph that presents categorical data with rectangular bars with heights proportional to the values that they represent. </td></tr>
-                <tr><th>Pie Charts</th>
-                <td>A graph that presents categorical data with rectangular bars with heights proportional to the values that they represent. </td></tr>
-                <!-- TODO: style and create table for each of these charts + description 
-                put description into template so can reuse in modals for each graph on top of gif -->
+                <tr><th id="graph-type">Pie Charts</th>
+                <td>A circular statistical graphic, that is divided into slices to illustrate numerical proportion of the population. </td></tr>
+                <tr><th id="graph-type">Box Plots</th>
+                <td>A graphical way of depicting the median, maximum/minimum and quartile points, for a spread of numerical data.</td></tr>
+                <tr><th id="graph-type">Sentiment Analaysis</th>
+                <td>An approach to finding the sentiment from the target population's free text responses. Each response is classified to the sentiment categories of Positive, Negative and Neutral via natural language processing.</td></tr>
+                <tr><th id="graph-type">Thematic Analaysis</th>
+                <td>An approach to finding the main themes from the target population's free text responses. Each response is classified to a key topic prominent within all responses via natural language processing.</td></tr>
+                <tr><th id="graph-type">Bivariate Relationships</th>
+                <td>A visual indicator of which pairs of questions are tightly correlated and vice versa.</td></tr>
+                <tr><th id="graph-type">Clustered Bar Graphs</th>
+                <td>A graph that displays more than one data series in clustered horizontal columns. Each horizontal bar is grouped by category along the x-axis.</td></tr>
+                <tr><th id="graph-type">Stacked Bar Graphs</th>
+                <td>A graph that displays more than one data series in clustered vertical columns. Each vertical bar is grouped by frequency along the y-axis.</td></tr>
+                <tr><th id="graph-type">Scatter Plots</th>
+                <td>A graph that shows the relationship between two sets of numerical data, highlighting potential positive or negative correlations.</td></tr>
+                <tr><th id="graph-type">Sunburst Chart</th>
+                <td>An overview of all responses in the data, represented by a radial ring, with each curved segment reflecting the quantitative frequency for each type of response per question.</td></tr>                 
+                <tr><th id="graph-type">Treemap Chart</th>
+                <td>An overview of all responses in the data, represented by a collection of hierarchically structured sqaures, with each square reflecting the quantitative frequency for each type of response per question.</td></tr>  
+                <tr><th id="graph-type">User Profiles</th>
+                <td>A visual representation of unique user profiles, calculated by the closeness of each user's response against the others. Each user's response is signified by a point in the cluster chart, with each cluster representing a user profile.</td></tr>  
             </tbody>
         </table>
 
@@ -270,5 +289,9 @@
             analysis provides a visual summary of
             sentiment and key topics amongst your user group!
         </p>
+    </modal>
+
+    <modal #barGraphModal [modalConfig]="modalBarGraphConfig">
+        "works!"
     </modal>
 </main>
