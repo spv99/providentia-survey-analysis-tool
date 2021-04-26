@@ -60,24 +60,20 @@ export class ProvidentiaComponent implements OnInit {
     };
 
     var blobToFile = function (blob, name) {
-          blob.lastModifiedDate = new Date();
-          blob.name = name;
-          return blob;
+      blob.lastModifiedDate = new Date();
+      blob.name = name;
+      return blob;
     };
 
     var getFileObject = function(filePathOrUrl, cb) {
-        getFileBlob(filePathOrUrl, function (blob) {
-            cb(blobToFile(blob, 'sample-survey.csv'));
-        });
+      getFileBlob(filePathOrUrl, function (blob) {
+          cb(blobToFile(blob, 'sample-survey.csv'));
+      });
     };
 
     getFileObject('assets/sample-survey.csv', (fileObject) => {
       this.uploadFile(fileObject);
     }); 
-
-    
   }
-
-
 }
 

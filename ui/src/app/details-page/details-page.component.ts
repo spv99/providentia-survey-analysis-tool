@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AnalyticsService } from './details-page.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProvidentiaService } from '../providentia/providentia.service';
 import * as $ from 'jquery';
+import { ModalComponent } from '../reusable-modal/modal.component';
+import { ModalConfig } from '../reusable-modal/modal.config';
 
 @Component({
   selector: 'app-details-page',
@@ -12,6 +14,8 @@ import * as $ from 'jquery';
 })
 
 export class DetailsPageComponent implements OnInit {
+  @ViewChild('modal', {static: false}) private modal: ModalComponent
+
   public data: any;
   public dataMap = new Map();
   public form: FormGroup;
@@ -150,6 +154,22 @@ export class DetailsPageComponent implements OnInit {
     iFrame.width = iFrame.contentWindow.document.body.scrollWidth + "px";
     iFrame.height = iFrame.contentWindow.document.body.scrollHeight + "px";
     this.showLoading = false;
+  }
+
+  public modalConfig: ModalConfig = {
+    modalTitle: "Univariate, Bivariate and Multivariate Analysis",
+    onDismiss: () => {
+      return true
+    },
+    dismissButtonLabel: "Dismiss",
+    onClose: () => {
+      return true
+    },
+    closeButtonLabel: "Close"
+  }
+
+  async openModal() {
+    return await this.modal.open()
   }
 
  public generatePreview(): void {

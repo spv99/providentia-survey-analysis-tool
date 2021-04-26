@@ -24,13 +24,24 @@
     <div id="Insights Overview" class="view">
         <h3 class="pstyle title">Insights Overview</h3>
         <br>
-        <p class="text">What has been generated uni, bi, multi, sentiment, thematic</p>
-        <p class="text">Univariate analysis involves the analysis of a single variable (or column) to describe,
-            summarise and find patterns.</p>
-        <p class="text">Bivariate analysis involves the study of two variables to determine the relationship between
-            them and the strength of their correlation.</p>
-        <p class="text">Multivariate analysis occurs when three or more variables are being analysed, having multiple
-            intercorrelations and relationships between each variable.</p>
+        <p class="text">From your dataset, a variety of graphs have been generated ready for you to use and interact
+            with! These graphs are categorised into <span (click)="openModal()" class="emphasis">univariate, bivariate
+                and multiviarate <sup><span class="material-icons info">info</span></sup></span> charts as follows:</p>
+        <table class="table table-sm">
+            <thead>
+                <tr><th scope="col">Chart</th>
+                <th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><th>Bargraphs</th>
+                <td>A graph that presents categorical data with rectangular bars with heights proportional to the values that they represent. </td></tr>
+                <tr><th>Pie Charts</th>
+                <td>A graph that presents categorical data with rectangular bars with heights proportional to the values that they represent. </td></tr>
+                <!-- TODO: style and create table for each of these charts + description 
+                put description into template so can reuse in modals for each graph on top of gif -->
+            </tbody>
+        </table>
+
         <img class="overview-graphic" src="assets/insights-overview-graphic.png">
     </div>
 
@@ -77,8 +88,11 @@
     <div id="Bar Graphs" class="hide">
         <!-- <h3 class="pstyle title">Bar Graphs</h3> -->
         <div id="bargraphs-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="bargraphs" src="about:blank" onload="document.getElementById('bargraphs').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="bargraphs" src="about:blank"
+                onload="document.getElementById('bargraphs').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -87,8 +101,11 @@
     <div id="Pie Charts" class="hide">
         <!-- <h3 class="pstyle title">Pie Charts</h3> -->
         <div id="piecharts-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="piecharts" src="about:blank" onload="document.getElementById('piecharts').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="piecharts" src="about:blank"
+                onload="document.getElementById('piecharts').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -97,8 +114,11 @@
     <div id="Box Plots" class="hide">
         <!-- <h3 class="pstyle title">Box Plots</h3> -->
         <div id="boxplots-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="boxplots" src="about:blank" onload="document.getElementById('boxplots').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="boxplots" src="about:blank"
+                onload="document.getElementById('boxplots').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -107,8 +127,11 @@
     <div id="Sentiment Analysis" class="hide">
         <!-- <h3 class="pstyle title">Sentiment Analysis</h3> -->
         <div id="sentiment-charts-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg"/></div></div>
-            <iframe id="sentiment-charts" src="about:blank" onload="document.getElementById('sentiment-charts').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="sentiment-charts" src="about:blank"
+                onload="document.getElementById('sentiment-charts').style.display='inherit';"></iframe>
         </div>
     </div>
 
@@ -116,8 +139,11 @@
     <div id="Thematic Analysis" class="hide">
         <!-- <h3 class="pstyle title">Thematic Analysis</h3> -->
         <div id="themes-charts-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="themes-charts" src="about:blank" onload="document.getElementById('themes-charts').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="themes-charts" src="about:blank"
+                onload="document.getElementById('themes-charts').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -127,8 +153,11 @@
         <!-- <h3 class="pstyle title">Bivariate Relationships</h3> -->
         <br>
         <div id="bivariate-relationships-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="bivariate-relationships" src="about:blank" onload="document.getElementById('bivariate-relationships').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="bivariate-relationships" src="about:blank"
+                onload="document.getElementById('bivariate-relationships').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -137,8 +166,11 @@
     <div id="Clustered Bar Graphs" class="hide">
         <!-- <h3 class="pstyle title">Clustered Bar Graphs</h3> -->
         <div id="clustered-bargraph-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="clustered-bargraph" src="about:blank" onload="document.getElementById('clustered-bargraph').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="clustered-bargraph" src="about:blank"
+                onload="document.getElementById('clustered-bargraph').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -147,8 +179,11 @@
     <div id="Stacked Bar Graphs" class="hide">
         <!-- <h3 class="pstyle title">Stacked Bar Graphs</h3> -->
         <div id="stacked-bargraph-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="stacked-bargraph" src="about:blank" onload="document.getElementById('stacked-bargraph').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="stacked-bargraph" src="about:blank"
+                onload="document.getElementById('stacked-bargraph').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -157,8 +192,11 @@
     <div id="Scatter Plots" class="hide">
         <!-- <h3 class="pstyle title">Scatter Plots</h3> -->
         <div id="scatter-plots-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="scatter-plots" src="about:blank" onload="document.getElementById('scatter-plots').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="scatter-plots" src="about:blank"
+                onload="document.getElementById('scatter-plots').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -168,8 +206,11 @@
         <!-- <h3 class="pstyle title">Sunburst Chart</h3> -->
         <br>
         <div id="sunburst-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="sunburst" src="about:blank" onload="document.getElementById('sunburst').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="sunburst" src="about:blank"
+                onload="document.getElementById('sunburst').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -179,8 +220,11 @@
         <!-- <h3 class="pstyle title">Treemap Chart</h3> -->
         <br>
         <div id="treemap-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="treemap" src="about:blank" onload="document.getElementById('treemap').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="treemap" src="about:blank"
+                onload="document.getElementById('treemap').style.display='inherit';"></iframe>
         </div>
         <no-graph-view *ngIf="noGraph" [chart]="noGraphType"></no-graph-view>
     </div>
@@ -192,9 +236,39 @@
             <user-profiles [userProfiles]="profile"></user-profiles>
         </div>
         <div id="user-profiles-box" class="col">
-            <div id="loadImg"><div><img src="assets/chart-loader.svg" /></div></div>
-            <iframe id="user-profiles" src="about:blank" onload="document.getElementById('user-profiles').style.display='inherit';"></iframe>
+            <div id="loadImg">
+                <div><img src="assets/chart-loader.svg" /></div>
+            </div>
+            <iframe id="user-profiles" src="about:blank"
+                onload="document.getElementById('user-profiles').style.display='inherit';"></iframe>
         </div>
     </div>
+
+    <modal #modal [modalConfig]="modalConfig">
+        <p class="text">Univariate analysis involves the analysis of a single variable (or column) to describe,
+            summarise and find patterns. Bargraphs and piecharts are the two most common charts in the world of
+            statistics and data anaysis, so for each question in your survey, we have output bargraphs and piecharts!
+            Box plots also show univariate numerical data and can help visualise the spread of your data.</p>
+        <p class="text">Bivariate analysis involves the study of two variables to determine the relationship between
+            them and the strength of their correlation. To highlight the correlation between two questions, the
+            bivariate relationships graph highlights pairs of questions that are tightly coupled. The clustered and
+            stacked bargraphs also provide a visualise representation for each pair of question within your dataset.
+            Similar to
+            box plots, scatter plots displays the results of correlation and regression tests of solely numerical data
+            in an
+            easy-to-read manner.
+        </p>
+        <p class="text">Multivariate analysis occurs when three or more variables are being analysed, having multiple
+            intercorrelations and relationships between each variable. The sunburst and treemap charts are the most
+            interactive charts produced, allowing you to drill down into each response and visualise your respondents
+            from a birds eye view! To find unique user profiles of your respondents the user profile chart clusters each
+            response against each other,
+            enabling you to identify key demographics within your survey.</p>
+        <p class="text">To visualise and understand free text responses at a glance, sentiment and thematic analysis has
+            also been calculated, providing you with an overview of all text-based responses in seconds! Whether you
+            want to find out how your users are feeling or what the common themes are in the responses, the free text
+            analysis provides a visual summary of
+            sentiment and key topics amongst your user group!
+        </p>
+    </modal>
 </main>
-  

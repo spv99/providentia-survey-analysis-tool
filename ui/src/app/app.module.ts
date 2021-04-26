@@ -14,6 +14,7 @@ import { TagCloudModule } from 'angular-tag-cloud-module';
 import { PreviewPageComponent } from './preview-page/preview-page.component';
 import { UserProfilesComponent } from './details-page/user-profiles/user-profiles.component';
 import { NoGraphViewComponent } from './details-page/no-graph-view/no-graph-view.component';
+import { ModalComponent } from './reusable-modal/modal.component';
 
 @NgModule({
   entryComponents: [
@@ -25,7 +26,8 @@ import { NoGraphViewComponent } from './details-page/no-graph-view/no-graph-view
     ProvidentiaComponent,
     PreviewPageComponent,
     UserProfilesComponent,
-    NoGraphViewComponent
+    NoGraphViewComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,

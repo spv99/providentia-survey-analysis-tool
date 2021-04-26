@@ -42,12 +42,18 @@
 
 .emphasis {
     color: #d83a96;
+    cursor: pointer;
 }
 
 .logo {
     height: 6rem;
     margin-left: 1rem;
     margin-top: -3rem;
+}
+
+.material-icons.info {
+    font-size: 13px;
+    margin-left: -0.4rem;
 }
 
 iframe {
@@ -157,6 +163,12 @@ iframe {
 
 // User Profiles
 div[id='User Profiles'] {
+    overflow-y: auto !important;
+    height: inherit !important;
+}
+
+// Insights Overview
+div[id='Insights Overview'] {
     overflow-y: auto !important;
     height: inherit !important;
 }
