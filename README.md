@@ -19,3 +19,6 @@ deactivate to exit venv
 
 ### Running Backend Tests:
 `python -m unittest -v test.py`
+
+### Running Frontend Tests:
+`ng test`

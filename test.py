@@ -3,9 +3,9 @@ from io import BytesIO
 from unittest.mock import Mock
 from app import *
 from univariate_analysis import bargraph, piechart, boxplot
-from bivariate_analysis import Bivariate_Relationship, relationshipStrength, jsonParseBivarRelationships, bivar_bargraph
-from multivariate_analysis import pca, treemap, sunburst
-from qualitative_encoding import wordmaps, sentiment_piechart, thematic_analysis
+from bivariate_analysis import Bivariate_Relationship, relationshipStrength, visualiseRelationship, bivar_bargraph, scatter_plot
+from multivariate_analysis import pca_respondents, treemap, sunburst
+from qualitative_encoding import wordmaps, sentiment_charts, themes_charts, sentiment_tokens
 from extract_col import extract_cols, jsonParseCols, Question
 
 class TestMethods(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(result[1].question, 'What is your race?')
         self.assertEqual(result[1].questionType, 'MULTIPLE_CHOICE')
         self.assertEqual(result[1].dataType, 'QUALITATIVE')
-        self.assertEqual(len(result[1].options), 6)
+        self.assertEqual(len(result[1].options), 5)
         
         self.assertEqual(result[2].question, 'How do you feel about the area you live in?')
         self.assertEqual(result[2].questionType, 'FREE_TEXT')
@@ -46,12 +46,12 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(result[3].question, 'What is your level of education?')
         self.assertEqual(result[3].questionType, 'MULTIPLE_CHOICE')
         self.assertEqual(result[3].dataType, 'QUALITATIVE')
-        self.assertEqual(len(result[3].options), 6)
+        self.assertEqual(len(result[3].options), 5)
         
         self.assertEqual(result[4].question, 'What is your income?')
         self.assertEqual(result[4].questionType, 'MULTIPLE_CHOICE')
         self.assertEqual(result[4].dataType, 'QUALITATIVE')
-        self.assertEqual(len(result[4].options), 9)
+        self.assertEqual(len(result[4].options), 8)
         
         self.assertEqual(result[5].question, 'How old are you?')
         self.assertEqual(result[5].questionType, 'FREE_TEXT')
@@ -80,16 +80,21 @@ class TestMethods(unittest.TestCase):
         """
         # arrange
         rest = flask_app.test_client()
-        result = bargraph()
+        bargraphHTML, bargraphContent, titles = bargraph()
         
         # act
         rest_call = rest.get('/api/univariate-analysis/bargraph', headers={"Content-Type": "application/json"})
         response = Bargraph.get('/api/univariate-analysis/bargraph');
         
         # assert        
-        self.assertEqual(result, "tmp/bargraphs.html")
+        self.assertEqual(bargraphHTML, "tmp/bargraphs.html")
+        self.assertEqual(titles, ['What is your gender?',
+                                  'What is your race?', 
+                                  'What is your level of education?', 
+                                  'What is your income?', 
+                                  'How old are you?',
+                                  'How many kids do you have?'])
         self.assertEqual(200, rest_call.status_code)
-        self.assertEqual(response, {"fileLocation": result})
         
     def test_univariate_piechart(self):
         """
@@ -97,16 +102,21 @@ class TestMethods(unittest.TestCase):
         """
         # arrange
         rest = flask_app.test_client()
-        result = piechart()
+        pieChartHTML, pieChartContent, titles = piechart()
         
         # act
         rest_call = rest.get('/api/univariate-analysis/piechart', headers={"Content-Type": "application/json"})
         response = Piechart.get('/api/univariate-analysis/piechart');
         
         # assert        
-        self.assertEqual(result, "tmp/piecharts.html")
+        self.assertEqual(pieChartHTML, "tmp/piecharts.html")
+        self.assertEqual(titles, ['What is your gender?',
+                                  'What is your race?', 
+                                  'What is your level of education?', 
+                                  'What is your income?', 
+                                  'How old are you?',
+                                  'How many kids do you have?'])
         self.assertEqual(200, rest_call.status_code)
-        self.assertEqual(response, {"fileLocation": result})
         
     def test_univariate_boxplot(self):
         """
@@ -114,40 +124,35 @@ class TestMethods(unittest.TestCase):
         """
         # arrange
         rest = flask_app.test_client()
-        result = boxplot()
+        boxplotHTML, boxplotContent, titles = boxplot()
         
         # act
         rest_call = rest.get('/api/univariate-analysis/boxplot', headers={"Content-Type": "application/json"})
         response = Boxplot.get('/api/univariate-analysis/boxplot');
         
         # assert        
-        self.assertEqual(result, "tmp/boxplots.html")
+        self.assertEqual(boxplotHTML, "tmp/boxplots.html")
+        self.assertEqual(titles, ['How old are you?'])
         self.assertEqual(200, rest_call.status_code)
-        self.assertEqual(response, {"fileLocation": result})
+
         
     def test_bivariate_relationships(self):
         """
         Test Bivariate Relationships
         """
         # arrange
-        mockRelationship = [Bivariate_Relationship("Question 1?", "Question 2?", 2.1, 0.543)]
+        mockRelationship = [Bivariate_Relationship("Question 1?", "Question 2?", 0.543)]
         rest = flask_app.test_client()
         relationshipStrength = Mock(return_value = mockRelationship)
-        result = jsonParseBivarRelationships(mockRelationship)
+        birelationshipHTML, relationshipContent = visualiseRelationship(mockRelationship)
         
         # act
         rest_call = rest.get('/api/bivariate-analysis/bivariate-relationships', headers={"Content-Type": "application/json"})
         response = BivariateRelationships.get('/api/bivariate-analysis/bivariate-relationships');
         
         # assert        
-        self.assertEqual(result, {'bivariate_relationships': 
-                                    [{'cramersv': 0.543,
-                                      'pvalue': 2.1,
-                                      'question1': 'Question 1?',
-                                      'question2': 'Question 2?'}]
-                                  })
+        self.assertEqual(birelationshipHTML, "tmp/bivariate-relationships.html")
         self.assertEqual(200, rest_call.status_code)
-        self.assertEqual(list, type(rest_call.json['bivariate_relationships']))
         
     def test_bivariate_clustered_bargraph(self):
         """
@@ -155,16 +160,25 @@ class TestMethods(unittest.TestCase):
         """
         # arrange
         rest = flask_app.test_client()
-        result = bivar_bargraph('group')
+        clusteredbargraphHTML, stackedContent, titles = bivar_bargraph('group')
         
         # act
         rest_call = rest.get('/api/bivariate-analysis/clustered-bargraph', headers={"Content-Type": "application/json"})
         response = ClusteredBargraph.get('/api/bivariate-analysis/clustered-bargraph');
         
         # assert        
-        self.assertEqual(result, "tmp/clusteredbargraph.html")
+        self.assertEqual(clusteredbargraphHTML, "tmp/clusteredbargraph.html")
+        self.assertEqual(titles, ['Comparing What is your gender? and What is your race?', 
+                                  'Comparing What is your gender? and What is your level of education?', 
+                                  'Comparing What is your gender? and What is your income?', 
+                                  'Comparing What is your gender? and How many kids do you have?', 
+                                  'Comparing What is your race? and What is your level of education?', 
+                                  'Comparing What is your race? and What is your income?', 
+                                  'Comparing What is your race? and How many kids do you have?', 
+                                  'Comparing What is your level of education? and What is your income?', 
+                                  'Comparing What is your level of education? and How many kids do you have?', 
+                                  'Comparing What is your income? and How many kids do you have?'])
         self.assertEqual(200, rest_call.status_code)
-        self.assertEqual(response, {"fileLocation": result}) 
     
     def test_bivariate_stacked_bargraph(self):
         """
@@ -172,16 +186,42 @@ class TestMethods(unittest.TestCase):
         """
         # arrange
         rest = flask_app.test_client()
-        result = bivar_bargraph('stack')
+        stackedbargraphHTML, stackedContent, titles = bivar_bargraph('stack')
         
         # act
         rest_call = rest.get('/api/bivariate-analysis/stacked-bargraph', headers={"Content-Type": "application/json"})
         response = StackedBargraph.get('/api/bivariate-analysis/stacked-bargraph');
         
         # assert        
-        self.assertEqual(result, "tmp/stackedbargraph.html")
+        self.assertEqual(stackedbargraphHTML, "tmp/stackedbargraph.html")
         self.assertEqual(200, rest_call.status_code)
-        self.assertEqual(response, {"fileLocation": result}) 
+        self.assertEqual(titles, ['Comparing What is your gender? and What is your race?', 
+                                  'Comparing What is your gender? and What is your level of education?', 
+                                  'Comparing What is your gender? and What is your income?', 
+                                  'Comparing What is your gender? and How many kids do you have?', 
+                                  'Comparing What is your race? and What is your level of education?', 
+                                  'Comparing What is your race? and What is your income?', 
+                                  'Comparing What is your race? and How many kids do you have?', 
+                                  'Comparing What is your level of education? and What is your income?', 
+                                  'Comparing What is your level of education? and How many kids do you have?', 
+                                  'Comparing What is your income? and How many kids do you have?'])
+      
+    def test_bivariate_scatter_plot(self):
+        """
+        Test Bivariate ScatterPlots
+        """
+        # arrange
+        rest = flask_app.test_client()
+        scatterPlotHTML, scatterPlotContent, titles = scatter_plot()
+
+        # act
+        rest_call = rest.get('/api/bivariate-analysis/scatter-plot', headers={"Content-Type": "application/json"})
+        response = ScatterPlots.get('/api/bivariate-analysis/scatter-plot');
+        
+        # assert        
+        self.assertEqual(scatterPlotHTML, "tmp/scatterplots.html")
+        self.assertEqual(titles, ['Comparing How old are you? and How many kids do you have?'])
+        self.assertEqual(200, rest_call.status_code)  
         
     def test_multivariate_treemap(self):
         """
@@ -189,17 +229,17 @@ class TestMethods(unittest.TestCase):
         """
         # arrange
         rest = flask_app.test_client()
-        result = treemap()
+        treemapHTML, questions, treemapContent = treemap()
         
         # act
         rest_call = rest.get('/api/multivariate-analysis/treemap', headers={"Content-Type": "application/json"})
         response = Treemap.get('/api/multivariate-analysis/treemap');
         
         # assert        
-        self.assertIn("tmp/treemap.html", result)
+        self.assertIn(treemapHTML, "tmp/treemap.html")
         self.assertEqual(200, rest_call.status_code)
         self.assertEqual(list, type(rest_call.json['questions']))
-        self.assertEqual(str, type(rest_call.json['fileLocation']))
+        self.assertEqual(questions, ['What is your gender?', 'What is your race?', 'What is your level of education?', 'What is your income?'])
         
     def test_multivariate_sunburst(self):
         """
@@ -207,35 +247,66 @@ class TestMethods(unittest.TestCase):
         """
         # arrange
         rest = flask_app.test_client()
-        result = sunburst()
+        sunburstHTML, questions, sunburstContent = sunburst()
         
         # act
         rest_call = rest.get('/api/multivariate-analysis/sunburst', headers={"Content-Type": "application/json"})
         response = Sunburst.get('/api/multivariate-analysis/sunburst');
         
         # assert        
-        self.assertIn("tmp/sunburst.html", result)
+        self.assertIn(sunburstHTML, "tmp/sunburst.html")
         self.assertEqual(200, rest_call.status_code)
         self.assertEqual(list, type(rest_call.json['questions']))
-        self.assertEqual(str, type(rest_call.json['fileLocation']))
-
+        self.assertEqual(questions, ['What is your gender?', 'What is your race?', 'What is your level of education?', 'What is your income?'])
+        
     def test_pca(self):
         """
         Test PCA
         """
         # arrange
         rest = flask_app.test_client()
-        result = pca()
+        pcaHTML, pcaContent, cluster_profiles = pca_respondents()
         
         # act
-        rest_call = rest.get('/api/multivariate-analysis/pca', headers={"Content-Type": "application/json"})
-        response = Pca.get('/api/multivariate-analysis/pca');
+        rest_call = rest.get('/api/multivariate-analysis/pca-respondents', headers={"Content-Type": "application/json"})
+        response = PcaRespondents.get('/api/multivariate-analysis/pca-respondents');
         
         # assert        
-        self.assertIn("tmp/pca.html", result)
+        self.assertIn(pcaHTML, "tmp/pca_respondents.html")
         self.assertEqual(200, rest_call.status_code)
         self.assertEqual(list, type(rest_call.json['cluster_profiles']))
-        self.assertEqual(str, type(rest_call.json['fileLocation']))
+        self.assertEqual(cluster_profiles, [[[{'question': 'What is your gender?', 
+                                               'common_response': ['Female', 'Male'], 
+                                               'common_response_count': [52, 41]}], 
+                                             [{'question': 'What is your race?', 
+                                               'common_response': ['White/Caucasian', 'Black/ African American/ Caribbean American', 'Asian'], 
+                                               'common_response_count': [34, 27, 18]}], 
+                                             [{'question': 'What is your level of education?', 
+                                               'common_response': ['Some college but degree not received or in progress', 'High school graduate or equivalent (i.e., GED)', 'Associate degree (i.e., AA, AS)'], 
+                                               'common_response_count': [38, 29, 17]}], 
+                                             [{'question': 'What is your income?', 
+                                               'common_response': ['$25,000 - $34,999', '$15,000 - $24,999', 'Less than $14,999'], 
+                                               'common_response_count': [30, 17, 14]}], 
+                                             [{'question': 'How many kids do you have?', 
+                                               'common_response': ['0', 2.0, 1.0], 
+                                               'common_response_count': [61, 16, 12]}], 
+                                             {'respondents': 93}], 
+                                            [[{'question': 'What is your gender?', 
+                                               'common_response': ['Male', 'Female', 'Refused'], 
+                                               'common_response_count': [4, 2, 1]}], 
+                                             [{'question': 'What is your race?', 
+                                               'common_response': ['White/Caucasian', 'Other', 'Refused'], 
+                                               'common_response_count': [3, 3, 1]}], 
+                                             [{'question': 'What is your level of education?', 
+                                               'common_response': ['High school graduate or equivalent (i.e., GED)', 'Some college but degree not received or in progress', 'Associate degree (i.e., AA, AS)'], 
+                                               'common_response_count': [3, 2, 1]}], 
+                                             [{'question': 'What is your income?', 
+                                               'common_response': ['N/A', 'Refused'], 
+                                               'common_response_count': [4, 3]}], 
+                                             [{'question': 'How many kids do you have?', 
+                                               'common_response': ['N/A'], 
+                                               'common_response_count': [7]}], 
+                                             {'respondents': 7}]])
 
     def test_sentiment_piecharts(self):
             """
@@ -243,35 +314,18 @@ class TestMethods(unittest.TestCase):
             """
             # arrange
             rest = flask_app.test_client()
-            result = sentiment_piechart()
+            categories = sentiment_tokens()
+            sentimentHTML, sentimentContent, titles = sentiment_charts()
             
             # act
-            rest_call = rest.get('/api/qualitative-encoding/sentiment', headers={"Content-Type": "application/json"})
-            response = Sentiment.get('/api/qualitative-encoding/sentiment');
+            rest_call = rest.get('/api/qualitative-encoding/sentiment-charts', headers={"Content-Type": "application/json"})
+            response = SentimentCharts.get('/api/qualitative-encoding/sentiment-charts');
             
             # assert        
-            self.assertIn("tmp/senti_piechart.html", result)
-            self.assertEqual(200, rest_call.status_code)
-            self.assertEqual(dict, type(rest_call.json['categories']))
-            self.assertEqual(str, type(rest_call.json['fileLocation']))
-            
-    def test_wordmaps(self):
-            """
-            Test Wordmaps
-            """
-            # arrange
-            rest = flask_app.test_client()
-            result = wordmaps()
-            
-            # act
-            rest_call = rest.get('/api/qualitative-encoding/wordmaps', headers={"Content-Type": "application/json"})
-            response = Wordmaps.get('/api/qualitative-encoding/wordmaps');
-            
-            # assert        
-            # self.assertIn("tmp/wordmap.html", result) - use when wordmap is one file
-            self.assertEqual(200, rest_call.status_code)
-            self.assertEqual(list, type(rest_call.json['files']))
-            self.assertEqual(list, type(rest_call.json['questions']))
+            self.assertIn(sentimentHTML, "tmp/sentiment_charts.html")
+            self.assertEqual(200, rest_call.status_code),
+            self.assertEqual(list, type(rest_call.json['categories']))
+            self.assertEqual(titles, ['How do you feel about the area you live in?'])
             
     def test_thematic_analysis(self):
             """
@@ -279,15 +333,18 @@ class TestMethods(unittest.TestCase):
             """
             # arrange
             rest = flask_app.test_client()
-            result = thematic_analysis()
+            themesHTML, themesContent, titles, categories = themes_charts()
             
             # act
-            rest_call = rest.get('/api/qualitative-encoding/themes', headers={"Content-Type": "application/json"})
-            response = Themes.get('/api/qualitative-encoding/themes');
+            rest_call = rest.get('/api/qualitative-encoding/themes-charts', headers={"Content-Type": "application/json"})
+            response = ThemesCharts.get('/api/qualitative-encoding/themes-charts');
             
-            # assert        
+            # assert     
+            self.assertEqual(themesHTML, "tmp/themes_charts.html")     
             self.assertEqual(200, rest_call.status_code)
-            self.assertEqual(dict, type(rest_call.json['themes']))
+            self.assertEqual(list, type(rest_call.json['categories']))
+            self.assertEqual(titles, ['How do you feel about the area you live in?'])
+            
 
 if __name__ == '__main__':
     unittest.main()

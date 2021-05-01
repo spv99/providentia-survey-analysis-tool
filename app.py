@@ -98,8 +98,8 @@ class BivariateRelationships(Resource):
 class ClusteredBargraph(Resource):
     def get(self):
         try:
-            clusteredbargraphHTML, stackedContent, titles = bivariate_analysis.bivar_bargraph('group')
-            return {"fileLocation": clusteredbargraphHTML, "renderContent": stackedContent, "titles": titles}
+            clusteredbargraphHTML, clusteredContent, titles = bivariate_analysis.bivar_bargraph('group')
+            return {"fileLocation": clusteredbargraphHTML, "renderContent": clusteredContent, "titles": titles}
         except KeyError as e:
             abort(500, "Could not retrieve chart", statusCode = "500")
         except Exception as e:
@@ -109,15 +109,15 @@ class ClusteredBargraph(Resource):
 class StackedBargraph(Resource):
     def get(self):
         try:
-            stackedbargraphHTML, clusteredContent, titles = bivariate_analysis.bivar_bargraph('stack')
-            return {"fileLocation": stackedbargraphHTML, "renderContent": clusteredContent, "titles": titles}
+            stackedbargraphHTML, stackedContent, titles = bivariate_analysis.bivar_bargraph('stack')
+            return {"fileLocation": stackedbargraphHTML, "renderContent": stackedContent, "titles": titles}
         except KeyError as e:
             abort(500, "Could not retrieve chart", statusCode = "500")
         except Exception as e:
             abort(400, "Could not save information", statusCode = "400")
             
 @bivar_analysis.route('/scatter-plot')
-class StackedBargraph(Resource):
+class ScatterPlots(Resource):
     def get(self):
         try:
             stackedScatterHTML, scatterContent, titles = bivariate_analysis.scatter_plot()
