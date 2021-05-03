@@ -5,7 +5,7 @@ from app import *
 from univariate_analysis import bargraph, piechart, boxplot
 from bivariate_analysis import Bivariate_Relationship, relationshipStrength, visualiseRelationship, bivar_bargraph, scatter_plot
 from multivariate_analysis import pca_respondents, treemap, sunburst
-from qualitative_encoding import wordmaps, sentiment_charts, themes_charts, sentiment_tokens
+from qualitative_encoding import sentiment_charts, themes_charts, sentiment_tokens
 from extract_col import extract_cols, jsonParseCols, Question
 
 class TestMethods(unittest.TestCase):
@@ -308,7 +308,7 @@ class TestMethods(unittest.TestCase):
                                                'common_response_count': [7]}], 
                                              {'respondents': 7}]])
 
-    def test_sentiment_piecharts(self):
+    def test_sentiment_analysis(self):
             """
             Test Sentiment Piechart
             """

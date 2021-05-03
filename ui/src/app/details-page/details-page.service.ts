@@ -4,8 +4,6 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "src/environments/environment";
 import {map} from "rxjs/operators";
 import { Chart } from "../models/chart.model";
-import { Wordmap } from "../models/wordmap.model";
-import { BivariateRelationship } from "../models/bivariate_relationship.model";
 
 const PLOTLYJS = '../../assets/plotly.js';
 const regexFind = 'https://cdn.plot.ly/plotly-latest.min.js';
@@ -15,7 +13,6 @@ const MULTIVARIATE_ANALYSIS = '/multivariate-analysis';
 const QUALITATIVE_ENCODING = '/qualitative-encoding';
 const BARGRAPH = '/bargraph';
 const BOXPLOT = '/boxplot';
-const WORDMAPS = '/wordmaps';
 const SENTIMENT_ANALYSIS = '/sentiment-analysis';
 const SENTIMENT_CHARTS = '/sentiment-charts';
 const THEMATIC_ANALYSIS = '/themes-analysis';
@@ -147,25 +144,6 @@ export class AnalyticsService {
             if(res.renderContent != null) {
                 return this.renderIframe("Box Plots",res.renderContent, res.titles)
             }
-        }));
-    }
-
-    public getUnivariateWordmaps(): Observable<Blob> {
-        const univariateWordmapsUrl: string = this.baseUrl + `${QUALITATIVE_ENCODING}${WORDMAPS}`;
-        // let wordmaps = [];
-        return this.httpClient.get(univariateWordmapsUrl, { responseType: 'blob' }).pipe(map(res => {
-            return res;
-            // res.categories.forEach(category => {
-            //     let cloudData = [];
-            //     category.wordmap.forEach(word => {
-            //         cloudData.push({
-            //             "text": word.word,
-            //             "weight": word.count
-            //         })
-            //     });
-            //     wordmaps.push(category.question, cloudData)
-            // });
-            // return wordmaps;
         }));
     }
 

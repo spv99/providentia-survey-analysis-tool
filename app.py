@@ -215,15 +215,7 @@ class ThemesCharts(Resource):
             abort(500, "Could not retrieve chart", statusCode = "500")
         except Exception as e:
             abort(400, "Could not save information", statusCode = "400")
-            
-@qual_encoding.route('/wordmaps')
-class Wordmaps(Resource):
-    def get(self):
-        categories = qualitative_encoding.wordmaps()
-        return {"categories": categories}
-        # img, title = qualitative_encoding.wordmaps()
-        # return send_file(img, mimetype='image/png', attachment_filename='wordmap.png')
-    
+               
 @qual_encoding.route('/questions')
 class FreeTextQuestions(Resource):
     def get(self):

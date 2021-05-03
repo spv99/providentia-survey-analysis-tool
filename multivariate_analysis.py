@@ -19,7 +19,6 @@ def pca_options():
     questions = pickle.load(open("data_store.dat", "rb"))
 
     for q in questions:
-        # TODO: make free text col mutliple choice
         if(q.dataType == 'QUALITATIVE' or q.questionType != 'MULTIPLE_CHOICE'):
             col_names = df[q.question].dropna().unique().tolist()
             df[col_names] = pd.get_dummies(df[q.question])
@@ -63,7 +62,6 @@ def pca_respondents():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
 
-    # TODO: append free_text col as mc so not just mc cols being analysed
     mc_questions = []
     for q in questions:
         if(q.questionType == 'MULTIPLE_CHOICE'):
@@ -75,7 +73,7 @@ def pca_respondents():
     selected_cols_encoded = []
     col_name = []
     for q in mc_questions:
-        if(q.questionType == 'MULTIPLE_CHOICE'):  # TODO: remove to allow free_text cols
+        if(q.questionType == 'MULTIPLE_CHOICE'): 
             encoded = []
             col_options = []
             for d in df[q.question]:
@@ -194,11 +192,9 @@ def treemap():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
     for q in questions:
-        # TODO: make free text col mutliple choice
         if(q.dataType != 'QUALITATIVE' or q.questionType != 'MULTIPLE_CHOICE'):
             del df[q.question]
     col_names = df.columns.values.tolist()
-    #TODO: Make sure there is no col named 'count' else rename inserted col to count_x
     df["count"] = 1
     df = df.groupby(col_names)["count"].count().reset_index()
     df = df.sort_values(by=["count"], ascending=False)
@@ -219,11 +215,9 @@ def sunburst():
     df = pickle.load(open("raw_data_store.dat", "rb"))
     questions = pickle.load(open("data_store.dat", "rb"))
     for q in questions:
-        # TODO: make free text col mutliple choice
         if(q.dataType != 'QUALITATIVE' or q.questionType != 'MULTIPLE_CHOICE'):
             del df[q.question]
     col_names = df.columns.values.tolist()
-    #TODO: Make sure there is no col named 'count' else rename inserted col to count_x
     df["count"] = 1
     df = df.groupby(col_names)["count"].count().reset_index()
     df = df.sort_values(by=["count"], ascending=False)

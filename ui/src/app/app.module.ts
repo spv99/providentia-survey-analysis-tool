@@ -11,7 +11,6 @@ import { ProvidentiaComponent } from './providentia/providentia.component';
 import { ProvidentiaService } from './providentia/providentia.service';
 import { AnalyticsService } from './details-page/details-page.service';
 import { TagCloudModule } from 'angular-tag-cloud-module';
-import { PreviewPageComponent } from './preview-page/preview-page.component';
 import { UserProfilesComponent } from './details-page/user-profiles/user-profiles.component';
 import { NoGraphViewComponent } from './details-page/no-graph-view/no-graph-view.component';
 import { ModalComponent } from './reusable-modal/modal.component';
@@ -24,7 +23,6 @@ import { ModalComponent } from './reusable-modal/modal.component';
     HeaderComponent,
     DetailsPageComponent,
     ProvidentiaComponent,
-    PreviewPageComponent,
     UserProfilesComponent,
     NoGraphViewComponent,
     ModalComponent

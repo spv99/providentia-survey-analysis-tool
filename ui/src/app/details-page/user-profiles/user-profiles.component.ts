@@ -22,16 +22,6 @@ export class UserProfilesComponent implements OnInit {
   public showDetails: boolean = false;
 
   ngOnInit() {
-    // if (!!this.profileOne && !!this.profileOne.clusterInfo) {
-    //   this.profileOne.clusterInfo.forEach(cluster => {
-    //     if (typeof cluster.common_response[0] === "number") {
-    //       cluster.common_response.forEach(el => {
-    //         el = el.toString();
-    //       })
-    //     }
-    //   });
-    // }
-
     if(!!this.userProfiles[0]) this.profileOne = this.userProfiles[0];
     //@ts-ignore
     if(!!this.profileOne) this.profileOneTotal = this.profileOne[this.profileOne.length - 1].respondents;
