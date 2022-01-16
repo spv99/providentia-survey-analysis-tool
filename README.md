@@ -2,7 +2,7 @@
 
 ### About
 
-Final year dissertation project that automates the analysis of surveys, using both quantiative and qualitative analysis tools
+Final year dissertation project that automates the analysis of surveys, using both quantiative and qualitative analysis tools.
 On the upload of survey results, this tool will automatically generate the below interactive graphs and features:
 
   - Bargraphs	
