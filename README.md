@@ -18,7 +18,8 @@ On the upload of survey results, this tool will automatically generate the below
   - Treemap Chart
   - User Profiles (Principle Component Analysis)
 
-Quick Preview
+(WIP) Preview: 
+
 ![providentia](https://user-images.githubusercontent.com/39187328/149662007-01ee0308-c315-4d53-96eb-83a5f896c737.gif)
 
 
